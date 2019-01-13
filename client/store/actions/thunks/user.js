@@ -5,6 +5,15 @@ export const loginThunk = user => dispatch => {
   dispatch(action.login(user));
 };
 
+export const logoutThunk = user => async dispatch => {
+  try {
+    await axios.post('/auth/logout', { user });
+    dispatch(action.logout(user));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const getMeThunk = fn => async dispatch => {
   try {
     const { data } = await axios.get('/auth/me');

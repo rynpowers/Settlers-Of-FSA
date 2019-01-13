@@ -52,7 +52,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).send(err.message || 'Internal Server Error');
 });
 
-db.sync({ force: true }).then(() => {
+db.sync().then(() => {
   dbStore.sync().then(() => {
     server.listen(port, () => console.log('listening on port:', port));
   });

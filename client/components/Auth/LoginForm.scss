@@ -1,4 +1,4 @@
-@import '../../styles/mixins.scss';
+@import '../../sass/mixins.scss';
 
 .login-form {
   @include absolute-center();
@@ -24,7 +24,7 @@
     background-color: none;
     background-color: var(--color-green-dark);
     color: var(--color-white);
-    transition: background-color 0.2s;
+    transition: background-color var(--hover);
   }
 
   & input {

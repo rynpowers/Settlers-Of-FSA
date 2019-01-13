@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withNavigation } from './Navigation';
 import { Link } from 'react-router-dom';
 
 class HomePage extends Component {
@@ -13,4 +14,4 @@ class HomePage extends Component {
   }
 }
 
-export default HomePage;
+export default withNavigation(HomePage);
