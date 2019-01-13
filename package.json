@@ -4,13 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-client": "webpack",
+    "build-client-watch": "webpack -w",
+    "deploy": "script/deploy",
+    "heroku-token": "script/encrypt-heroku-auth-token",
+    "postinstall": "touch secrets.js",
+    "start": "node server",
     "build": "webpack --env prod & node server",
     "server-dev": "NODE_ENV=development nodemon --watch server ./server/index.js",
     "web-dev": "webpack-dev-server",
     "start-wds": "npm run server-dev & npm run web-dev",
     "start-dev": "npm run server-dev & webpack -w",
-    "seed": "node script/seed.js"
+    "seed": "node script/seed.js",
+    "test": "NODE_ENV='test' mocha \"./server/**/*.spec.js\" \"./client/**/*.spec.js\" \"./script/**/*.spec.js\" --require @babel/polyfill --require @babel/register --require ignore-styles --exit",
+    "watch": "NODE_ENV='test' mocha \"./server/**/*.spec.js\" \"./client/**/*.spec.js\" \"./script/**/*.spec.js\" --require @babel/polyfill --require @babel/register --require ignore-styles --watch"
   },
   "author": "",
   "license": "ISC",

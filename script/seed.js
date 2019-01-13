@@ -1,5 +1,4 @@
 'use strict';
-require('../server/secrets');
 const { User, db } = require('../server/db');
 
 async function seed() {

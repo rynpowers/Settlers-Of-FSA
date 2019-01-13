@@ -1,4 +1,3 @@
-if (process.env.NODE_ENV === 'development') require('./secrets');
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);
@@ -15,7 +14,7 @@ const port = process.env.PORT || 3000;
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || 'a wildly insecure secret',
     store: dbStore,
     resave: false,
     saveUninitialized: false,
