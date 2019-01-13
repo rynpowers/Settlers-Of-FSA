@@ -7,7 +7,7 @@ export const loginThunk = user => dispatch => {
 
 export const logoutThunk = user => async dispatch => {
   try {
-    await axios.post('/auth/logout', { user });
+    await axios.delete('/auth/logout', { user });
     dispatch(action.logout(user));
   } catch (err) {
     console.log(err);

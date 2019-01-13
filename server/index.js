@@ -8,9 +8,10 @@ const { db, User } = require('./db');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const dbStore = new SequelizeStore({ db: db });
+const io = require('socket.io')(server);
 const passport = require('passport');
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 app.use(
   session({
@@ -42,7 +43,17 @@ app.use(morgan('dev'));
 app.use(express.static(resolve(__dirname, '../public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/', require('./routes'));
+
+app.use(require('./routes'));
+
+['/auth', '/api'].forEach(path => {
+  app.use(path, (req, res, next) => {
+    const err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+  });
+});
+
 app.use('*', (req, res, next) => {
   res.sendFile(resolve(__dirname, '../public/index.html'));
 });
@@ -55,6 +66,9 @@ app.use((err, req, res, next) => {
 
 db.sync().then(() => {
   dbStore.sync().then(() => {
-    server.listen(port, () => console.log('listening on port:', port));
+    server.listen(port, () => {
+      require('./socket.js')(io);
+      console.log('listening on port:', port);
+    });
   });
 });

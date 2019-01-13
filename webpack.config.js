@@ -14,10 +14,8 @@ module.exports = env => {
     devServer: {
       contentBase: './public',
       proxy: [
-        {
-          context: '/',
-          target: 'http://localhost:3000',
-        },
+        { context: '/', target: 'http://localhost:3000' },
+        { context: '/socket.io', target: 'http://localhost:3000', ws: true },
       ],
     },
     module: {

@@ -8,8 +8,9 @@
     "build": "webpack --env prod & node server",
     "server-dev": "NODE_ENV=development nodemon --watch server ./server/index.js",
     "web-dev": "webpack-dev-server",
-    "start-dev": "npm run server-dev & npm run web-dev",
-    "seed": "node server/seed.js"
+    "start-wds": "npm run server-dev & npm run web-dev",
+    "start-dev": "npm run server-dev & webpack -w",
+    "seed": "node script/seed.js"
   },
   "author": "",
   "license": "ISC",
@@ -35,6 +36,8 @@
     "redux-thunk": "^2.3.0",
     "sass-loader": "^7.1.0",
     "sequelize": "^4.42.0",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0",
     "style-loader": "^0.23.1"
   },
   "devDependencies": {
@@ -42,6 +45,7 @@
     "@babel/preset-env": "^7.2.0",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.4",
+    "chalk": "^2.4.2",
     "mini-css-extract-plugin": "^0.5.0",
     "webpack": "^4.27.1",
     "webpack-cli": "^3.1.2",
