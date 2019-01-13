@@ -1,6 +1,6 @@
-import './LoginForm.scss';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './LoginForm.scss';
 
 const LoginLink = ({ path }) => {
   return path === '/signup' ? (

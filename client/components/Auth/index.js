@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withNavigation } from '../Navigation';
 import { loginThunk } from '../../store/actions';
 import Login from './Login';
 import LoginForm from './LoginForm';
@@ -32,7 +33,9 @@ class Auth extends Component {
   }
 }
 
-export default connect(
-  null,
-  { loginThunk }
-)(Auth);
+export default withNavigation(
+  connect(
+    null,
+    { loginThunk }
+  )(Auth)
+);

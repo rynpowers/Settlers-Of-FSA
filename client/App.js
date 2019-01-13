@@ -1,8 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { getMeThunk } from './store/actions';
-import { Auth, HomePage, PrivateRoute, AboutPage } from './components';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  Auth,
+  HomePage,
+  PrivateRoute,
+  AboutPage,
+  AuthRoute,
+} from './components';
+import { BrowserRouter as Router, Switch } from 'react-router-dom';
 
 class App extends Component {
   constructor(props) {
@@ -16,14 +22,14 @@ class App extends Component {
   loadRoutes() {
     return (
       <Router>
-        <div>
+        <Fragment>
           <Switch>
-            <Route path="/login" component={Auth} />
-            <Route path="/signup" component={Auth} />
+            <AuthRoute path="/login" component={Auth} />
+            <AuthRoute path="/signup" component={Auth} />
             <PrivateRoute path="/about" component={AboutPage} />
             <PrivateRoute path="/" component={HomePage} />
           </Switch>
-        </div>
+        </Fragment>
       </Router>
     );
   }
