@@ -14,7 +14,7 @@ notifications:
 install:
   - npm ci # faster, goes only from package-lock
 before_script:
-  - psql -c 'create database "settlers-of-catan-test";' -U postgres # remember to change this name if you change it elsewhere (e.g. package.json)
+  - psql -c 'create database "database-test";' -U postgres # remember to change this name if you change it elsewhere (e.g. package.json)
 
 before_deploy:
   - npm run build-client # make the bundle
@@ -24,4 +24,4 @@ deploy:
   provider: heroku
   app: rdp-boiler-plate-test # see README
   api_key:
-    secure: #HEROKU-API-KEY # see README
+    secure: 'qNafL6FNwIUfv19qX8xsu9S1jzwlWcqPCzYBR99IyEHGPgmzxtsCy6R9cHLyXDqz5Ow4iH8KIewc3MXGl7WfRqdpppE3fi6dTLUU7Hz+kicof95XkjXmoKff2+BNw2GDRB/2CZDIXBQ5AUgIWeeF+vBHSrQ75+Th1cOnDIpAEjRVuBarrXnj8C0G4IfTyNeuKBy+1g1+eYX5M1kya9La4IqVFMLuPDS0iAyEnrAgEUK8iWWistL7QHcYLIXsXySLENQV8iCw/JjVTNIYn9fchROHV0jGe+puR9b942Z6NLZaGQVzQbu27GRUguI1BrtRI6U18Xp5kmmrTySmRtuZ/Obo1lYtcgtl2+ti1oJ4jmO+9nL0oioq9QzB0N8/+5Pj7bf2ecbUe2MChSVv9bVjhGoxB5asUwRTq0P9XRYv3KL0rHPFlVg8DBQglFtrz+gnnzo7+RnFB1ul9UwT0IMgDeWaM2E7XbwQ0oCKc2ItZKY0RJkpij2NNKcqMm/gwDq6uRhciILWIst09PUv9AE459Ym/GGVDRyGuTni9uOZiHVEY5g6SW+5gvHHhLEAw1hDm6q2Mskn0u/tZyMcSw0EdN/bYEeVTU1ogqqPz2zb+haA1aCUIjw4GcLDyrjSzttAFnSvAj8plNU7h7lhSyM4xcmcLE9NpPIxZxMYWG6Xw1A=' # see README
