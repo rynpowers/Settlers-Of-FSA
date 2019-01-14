@@ -22,6 +22,6 @@ before_deploy:
 deploy:
   skip_cleanup: true # prevents travis from deleting the build
   provider: heroku
-  app: #YOUR-APP-NAME # see README
+  app: rdp-boiler-plate-test # see README
   api_key:
     secure: #HEROKU-API-KEY # see README
