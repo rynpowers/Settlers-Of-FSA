@@ -20,15 +20,11 @@ class Login extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
   render() {
-    const handleChange = this.handleChange;
-    const handleSubmit = this.handleSubmit;
-    const signUp = this.props.signUp;
     return this.props.children({
       ...this.props,
       ...this.state,
-      handleChange,
-      handleSubmit,
-      signUp,
+      handleChange: this.handleChange,
+      handleSubmit: this.handleSubmit,
     });
   }
 }

@@ -20,7 +20,7 @@ const LogoutLink = props => {
 const NavLink = props => {
   switch (props.match.path) {
     case '/login':
-      return <Link to="/signup">Sign in</Link>;
+      return <Link to="/signup">Sign up</Link>;
     case '/signup':
       return <Link to="/login">Log in</Link>;
     default:
