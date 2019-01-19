@@ -69,7 +69,7 @@ describe('<LoginLink>', () => {
     expect(wrapperLinkLogin.find('p').length).to.equal(1);
     expect(wrapperLinkSignup.find('p').length).to.equal(1);
   });
-  it('should recieve props', () => {
+  it('should receive props', () => {
     expect(wrapperLinkLogin.text()).to.contain("Don't have an account yet?");
     expect(wrapperLinkSignup.text()).to.contain('Already have an account?');
   });
