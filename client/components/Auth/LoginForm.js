@@ -2,14 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './LoginForm.scss';
 
-const LoginLink = ({ path }) => {
+export const LoginLink = ({ path }) => {
   return path === '/signup' ? (
     <p>
       Already have an account? <Link to="/login">Log in</Link>
     </p>
   ) : (
     <p>
-      Don't have an acount yet? <Link to="/signup">Create account</Link>
+      Don't have an account yet? <Link to="/signup">Create account</Link>
     </p>
   );
 };

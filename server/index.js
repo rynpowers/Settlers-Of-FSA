@@ -10,11 +10,11 @@ const dbStore = new SequelizeStore({ db: db });
 const io = require('socket.io')(server);
 const passport = require('passport');
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || 'a wildly insecure secret',
+    secret: process.env.SESSION_SECRET,
     store: dbStore,
     resave: false,
     saveUninitialized: false,

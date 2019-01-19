@@ -1,0 +1,4 @@
+./server/**/*.spec.js
+./client/**/*.spec.js
+./script/**/*.spec.js
+--require test/setup.js
