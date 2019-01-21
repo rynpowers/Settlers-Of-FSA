@@ -5,7 +5,7 @@ import { spy } from 'sinon';
 import Login from './Login';
 import LoginForm from './LoginForm';
 
-spy(Login.prototype, 'render');
+const render = spy(Login.prototype, 'render');
 
 const event = {
   email: { target: { name: 'email', value: 'ryn@email.com' } },
@@ -13,16 +13,19 @@ const event = {
 };
 
 const handleSubmit = spy();
-
-const wrapped = shallow(
-  <Login handleSubmit={handleSubmit}>{() => <LoginForm />}</Login>
-);
-
-const instance = wrapped.instance();
+let wrapped;
+let instance;
 
 describe('<Login />', () => {
+  beforeEach(() => {
+    wrapped = shallow(
+      <Login handleSubmit={handleSubmit}>{() => <LoginForm />}</Login>
+    );
+    instance = wrapped.instance();
+  });
+
   it('should render', () => {
-    expect(Login.prototype.render).to.have.property('callCount', 1);
+    expect(render.called).to.equal(true);
   });
 
   it('should render a <LoginForm /> component', () => {
@@ -41,6 +44,8 @@ describe('<Login />', () => {
   });
 
   it('should call handleSubmit from props when handleSubmit method called', () => {
+    instance.handleChange(event.email);
+    instance.handleChange(event.password);
     instance.handleSubmit({ preventDefault: () => {} });
     expect(
       handleSubmit.calledOnceWith({
