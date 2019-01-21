@@ -5,18 +5,16 @@
   "main": "index.js",
   "scripts": {
     "build-client": "webpack --env prod",
-    "build-client-watch": "webpack -w",
     "deploy": "script/deploy",
     "heroku-token": "script/encrypt-heroku-auth-token",
     "postinstall": "touch secrets.js",
     "start": "node server",
-    "build": "webpack --env prod & node server",
     "server-dev": "NODE_ENV=development nodemon --require ./secrets --watch server ./server/index.js",
     "start-wds": "npm run server-dev & webpack-dev-server",
     "start-dev": "npm run server-dev & webpack -w",
     "seed": "node script/seed.js",
-    "test": "NODE_ENV='test' mocha \"./server/**/*.spec.js\" \"./client/**/*.spec.js\" \"./script/**/*.spec.js\" --require @babel/polyfill --require @babel/register --require ignore-styles --exit",
-    "watch": "mocha --watch"
+    "test": "mocha --exit",
+    "test-watch": "mocha --watch"
   },
   "author": "",
   "license": "ISC",
@@ -58,6 +56,7 @@
     "jsdom": "^13.1.0",
     "mini-css-extract-plugin": "^0.5.0",
     "mocha": "^5.2.0",
+    "moxios": "^0.4.0",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
     "sinon": "^7.2.2",

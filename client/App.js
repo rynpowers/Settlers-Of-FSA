@@ -7,8 +7,13 @@ import {
   PrivateRoute,
   AboutPage,
   AuthRoute,
+  withNavigation,
 } from './components';
 import { BrowserRouter as Router, Switch } from 'react-router-dom';
+
+const AuthWithNavigation = withNavigation(Auth);
+const AboutPageWithNavigation = withNavigation(AboutPage);
+const HomePageWithNavigation = withNavigation(HomePage);
 
 class App extends Component {
   constructor(props) {
@@ -24,10 +29,10 @@ class App extends Component {
       <Router>
         <Fragment>
           <Switch>
-            <AuthRoute path="/login" component={Auth} />
-            <AuthRoute path="/signup" component={Auth} />
-            <PrivateRoute path="/about" component={AboutPage} />
-            <PrivateRoute path="/" component={HomePage} />
+            <AuthRoute path="/login" component={AuthWithNavigation} />
+            <AuthRoute path="/signup" component={AuthWithNavigation} />
+            <PrivateRoute path="/about" component={AboutPageWithNavigation} />
+            <PrivateRoute path="/" component={HomePageWithNavigation} />
           </Switch>
         </Fragment>
       </Router>

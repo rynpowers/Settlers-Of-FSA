@@ -2,9 +2,9 @@ import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import './Navigation.scss';
 import { logoutThunk } from '../store/actions';
-import store from '../store';
+import { store } from '../store';
 
-const LogoutLink = props => {
+export const LogoutLink = props => {
   return (
     <a
       onClick={() => {
@@ -17,18 +17,18 @@ const LogoutLink = props => {
   );
 };
 
-const NavLink = props => {
+export const NavLink = props => {
   switch (props.match.path) {
     case '/login':
       return <Link to="/signup">Sign up</Link>;
     case '/signup':
       return <Link to="/login">Log in</Link>;
     default:
-      return LogoutLink(props);
+      return <LogoutLink {...props} />;
   }
 };
 
-export const withNavigation = WrappedComponent => {
+const withNavigation = WrappedComponent => {
   return class Navigation extends Component {
     render() {
       return (

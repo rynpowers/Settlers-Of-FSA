@@ -1,14 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import Root from './store';
 import App from './App';
-import store from './store';
-import socket from './socket';
 import './sass/index.scss';
 
 ReactDOM.render(
-  <Provider store={store}>
+  <Root>
     <App />
-  </Provider>,
+  </Root>,
   document.getElementById('root')
 );
