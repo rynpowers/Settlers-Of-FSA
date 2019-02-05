@@ -14,7 +14,7 @@
     "start-dev": "npm run server-dev & webpack -w",
     "seed": "node script/seed.js",
     "seed-dev": "NODE_ENV=development node --require ./secrets script/seed.js",
-    "test": "NODE_ENV=test mocha --exit",
+    "test": "mocha --exit",
     "test-watch": "mocha --watch"
   },
   "author": "",
