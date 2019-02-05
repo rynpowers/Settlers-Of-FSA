@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { app } = require('../../');
+const app = require('../../');
 const request = require('supertest').agent(app);
 const { db } = require('../../db');
 

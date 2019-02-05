@@ -5,7 +5,7 @@ const { resolve } = require('path');
 const { db, User } = require('./db');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const dbStore = new SequelizeStore({ db: db });
+const dbStore = new SequelizeStore({ db });
 const socketio = require('socket.io');
 const passport = require('passport');
 
@@ -26,6 +26,7 @@ passport.deserializeUser((id, done) => {
 });
 
 const createApp = () => {
+  console.log('RUNNING CREATE APP');
   app.use(morgan('dev'));
 
   app.use(express.static(resolve(__dirname, '../public')));
@@ -85,6 +86,4 @@ const bootApp = async () => {
 if (require.main === module) bootApp();
 else createApp();
 
-module.exports = {
-  app,
-};
+module.exports = app;
