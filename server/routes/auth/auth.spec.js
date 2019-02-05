@@ -5,10 +5,6 @@ const { db } = require('../../db');
 
 const user = { email: 'ryn@email.com', password: 'password' };
 
-before(async () => {
-  await db.sync({ force: true });
-});
-
 describe('auth routes', () => {
   it('should fail to login a user without an account', async () => {
     await request

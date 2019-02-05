@@ -4,7 +4,6 @@ const { User } = require('../../db');
 
 router.post('/login', async (req, res, next) => {
   const { email, password } = req.body;
-  console.log('trying to log in');
   try {
     const user = await User.validate(email, password);
     req.login(user, err => (err ? next(err) : res.json(user.sanitize())));

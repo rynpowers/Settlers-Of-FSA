@@ -1,4 +1,7 @@
-require('../secrets');
+const chalk = require('chalk');
+process.env.NODE_ENV = 'test';
+
+console.log(chalk.yellow('SETTING UP ENVIORNMENT FOR TESTING'));
 
 // setup babel
 require('@babel/polyfill');

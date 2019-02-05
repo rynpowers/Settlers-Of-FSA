@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const chalk = require('chalk');
 const morgan = require('morgan');
 const { resolve } = require('path');
 const { db, User } = require('./db');
@@ -25,50 +26,48 @@ passport.deserializeUser((id, done) => {
     .catch(done);
 });
 
-const createApp = () => {
-  app.use(morgan('dev'));
+process.env.NODE_ENV === 'development' && app.use(morgan('dev'));
 
-  app.use(express.static(resolve(__dirname, '../public')));
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+app.use(express.static(resolve(__dirname, '../public')));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET || 'my best friend is Cody',
-      store: dbStore,
-      resave: false,
-      saveUninitialized: false,
-    })
-  );
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'my best friend is Cody',
+    store: dbStore,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
-  app.use(passport.initialize());
-  app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
-  app.use(require('./routes'));
+app.use(require('./routes'));
 
-  ['/auth', '/api'].forEach(path => {
-    app.use(path, (req, res, next) => {
-      const err = new Error('Not Found');
-      err.status = 404;
-      next(err);
-    });
+['/auth', '/api'].forEach(path => {
+  app.use(path, (req, res, next) => {
+    const err = new Error('Not Found');
+    err.status = 404;
+    next(err);
   });
+});
 
-  app.use('*', (req, res, next) => {
-    res.sendFile(resolve(__dirname, '../public/index.html'));
-  });
+app.use('*', (req, res, next) => {
+  res.sendFile(resolve(__dirname, '../public/index.html'));
+});
 
-  app.use((err, req, res, next) => {
-    // console.log(err);
-    // console.error(err.stack);
-    res.status(err.status || 500).send(err.message || 'Internal Server Error');
-  });
-};
+app.use((err, req, res, next) => {
+  // console.log(err);
+  // console.error(err.stack);
+  res.status(err.status || 500).send(err.message || 'Internal Server Error');
+});
 
 const startListening = () => {
   // start listening (and create a 'server' object representing our server)
   const server = app.listen(PORT, () =>
-    console.log(`Mixing it up on port ${PORT}`)
+    console.log(chalk.green(`listening on port: ${PORT}`))
   );
   // set up our socket control center
   const io = socketio(server);
@@ -78,16 +77,9 @@ const startListening = () => {
 const bootApp = async () => {
   await dbStore.sync();
   await db.sync();
-  await createApp();
   startListening();
 };
 
-if (require.main === module) {
-  bootApp();
-  console.log('RUNNING BOOT');
-} else {
-  createApp();
-  console.log('CREATING APP');
-}
+if (require.main === module) bootApp();
 
 module.exports = app;
