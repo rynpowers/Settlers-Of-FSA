@@ -1,28 +1,15 @@
 const express = require('express');
 const app = express();
-const server = require('http').Server(app);
 const morgan = require('morgan');
 const { resolve } = require('path');
 const { db, User } = require('./db');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const dbStore = new SequelizeStore({ db: db });
-const io = require('socket.io')(server);
+const dbStore = new SequelizeStore({ db });
+const socketio = require('socket.io');
 const passport = require('passport');
 
-const port = process.env.PORT;
-
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    store: dbStore,
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-
-app.use(passport.initialize());
-app.use(passport.session());
+const PORT = process.env.PORT || 3000;
 
 passport.serializeUser((user, done) => {
   try {
@@ -38,42 +25,69 @@ passport.deserializeUser((id, done) => {
     .catch(done);
 });
 
-process.env.NODE_ENV !== 'test' && app.use(morgan('dev'));
-app.use(express.static(resolve(__dirname, '../public')));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const createApp = () => {
+  app.use(morgan('dev'));
 
-app.use(require('./routes'));
+  app.use(express.static(resolve(__dirname, '../public')));
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
-['/auth', '/api'].forEach(path => {
-  app.use(path, (req, res, next) => {
-    const err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET || 'my best friend is Cody',
+      store: dbStore,
+      resave: false,
+      saveUninitialized: false,
+    })
+  );
+
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  app.use(require('./routes'));
+
+  ['/auth', '/api'].forEach(path => {
+    app.use(path, (req, res, next) => {
+      const err = new Error('Not Found');
+      err.status = 404;
+      next(err);
+    });
   });
-});
 
-app.use('*', (req, res, next) => {
-  res.sendFile(resolve(__dirname, '../public/index.html'));
-});
+  app.use('*', (req, res, next) => {
+    res.sendFile(resolve(__dirname, '../public/index.html'));
+  });
 
-app.use((err, req, res, next) => {
-  // console.log(err);
-  // console.error(err.stack);
-  res.status(err.status || 500).send(err.message || 'Internal Server Error');
-});
+  app.use((err, req, res, next) => {
+    // console.log(err);
+    // console.error(err.stack);
+    res.status(err.status || 500).send(err.message || 'Internal Server Error');
+  });
+};
+
+const startListening = () => {
+  // start listening (and create a 'server' object representing our server)
+  const server = app.listen(PORT, () =>
+    console.log(`Mixing it up on port ${PORT}`)
+  );
+  // set up our socket control center
+  const io = socketio(server);
+  require('./socket')(io);
+};
 
 const bootApp = async () => {
-  await db.sync();
   await dbStore.sync();
-  server.listen(port, () => {
-    require('./socket.js')(io);
-    console.log('listening on port:', port);
-  });
+  await db.sync();
+  await createApp();
+  startListening();
 };
 
-if (require.main === module) bootApp();
+if (require.main === module) {
+  bootApp();
+  console.log('RUNNING BOOT');
+} else {
+  createApp();
+  console.log('CREATING APP');
+}
 
-module.exports = {
-  app,
-};
+module.exports = app;
