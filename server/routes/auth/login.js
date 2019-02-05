@@ -26,12 +26,12 @@ router.post('/signup', async (req, res, next) => {
 
 router.delete('/logout', async (req, res, next) => {
   await req.logout();
-  await req.session.destroy();
   res.sendStatus(204);
 });
 
 router.get('/me', (req, res, next) => {
-  res.json(req.user);
+  console.log(req.user, req.session.passport);
+  req.user ? res.json(req.user) : res.sendStatus(204);
 });
 
 module.exports = router;
