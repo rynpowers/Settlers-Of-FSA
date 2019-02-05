@@ -26,7 +26,6 @@ passport.deserializeUser((id, done) => {
 });
 
 const createApp = () => {
-  console.log('RUNNING CREATE APP');
   app.use(morgan('dev'));
 
   app.use(express.static(resolve(__dirname, '../public')));
@@ -35,7 +34,7 @@ const createApp = () => {
 
   app.use(
     session({
-      secret: process.env.SESSION_SECRET,
+      secret: process.env.SESSION_SECRET || 'my best friend is Cody',
       store: dbStore,
       resave: false,
       saveUninitialized: false,
@@ -83,7 +82,12 @@ const bootApp = async () => {
   startListening();
 };
 
-if (require.main === module) bootApp();
-else createApp();
+if (require.main === module) {
+  bootApp();
+  console.log('RUNNING BOOT');
+} else {
+  createApp();
+  console.log('CREATING APP');
+}
 
 module.exports = app;
