@@ -30,7 +30,6 @@ router.delete('/logout', async (req, res, next) => {
 });
 
 router.get('/me', (req, res, next) => {
-  console.log(req.user, req.session.passport);
   req.user ? res.json(req.user) : res.sendStatus(204);
 });
 
