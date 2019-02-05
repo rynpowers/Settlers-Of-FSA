@@ -34,11 +34,11 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((id, done) => {
   User.findByPk(id)
-    .then(user => done(null, user))
+    .then(user => done(null, user.sanitize()))
     .catch(done);
 });
 
-app.use(morgan('dev'));
+process.env.NODE_ENV !== 'test' && app.use(morgan('dev'));
 app.use(express.static(resolve(__dirname, '../public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -63,11 +63,17 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).send(err.message || 'Internal Server Error');
 });
 
-db.sync().then(() => {
-  dbStore.sync().then(() => {
-    server.listen(port, () => {
-      require('./socket.js')(io);
-      console.log('listening on port:', port);
-    });
+const bootApp = async () => {
+  await db.sync();
+  await dbStore.sync();
+  server.listen(port, () => {
+    require('./socket.js')(io);
+    console.log('listening on port:', port);
   });
-});
+};
+
+if (require.main === module) bootApp();
+
+module.exports = {
+  app,
+};

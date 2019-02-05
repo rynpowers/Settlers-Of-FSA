@@ -13,6 +13,9 @@ const User = db.define('users', {
   password: {
     type: Sequelize.STRING,
   },
+  googleId: {
+    type: Sequelize.STRING,
+  },
 });
 
 User.prototype.sanitize = function() {
@@ -20,11 +23,13 @@ User.prototype.sanitize = function() {
   return { email, id };
 };
 
-User.beforeCreate(user =>
-  bcrypt.hash(user.password, 10).then(hash => {
-    user.password = hash;
-  })
-);
+User.beforeCreate(user => {
+  if (user.password) {
+    bcrypt.hash(user.password, 10).then(hash => {
+      user.password = hash;
+    });
+  }
+});
 
 User.validate = (email, password) =>
   User.findOne({ where: { email } }).then(user =>
