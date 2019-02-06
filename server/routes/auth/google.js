@@ -38,7 +38,7 @@ router.get(
   '/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   function(req, res, next) {
-    // Successful authentication, redirect home.
+    console.log('hitting route');
     res.redirect('/');
   }
 );
