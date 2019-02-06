@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import './LoginForm.scss';
 
 export const LoginLink = ({ path }) => {
@@ -35,6 +36,9 @@ const LoginForm = ({ handleSubmit, handleChange, password, email, path }) => {
       <button type="submit">
         {path === '/signup' ? 'Create Account' : 'Log in'}
       </button>
+      <a href="/auth/google" className="google-login" type="submit">
+        Login With Google
+      </a>
     </form>
   );
 };

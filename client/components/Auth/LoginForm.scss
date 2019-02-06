@@ -10,7 +10,8 @@
   box-shadow: var(--box-shadow);
 
   & input,
-  button {
+  button,
+  .google-login {
     font-size: 1.6rem;
     height: 4rem;
     width: 100%;
@@ -19,7 +20,8 @@
     outline: none;
   }
 
-  & button {
+  & button,
+  .google-login {
     cursor: pointer;
     background-color: none;
     background-color: var(--color-green-dark);
@@ -41,5 +43,17 @@
     letter-spacing: 0.05rem;
     padding-top: 0.5rem;
     align-self: flex-end;
+  }
+
+  & .google-login {
+    @include flex-column-center();
+    justify-content: center;
+    text-decoration: none;
+    background-color: var(--color-red-dark);
+    transition: background-color var(--hover);
+  }
+
+  & .google-login:hover {
+    background-color: var(--color-red);
   }
 }
