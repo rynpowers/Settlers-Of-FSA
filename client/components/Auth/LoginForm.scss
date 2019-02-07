@@ -32,6 +32,10 @@
     background-color: var(--color-grey-light);
   }
 
+  & .error {
+    background-color: var(--color-red);
+  }
+
   & button:hover {
     background-color: var(--color-green);
   }

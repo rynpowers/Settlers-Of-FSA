@@ -14,10 +14,18 @@ export const LoginLink = ({ path }) => {
   );
 };
 
-const LoginForm = ({ handleSubmit, handleChange, password, email, path }) => {
+const LoginForm = ({
+  handleSubmit,
+  handleChange,
+  password,
+  email,
+  path,
+  error,
+}) => {
   return (
     <form onSubmit={handleSubmit} className="login-form">
       <input
+        className={error && 'error'}
         onChange={handleChange}
         name="email"
         type="email"
@@ -25,6 +33,7 @@ const LoginForm = ({ handleSubmit, handleChange, password, email, path }) => {
         value={email}
       />
       <input
+        className={error && 'error'}
         onChange={handleChange}
         name="password"
         type="password"
