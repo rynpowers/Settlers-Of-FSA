@@ -1,7 +1,6 @@
 const { expect } = require('chai');
 const app = require('../../');
 const request = require('supertest').agent(app);
-const { db } = require('../../db');
 
 const user = { email: 'ryn@email.com', password: 'password' };
 
