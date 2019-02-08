@@ -12,22 +12,18 @@ class Login extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.onLoginFail = this.onLoginFail.bind(this);
-    this.onLoginSuccess = this.onLoginSuccess.bind(this);
   }
   handleSubmit(e) {
     e.preventDefault();
     const { email, password } = this.state;
-    const { onLoginFail, onLoginSuccess } = this;
-    this.props.handleSubmit({ email, password, onLoginSuccess, onLoginFail });
+    const { onLoginFail } = this;
+    this.props.handleSubmit({ email, password, onLoginFail });
   }
 
   handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+    this.setState({ [e.target.name]: e.target.value, error: '' });
   }
 
-  onLoginSuccess() {
-    this.setState({ email: '', password: '' });
-  }
   onLoginFail(error) {
     this.setState({ error });
   }

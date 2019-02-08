@@ -4,6 +4,7 @@ const { User } = require('../../db');
 
 router.post('/login', async (req, res, next) => {
   const { email, password } = req.body;
+
   try {
     const user = await User.validate(email, password);
     req.login(user, err => (err ? next(err) : res.json(user.sanitize())));
@@ -29,7 +30,8 @@ router.delete('/logout', async (req, res, next) => {
 });
 
 router.get('/me', (req, res, next) => {
-  req.user ? res.json(req.user) : res.sendStatus(204);
+  console.log('calling get/me');
+  req.user ? res.json(req.user) : res.json({});
 });
 
 module.exports = router;

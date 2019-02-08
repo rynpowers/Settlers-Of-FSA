@@ -11,12 +11,11 @@ class Auth extends Component {
     this.submit = this.submit.bind(this);
   }
 
-  async submit({ email, password, onLoginSuccess, onLoginFail }) {
+  async submit({ email, password, onLoginFail }) {
     const { path } = this.props.match;
     try {
       const { data } = await axios.post(`/auth${path}`, { email, password });
       this.props.loginThunk(data);
-      onLoginSuccess();
     } catch (err) {
       onLoginFail('Invalid email or password');
     }
