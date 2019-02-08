@@ -51,6 +51,7 @@ describe('<Login />', () => {
       handleSubmit.calledOnceWith({
         email: event.email.target.value,
         password: event.password.target.value,
+        onLoginFail: instance.onLoginFail,
       })
     ).to.equal(true);
   });
