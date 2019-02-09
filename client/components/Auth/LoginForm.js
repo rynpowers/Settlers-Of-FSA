@@ -30,7 +30,7 @@ const LoginForm = ({
         onChange={handleChange}
         name="email"
         type="email"
-        placeholder="Enter your email"
+        placeholder={error ? error : 'Enter your email'}
         value={email}
       />
       <input
@@ -39,7 +39,7 @@ const LoginForm = ({
         name="password"
         type="password"
         value={password}
-        placeholder="password"
+        placeholder={error ? error : 'password'}
       />
       <LoginLink path={path} />
       <button type="submit">
