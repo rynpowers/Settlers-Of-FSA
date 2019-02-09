@@ -23,8 +23,8 @@ class Login extends Component {
     this.setState({ [e.target.name]: e.target.value, error: '' });
   }
 
-  onLoginFail(error) {
-    this.setState({ error });
+  onLoginFail() {
+    this.setState({ error: 'Incorrect email or password' });
   }
 
   render() {
