@@ -26,7 +26,6 @@ export const logoutThunk = user => async dispatch => {
 
 export const getMeThunk = fn => async dispatch => {
   try {
-    console.log('TRYING TO CALL AUTH/ME');
     const { data } = await axios.get('/auth/me');
     dispatch(action.login(data || {}));
     fn();
