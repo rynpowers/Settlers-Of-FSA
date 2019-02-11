@@ -14,7 +14,7 @@ notifications:
 install:
   - npm ci # faster, goes only from package-lock
 before_script:
-  - psql -c 'create database "database-test";' -U postgres # remember to change this name if you change it elsewhere (e.g. package.json)
+  - psql -c 'create database "Settlers-Of-FSA-test";' -U postgres # remember to change this name if you change it elsewhere (e.g. package.json)
 
 before_deploy:
   - npm run build-client # make the bundle
@@ -22,6 +22,6 @@ before_deploy:
 deploy:
   skip_cleanup: true # prevents travis from deleting the build
   provider: heroku
-  app: rdp-boiler-plate-test # see README
+  app: settlers-of-fsa # see README
   api_key:
-    secure: 'qNafL6FNwIUfv19qX8xsu9S1jzwlWcqPCzYBR99IyEHGPgmzxtsCy6R9cHLyXDqz5Ow4iH8KIewc3MXGl7WfRqdpppE3fi6dTLUU7Hz+kicof95XkjXmoKff2+BNw2GDRB/2CZDIXBQ5AUgIWeeF+vBHSrQ75+Th1cOnDIpAEjRVuBarrXnj8C0G4IfTyNeuKBy+1g1+eYX5M1kya9La4IqVFMLuPDS0iAyEnrAgEUK8iWWistL7QHcYLIXsXySLENQV8iCw/JjVTNIYn9fchROHV0jGe+puR9b942Z6NLZaGQVzQbu27GRUguI1BrtRI6U18Xp5kmmrTySmRtuZ/Obo1lYtcgtl2+ti1oJ4jmO+9nL0oioq9QzB0N8/+5Pj7bf2ecbUe2MChSVv9bVjhGoxB5asUwRTq0P9XRYv3KL0rHPFlVg8DBQglFtrz+gnnzo7+RnFB1ul9UwT0IMgDeWaM2E7XbwQ0oCKc2ItZKY0RJkpij2NNKcqMm/gwDq6uRhciILWIst09PUv9AE459Ym/GGVDRyGuTni9uOZiHVEY5g6SW+5gvHHhLEAw1hDm6q2Mskn0u/tZyMcSw0EdN/bYEeVTU1ogqqPz2zb+haA1aCUIjw4GcLDyrjSzttAFnSvAj8plNU7h7lhSyM4xcmcLE9NpPIxZxMYWG6Xw1A=' # see README
+    secure: 'ik/t0sEA4vXaX78DDCzI8bxt12Rw+AquVkXb2geqMPL1nbsLp3QIiDWyy5eC5U40l/FWFXxW+cBguPWm9mfkhQi1cMpt24cf+Ug4QEoy1FNatYdEjD4Zq2STMhJL5ZcXGABNFiBwxJiPYY5BCiTXi7RDg7uYDyMXiErBZTMcWJEiOorBnBIyO+689gD1rfnMVG3rLqv2IbK//XQRKt0A99/3YjQcvqVPedAiIqUjCSjUMvyRElW5p5LVVPtZaLny2KUXH2ayEggfmcyqneSMwzFzCOK8g30E0lr42dZ7n+oJ+EslRt2tGe3hr3n5hlPVC+QIXlB+DXSuC3zBXDktGRDaIyIXOykNokZhiCy66gezpfpg2EG2NHXe0Ba/+6SGx8eCu6OekLUv9GfqOU6ha3clyCrf7O+BecjNN7MIFnbTKkIu2EvxxfSumH+gDZ7B+f4nbgu4RmsA2pzenAe7i2AGUMC83PPK3lS+9+vlALpix5TGCWnOOmAaBUCUOmyZEHVSsJ9ObyhNxffM5Nl+E75FHfg3UKeKXo3KaSw8o/Prkb1fCeVLLi/GKgZgahVD39uQYLSK4CyqQayU+B8HDFbb2PyLtz7FK730JZGpARlR2IfRT2Q4SIlEWhKFs4suo8+JHHdPRtYUFGOl4PLTDA+EUxASvNgNlDC87Yv1Du0=' # see README

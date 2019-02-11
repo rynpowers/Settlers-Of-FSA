@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const chalk = require('chalk');
 const DATABASE_URL =
-  process.env.DATABASE_URL || 'postgres://localhost:5432/database-test';
+  process.env.DATABASE_URL || 'postgres://localhost:5432/Settlers-Of-FSA-test';
 
 const db = new Sequelize(DATABASE_URL, { logging: false });
 
