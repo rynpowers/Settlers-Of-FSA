@@ -8,6 +8,7 @@ import {
   Lobby,
   AuthRoute,
   withNavigation,
+  Game,
 } from './components';
 import { BrowserRouter as Router, Switch } from 'react-router-dom';
 
@@ -31,6 +32,7 @@ class App extends Component {
           <Switch>
             <AuthRoute path="/login" component={AuthWithNavigation} />
             <AuthRoute path="/signup" component={AuthWithNavigation} />
+            <PrivateRoute path="/game" component={Game} />
             <PrivateRoute path="/lobby" component={LobbyWithNavigation} />
             <PrivateRoute path="/" component={HomePageWithNavigation} />
           </Switch>
