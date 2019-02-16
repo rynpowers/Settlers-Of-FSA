@@ -16,9 +16,9 @@ module.exports = io => {
     });
 
     socket.on('updateBoard', (action, room) => {
-      board = action.board;
-      console.log('emitting dispatch');
-      io.to(room).emit('dispatch', { type: action.type, board });
+      // board = action.board;
+      // console.log('emitting dispatch');
+      // io.to(room).emit('dispatch', { type: action.type, board });
     });
 
     socket.on('disconnect', () => {

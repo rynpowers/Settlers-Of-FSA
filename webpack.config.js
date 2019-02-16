@@ -3,7 +3,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = env => {
   return {
-    entry: './client',
+    entry: ['@babel/polyfill', './client/index.js'],
     mode: env ? 'production' : 'development',
     output: {
       path: resolve(__dirname, 'public'),
