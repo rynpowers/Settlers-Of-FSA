@@ -1,26 +1,8 @@
 @import '../sass/mixins.scss';
 
-.form-container {
+.game-container {
   @include flex-center();
+  background-color: var(--color-black);
   height: 100%;
   width: 100%;
-
-  & form {
-    @include flex-center();
-    background-color: grey;
-    height: 20rem;
-    width: 30rem;
-  }
-
-  & form.white {
-    background-color: white;
-  }
-
-  & form.blue {
-    background-color: blue;
-  }
-
-  & form.red {
-    background-color: red;
-  }
 }
