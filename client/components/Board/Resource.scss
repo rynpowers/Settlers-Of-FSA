@@ -5,7 +5,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    background-color: #eccc68;
+    background-color: var(--color-sand);
     height: 9.6rem;
     width: 8.2rem;
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
@@ -60,37 +60,37 @@
     border-radius: 50%;
     cursor: pointer;
     &-1 {
-      top: 0;
+      top: -1.5%;
       left: 50%;
       transform: translateX(-50%);
     }
 
     &-2 {
-      top: 28%;
+      top: 26.5%;
       right: 0;
       transform: translateY(-50%);
     }
 
     &-3 {
-      bottom: 28%;
+      bottom: 26.5%;
       right: 0;
       transform: translateY(50%);
     }
 
     &-4 {
-      bottom: 0;
+      bottom: -1.5%;
       left: 50%;
       transform: translateX(-50%);
     }
 
     &-5 {
-      bottom: 28%;
+      bottom: 26.5%;
       left: 0;
       transform: translateY(50%);
     }
 
     &-6 {
-      top: 28%;
+      top: 26.5%;
       left: 0;
       transform: translateY(-50%);
     }

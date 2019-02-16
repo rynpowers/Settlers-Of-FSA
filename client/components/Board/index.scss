@@ -1,0 +1,15 @@
+@import '../../sass/mixins.scss';
+
+.board-container {
+  background-image: url('../../../public/images/GameBoard.png');
+  width: 54.7rem;
+  transform: scale(1.2);
+  background-repeat: no-repeat;
+  &-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform: scaleX(1.12) scaleY(1.05) translateX(-0.1%) translateY(-0.6%);
+  }
+}

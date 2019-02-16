@@ -2,6 +2,7 @@
 
 .game-container {
   @include flex-center();
+  background-color: var(--color-black);
   height: 100%;
   width: 100%;
 }
