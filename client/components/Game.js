@@ -1,21 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import socket from '../socket';
-import { store } from '../store';
 import { setBoardThunk } from '../store/actions';
-import Resource from './Resource';
+import Board from './Board';
+import { setupGameSockets } from '../socket';
 import './Game.scss';
 
 class Game extends Component {
   componentDidMount() {
-    socket.on('connect', () => socket.emit('join-game', this.props.game));
-    socket.on('dispatch', action => store.dispatch(action));
+    setupGameSockets(this.props);
   }
 
   render() {
     return (
       <div className="game-container">
-        <Resource />
+        <Board />
       </div>
     );
   }
