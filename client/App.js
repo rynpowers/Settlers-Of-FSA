@@ -5,14 +5,14 @@ import {
   Auth,
   HomePage,
   PrivateRoute,
-  AboutPage,
+  Lobby,
   AuthRoute,
   withNavigation,
 } from './components';
 import { BrowserRouter as Router, Switch } from 'react-router-dom';
 
 const AuthWithNavigation = withNavigation(Auth);
-const AboutPageWithNavigation = withNavigation(AboutPage);
+const LobbyWithNavigation = withNavigation(Lobby);
 const HomePageWithNavigation = withNavigation(HomePage);
 
 class App extends Component {
@@ -31,7 +31,7 @@ class App extends Component {
           <Switch>
             <AuthRoute path="/login" component={AuthWithNavigation} />
             <AuthRoute path="/signup" component={AuthWithNavigation} />
-            <PrivateRoute path="/about" component={AboutPageWithNavigation} />
+            <PrivateRoute path="/lobby" component={LobbyWithNavigation} />
             <PrivateRoute path="/" component={HomePageWithNavigation} />
           </Switch>
         </Fragment>

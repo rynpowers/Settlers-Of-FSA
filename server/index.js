@@ -20,10 +20,14 @@ passport.serializeUser((user, done) => {
   }
 });
 
-passport.deserializeUser((id, done) => {
-  User.findByPk(id)
-    .then(user => done(null, user.sanitize()))
-    .catch(done);
+passport.deserializeUser(async (id, done) => {
+  console.log('deserializing');
+  try {
+    const user = await User.findByPk(id);
+    done(null, user.sanitize());
+  } catch (err) {
+    done(err);
+  }
 });
 
 process.env.NODE_ENV === 'development' && app.use(morgan('dev'));

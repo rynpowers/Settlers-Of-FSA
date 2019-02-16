@@ -38,7 +38,7 @@ const withNavigation = WrappedComponent => {
             <nav>
               <NavLink {...this.props} />
               <Link to="/">Home</Link>
-              <Link to="/about">About</Link>
+              <Link to="/lobby">Lobby</Link>
             </nav>
           </div>
           <WrappedComponent {...this.props} />
