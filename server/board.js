@@ -1,56 +1,85 @@
-const createRow = (board, i, even, left, right, offset) => {
-  if (i % 2 === even) {
-    board.roads[`${i}-${i + offset}`] = {
-      player: null,
-      settlements: [i, i + offset],
+module.exports = () => {
+  const board = {
+    resources: {},
+    settlements: {},
+    roads: {},
+  };
+
+  const diceValue = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12];
+
+  const resources = [
+    'forest',
+    'forest',
+    'forest',
+    'forest',
+    'hill',
+    'hill',
+    'hill',
+    'mountain',
+    'mountain',
+    'mountain',
+    'pasture',
+    'pasture',
+    'pasture',
+    'pasture',
+    'field',
+    'field',
+    'field',
+    'field',
+    'dessert',
+  ];
+
+  const createSettlements = (t, b) => {
+    const arr = [t, t + 1, t + 2, b, b + 1, b + 2];
+    arr.forEach(item => {
+      board.settlements[item] = { player: null, roads: [], build: 0 };
+    });
+    return arr;
+  };
+  const createRoads = (t, b) => {
+    const arr = [
+      `${t}-${t + 1}`,
+      `${t + 1}-${t + 2}`,
+      `${b}-${b + 1}`,
+      `${b + 1}-${b + 2}`,
+      `${t}-${b}`,
+      `${t + 2}-${b + 2}`,
+    ];
+
+    arr.forEach(road => {
+      board.roads[road] = { player: null, settlements: [] };
+    });
+
+    return arr;
+  };
+
+  const rows = [[1, 9], [8, 18], [17, 28], [29, 39], [40, 48]];
+  let [t, b] = rows[0];
+
+  for (let i = 1; i < 20; i++) {
+    const index = Math.floor(Math.random() * resources.length);
+    const diceIndex = Math.floor(Math.random() * diceValue.length);
+    const type = resources.splice(index, 1)[0];
+    board.resources[i] = {
+      type,
+      diveValue: type !== 'dessert' ? diceValue.splice(diceIndex, 1)[0] : null,
+      hasRobber: type === 'dessert',
+      settlements: createSettlements(t, b),
+      roads: createRoads(t, b),
     };
-    board.settlements[i].roads.push(`${i}-${i + offset}`);
-    board.settlements[i + offset].roads.push(`${i}-${i + offset}`);
+    t += 2;
+    b += 2;
+    if (t === 7) [t, b] = rows[1];
+    else if (t === 16) [t, b] = rows[2];
+    else if (t === 27) [t, b] = rows[3];
+    else if (t === 37) [t, b] = rows[4];
   }
-  if (i < right) {
-    board.settlements[i].roads.push(`${i}-${i + 1}`);
-    board.roads[`${i}-${i + 1}`] = { player: null, settlements: [i, i + 1] };
-  }
-  i > left && board.settlements[i].roads.push(`${i - 1}-${i}`);
+
+  Object.keys(board.roads).forEach(road => {
+    const settlements = road.split('-');
+    board.settlements[settlements[0]].roads.push(road);
+    board.settlements[settlements[1]].roads.push(road);
+    board.roads[road].settlements = settlements;
+  });
+  return board;
 };
-
-const board = {
-  Resources: {
-    1: { type: 'forrest', settlements: [1, 2, 3, 9, 10, 11] },
-    2: { type: 'field', settlements: [3, 4, 5, 11, 12, 13] },
-    3: { type: 'mountain', settlements: [5, 6, 7, 13, 14, 15] },
-    4: { type: 'hill', settlements: [8, 9, 10, 18, 19, 20] },
-    5: { type: 'pasture', settlements: [10, 11, 12, 20, 21, 22] },
-    6: { type: 'hill', settlements: [12, 13, 14, 22, 23, 24] },
-    7: { type: 'mountain', settlements: [14, 15, 16, 24, 25, 26] },
-    8: { type: 'mountain', settlements: [17, 18, 19, 28, 29, 30] },
-    9: { type: 'pasture', settlements: [19, 20, 21, 30, 31, 32] },
-    10: { type: 'desert', settlements: [21, 22, 23, 32, 33, 34] },
-    11: { type: 'field', settlements: [23, 24, 25, 34, 35, 36] },
-    12: { type: 'pasture', settlements: [25, 26, 28, 36, 37, 38] },
-    13: { type: 'hill', settlements: [29, 30, 31, 39, 40, 41] },
-    14: { type: 'forrest', settlements: [31, 32, 33, 41, 42, 43] },
-    15: { type: 'field', settlements: [33, 34, 35, 43, 44, 45] },
-    16: { type: 'forrest', settlements: [35, 36, 37, 45, 46, 47] },
-    17: { type: 'field', settlements: [40, 41, 42, 48, 49, 50] },
-    18: { type: 'forrest', settlements: [42, 43, 44, 50, 51, 52] },
-    19: { type: 'pasture', settlements: [44, 45, 46, 52, 53, 54] },
-  },
-  settlements: {},
-  roads: {},
-};
-
-for (let j = 1; j < 55; j++) {
-  board.settlements[j] = { player: null, roads: [] };
-}
-
-for (let i = 1; i <= 54; i++) {
-  if (i < 8) createRow(board, i, 1, 1, 7, 8);
-  else if (i < 17) createRow(board, i, 0, 8, 16, 10);
-  else if (i < 28) createRow(board, i, 1, 17, 27, 11);
-  else if (i < 39) createRow(board, i, 1, 28, 38, 10);
-  else if (i < 48) createRow(board, i, 0, 39, 47, 8);
-  else createRow(board, i, 2, 48, 54);
-}
-
-module.exports = JSON.stringify(board);
