@@ -7,8 +7,8 @@ const ResourceList = ({ num, options, transform }) => {
       {Array(num)
         .fill(null)
         .map((item, index) => {
-          const { style } = options[index];
-          return <Resource style={style} />;
+          const { style, id } = options[index];
+          return <Resource key={id} id={id} style={style} />;
         })}
     </div>
   );

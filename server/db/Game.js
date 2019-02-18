@@ -17,7 +17,7 @@ const Game = db.define('games', {
   },
   board: {
     type: Sequelize.TEXT,
-    defaultValue: board,
+    defaultValue: JSON.stringify(board()),
   },
 });
 
