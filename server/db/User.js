@@ -24,7 +24,9 @@ User.prototype.sanitize = function() {
 };
 
 User.beforeCreate(user => {
-  if (user.password) {
+  if (!user.password && !user.googleId)
+    throw new Error('invalid credentails provided');
+  else if (user.password) {
     return bcrypt.hash(user.password, 10).then(hash => {
       user.password = hash;
     });

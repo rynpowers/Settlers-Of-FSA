@@ -1,18 +1,13 @@
 const chalk = require('chalk');
-const GameCenter = require('./game');
-
-let games = new GameCenter();
+const gameCache = require('./cache');
 
 module.exports = io => {
   io.on('connection', socket => {
     console.log(chalk.blue(`${socket.id} is connected`));
 
-    socket.emit('rejoin');
-
     socket.on('join-game', room => {
       socket.join(room);
-      games.sendGame(io, socket, room);
-      console.log(`${socket.id} is joining room: ${room}`);
+      console.log(chalk.yellow(`${socket.id} is joining room:`, room));
     });
 
     socket.on('updateBoard', (action, room) => {

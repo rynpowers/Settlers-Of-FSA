@@ -86,4 +86,4 @@ const bootApp = async () => {
 
 if (require.main === module) bootApp();
 
-module.exports = app;
+module.exports = { app, dbStore };

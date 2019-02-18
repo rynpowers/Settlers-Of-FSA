@@ -1,8 +1,10 @@
 'use strict';
 const { User, db, Game } = require('../server/db');
+const { dbStore } = require('../server');
 
 async function seed() {
   await db.sync({ force: true });
+  await dbStore.sync();
   console.log('db synced!');
 
   const users = await Promise.all([
