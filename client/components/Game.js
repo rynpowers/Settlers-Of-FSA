@@ -8,6 +8,7 @@ import './Game.scss';
 
 class Game extends Component {
   componentDidMount() {
+    console.log('hello');
     socket.emit('join-game', this.props.game);
     socket.on('connect', () => socket.emit('join-game', this.props.game));
     socket.on('dispatch', action => store.dispatch(action));
