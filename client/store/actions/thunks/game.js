@@ -1,8 +1,13 @@
+import axios from 'axios';
 import * as action from '../actionCreators';
-import socket from '../../../socket';
-
-export const joinGameThunk = (game, fn) => dispatch => {
-  socket.emit('join-game', game);
-  dispatch(action.setGame(game));
-  fn();
+export const joinGameThunk = (game, fn) => async dispatch => {
+  try {
+    const { data } = await axios.post('/api/games', { name: game });
+    dispatch(action.setGame(data.game));
+    dispatch(action.setBoard(data.board));
+    dispatch(action.setPlayer(data.player));
+    fn();
+  } catch (err) {
+    console.log(err);
+  }
 };

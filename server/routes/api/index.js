@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 router.use('/users', require('./users'));
+router.use('/games', require('./games'));
 
 router.use('*', (req, res, next) => {
   const err = new Error('Not Found');
