@@ -7,14 +7,16 @@ const game = 'newGame';
 
 class Lobby extends Component {
   render() {
-    const push = this.props.history.push.bind(this, '/game');
+    const pushGame = this.props.history.push.bind(this, '/game');
+    const pushHome = this.props.history.push.bind(this, '/');
+
     return (
       <div className="lobby-container">
         <div>
           <h1>Join Game</h1>
           <button
             type="submit"
-            onClick={() => this.props.joinGameThunk(game, push)}
+            onClick={() => this.props.joinGameThunk(game, pushGame, pushHome)}
           >
             Join Game
           </button>
