@@ -8,7 +8,7 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-  const { name } = req.body;
+  const name = req.body.name;
 
   try {
     const { player, game } = await Game.joinGame(name, req.user);
