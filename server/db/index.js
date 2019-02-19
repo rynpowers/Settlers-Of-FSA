@@ -18,7 +18,6 @@ Game.joinGame = async (name, user) => {
 };
 
 Game.addPlayer = async (game, user) => {
-  console.log('creating player');
   const player = await Player.create({
     gameName: game.name,
     userId: user.id,

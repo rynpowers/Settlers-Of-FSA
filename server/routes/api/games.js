@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Game } = require('../../db');
-const gameCache = require('../../cache');
+const cache = require('../../cache/gameCache');
 
 router.get('/', (req, res, next) => {
   res.send('hit the game get route');
@@ -12,9 +12,9 @@ router.post('/', async (req, res, next) => {
 
   try {
     const { player, game } = await Game.joinGame(name, req.user);
-    gameCache.addGame(game);
-    gameCache.joinGame(player, game);
-    res.json(gameCache.getGame(name, player.playerNumber));
+    cache.addGame(game);
+    cache.joinGame(player, game);
+    res.json(cache.getGame(name, player.playerNumber));
   } catch (err) {
     console.log(err);
     res.sendStatus(401);

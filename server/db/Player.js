@@ -13,10 +13,7 @@ const Player = db.define('players', {
 });
 
 Player.beforeCreate(player => {
-  console.log('running before create');
-  if (!player.state) {
-    player.state = JSON.stringify(state(player.playerNumber));
-  }
+  if (!player.state) player.state = JSON.stringify(state(player.playerNumber));
 });
 
 module.exports = Player;
