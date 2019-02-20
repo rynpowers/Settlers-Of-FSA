@@ -5,11 +5,15 @@ const state = require('../player');
 const Player = db.define('players', {
   playerNumber: {
     type: Sequelize.INTEGER,
+    allowNull: false,
   },
   state: {
     type: Sequelize.TEXT,
-    defaultValue: state,
   },
+});
+
+Player.beforeCreate(player => {
+  if (!player.state) player.state = JSON.stringify(state(player.playerNumber));
 });
 
 module.exports = Player;

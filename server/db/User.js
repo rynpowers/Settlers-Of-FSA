@@ -13,6 +13,9 @@ const User = db.define('users', {
   password: {
     type: Sequelize.STRING,
   },
+  currentGame: {
+    type: Sequelize.STRING,
+  },
   googleId: {
     type: Sequelize.STRING,
   },

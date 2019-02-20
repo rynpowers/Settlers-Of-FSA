@@ -1,5 +1,5 @@
-const state = {
-  playerNumber: null,
+module.exports = playerNumber => ({
+  playerNumber,
   victoryPoints: 0,
   playerTurn: false,
   longestRoad: false,
@@ -18,6 +18,4 @@ const state = {
     victoryPoint: 0,
     monopoly: 0,
   },
-};
-
-module.exports = JSON.stringify(state);
+});

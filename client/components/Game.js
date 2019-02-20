@@ -1,24 +1,31 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { setBoardThunk } from '../store/actions';
-import Board from './Board';
+import { joinGameThunk } from '../store/actions';
+import { BoardController } from './Board';
 import socket from '../socket';
 import { store } from '../store';
 import './Game.scss';
 
 class Game extends Component {
   componentDidMount() {
-    console.log('hello');
-    socket.emit('join-game', this.props.game);
-    socket.on('connect', () => socket.emit('join-game', this.props.game));
-    socket.on('dispatch', action => store.dispatch(action));
+    const board = this.props.board;
+    const game = window.sessionStorage.getItem('game');
+    const push = this.props.history.push.bind(this, '/');
+
+    if (!board.resources) this.props.joinGameThunk(game, null, push);
+
+    socket.on('connect', () => this.props.joinGameThunk(game, null, push));
+    socket.on('dispatch', action => {
+      console.log('recieving update');
+      store.dispatch(action);
+    });
   }
 
   render() {
     if (!this.props.board.resources) return <div>Loading...</div>;
     return (
       <div className="game-container">
-        <Board />
+        <BoardController />
       </div>
     );
   }
@@ -28,5 +35,5 @@ const mapStateToProps = ({ game, board }) => ({ game, board });
 
 export default connect(
   mapStateToProps,
-  { setBoardThunk }
+  { joinGameThunk }
 )(Game);
