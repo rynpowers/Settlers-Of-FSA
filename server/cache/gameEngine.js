@@ -19,6 +19,7 @@ class GameEngine {
   }
   assignRoad(road, player) {
     this.board.roads[road].player = player;
+    return this.board;
   }
 
   getBoard() {

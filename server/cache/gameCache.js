@@ -1,4 +1,5 @@
 const GameEngine = require('./gameEngine');
+const { Game } = require('../db');
 
 class GameCache {
   constructor() {
@@ -24,10 +25,11 @@ class GameCache {
     }
   }
 
-  updateRoad(road, player, game) {
-    const curGame = this.games[game];
-    curGame.assignRoad(road, player);
-    return curGame.getBoard();
+  updateRoad(road, player, name) {
+    const curGame = this.games[name];
+    const board = curGame.assignRoad(road, player);
+    Game.update({ board: JSON.stringify(board) }, { where: { name } });
+    return board;
   }
 }
 
