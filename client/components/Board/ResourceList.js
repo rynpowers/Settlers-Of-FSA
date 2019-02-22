@@ -1,9 +1,11 @@
 import React from 'react';
 import Resource from './Resource';
 
-const ResourceList = ({ num, options, transform }) => {
+const ResourceList = ({ num, options, transform, zIndex }) => {
   return (
-    <div style={{ display: 'flex', width: `${8.2 * num}rem`, transform }}>
+    <div
+      style={{ display: 'flex', width: `${8.2 * num}rem`, transform, zIndex }}
+    >
       {Array(num)
         .fill(null)
         .map((item, index) => {

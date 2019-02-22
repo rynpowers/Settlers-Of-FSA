@@ -1,5 +1,5 @@
 'use strict';
-const { User, db, Game } = require('../server/db');
+const { User, db, Game, PLayer } = require('../server/db');
 const { dbStore } = require('../server');
 
 async function seed() {
@@ -8,9 +8,10 @@ async function seed() {
   console.log('db synced!');
 
   const users = await Promise.all([
-    Game.create({ name: 'game' }),
-    User.create({ email: 'cody@email.com', password: '123' }),
-    User.create({ email: 'murphy@email.com', password: '123' }),
+    User.create({ email: 'ryan@email.com', password: 'password' }),
+    User.create({ email: 'hillary@email.com', password: 'password' }),
+    User.create({ email: 'daisy@email.com', password: 'password' }),
+    User.create({ email: 'lilly@email.com', password: 'password' }),
   ]);
 
   console.log(`seeded ${users.length} users`);

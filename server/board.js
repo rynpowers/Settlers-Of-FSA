@@ -32,7 +32,7 @@ module.exports = () => {
   const createSettlements = (t, b) => {
     const arr = [t, t + 1, t + 2, b, b + 1, b + 2];
     arr.forEach(item => {
-      board.settlements[item] = { player: null, roads: [], build: 0 };
+      board.settlements[item] = { player: 1, roads: [], build: 1 };
     });
     return arr;
   };
