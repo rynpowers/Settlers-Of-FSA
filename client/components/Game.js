@@ -15,10 +15,7 @@ class Game extends Component {
     if (!board.resources) this.props.joinGameThunk(game, null, push);
 
     socket.on('connect', () => this.props.joinGameThunk(game, null, push));
-    socket.on('dispatch', action => {
-      console.log('recieving update');
-      store.dispatch(action);
-    });
+    socket.on('dispatch', action => store.dispatch(action));
   }
 
   render() {

@@ -25,12 +25,19 @@ class GameCache {
     }
   }
 
-  updateRoad(road, player, name) {
-    const curGame = this.games[name];
-    const board = curGame.assignRoad(road, player);
-    Game.update({ board: JSON.stringify(board) }, { where: { name } });
+  update({ type, playerNumber, game, id }) {
+    const curGame = this.games[game];
+    const board = curGame.update({ type, playerNumber, game, id });
+    Game.update({ board: JSON.stringify(board) }, { where: { name: game } });
     return board;
   }
+
+  // updateSettlement(settlement, player, name) {
+  //   const curGame = this.games[name];
+  //   const board = curGame.assignRoad(settlement, player);
+  //   Game.update({ board: JSON.stringify(board) }, { where: { name } });
+  //   return board;
+  // }
 }
 
 module.exports = new GameCache();

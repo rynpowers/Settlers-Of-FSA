@@ -17,12 +17,25 @@ class GameEngine {
     const board = this.board;
     return { game, player, board };
   }
-  assignRoad(road, player) {
-    this.board.roads[road].player = player;
+
+  update({ type, playerNumber, id }) {
+    switch (type) {
+      case 'road':
+        return this.assignRoad(id, playerNumber);
+      case 'settlement':
+        return this.assignSettlement(id, playerNumber);
+      default:
+    }
+  }
+
+  assignRoad(id, player) {
+    this.board.roads[id].player = player;
     return this.board;
   }
 
-  getBoard() {
+  assignSettlement(id, player) {
+    this.board.settlements[id].player = player;
+    this.board.settlements[id].build += 1;
     return this.board;
   }
 }

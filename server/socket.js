@@ -10,11 +10,11 @@ module.exports = io => {
       console.log(chalk.yellow(`${socket.id} is joining room:`, room));
     });
 
-    socket.on('updateRoad', (road, player, room) => {
-      console.log('updating road:', road, player, room);
-      io.to(room).emit('dispatch', {
+    socket.on('updateBoard', ({ type, playerNumber, game, id }) => {
+      console.log('updating road:', id, playerNumber, game);
+      io.to(game).emit('dispatch', {
         type: 'SET_BOARD',
-        board: cache.updateRoad(road, player, room),
+        board: cache.update({ type, playerNumber, game, id }),
       });
     });
 

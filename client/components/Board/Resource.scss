@@ -84,40 +84,49 @@
     width: 1rem;
     border-radius: 50%;
     cursor: pointer;
-    &-1 {
+    &-0 {
       top: 26.5%;
       left: 0;
       transform: translateY(-50%);
     }
 
-    &-2 {
+    &-1 {
       top: -1.5%;
       left: 50%;
       transform: translateX(-50%);
     }
 
-    &-3 {
+    &-2 {
       top: 26.5%;
       right: 0;
       transform: translateY(-50%);
     }
 
-    &-4 {
+    &-3 {
       bottom: 26.5%;
-      right: 0;
+      left: 0;
       transform: translateY(50%);
     }
 
-    &-5 {
+    &-4 {
       bottom: -1.5%;
       left: 50%;
       transform: translateX(-50%);
     }
 
-    &-6 {
+    &-5 {
       bottom: 26.5%;
-      left: 0;
+      right: 0;
       transform: translateY(50%);
+    }
+  }
+
+  .build {
+    &-1 {
+      clip-path: polygon(50% 0%, 100% 38%, 100% 100%, 0 100%, 0% 38%);
+      height: 1.2rem;
+      width: 1.2rem;
+      border-radius: 0%;
     }
   }
 }
