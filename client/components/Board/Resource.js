@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { renderSettlements } from './Settlement';
 import './Resource.scss';
 
 class Resource extends Component {
   render() {
     const { board, id } = this.props;
-    const { roads, settlements, type } = board.resources[id];
-    if (id === 8) console.log(settlements);
+    const { roads, type } = board.resources[id];
     return (
       <div style={this.props.style} className="resource-container">
         <div className="resource">
@@ -48,48 +48,7 @@ class Resource extends Component {
           </div>
           <div className={`resource-image ${type}`} />
         </div>
-        <div
-          className={`settlement settlement-0 player-${
-            board.settlements[settlements[0]].player
-          } build-${board.settlements[settlements[0]].build}`}
-          data-id={settlements[0]}
-          data-type="settlement"
-        />
-        <div
-          className={`settlement settlement-1 player-${
-            board.settlements[settlements[1]].player
-          } build-${board.settlements[settlements[1]].build}`}
-          data-id={settlements[1]}
-          data-type="settlement"
-        />
-        <div
-          className={`settlement settlement-2 player-${
-            board.settlements[settlements[2]].player
-          } build-${board.settlements[settlements[2]].build}`}
-          data-id={settlements[2]}
-          data-type="settlement"
-        />
-        <div
-          className={`settlement settlement-3 player-${
-            board.settlements[settlements[3]].player
-          } build-${board.settlements[settlements[3]].build}`}
-          data-id={settlements[3]}
-          data-type="settlement"
-        />
-        <div
-          className={`settlement settlement-4 player-${
-            board.settlements[settlements[4]].player
-          } build-${board.settlements[settlements[4]].build}`}
-          data-id={settlements[4]}
-          data-type="settlement"
-        />
-        <div
-          className={`settlement settlement-5 player-${
-            board.settlements[settlements[5]].player
-          } build-${board.settlements[settlements[5]].build}`}
-          data-id={settlements[5]}
-          data-type="settlement"
-        />
+        {renderSettlements({ ...this.props })}
       </div>
     );
   }
