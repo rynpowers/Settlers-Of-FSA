@@ -6,7 +6,7 @@ class HomePage extends Component {
     return (
       <Fragment>
         <h1>
-          <Link to="/about">About Page</Link>
+          <Link to="/lobby">Lobby</Link>
         </h1>
       </Fragment>
     );

@@ -32,7 +32,7 @@ module.exports = () => {
   const createSettlements = (t, b) => {
     const arr = [t, t + 1, t + 2, b, b + 1, b + 2];
     arr.forEach(item => {
-      board.settlements[item] = { player: 1, roads: [], build: 1 };
+      board.settlements[item] = { player: null, roads: [], build: 0 };
     });
     return arr;
   };
@@ -62,7 +62,7 @@ module.exports = () => {
     const type = resources.splice(index, 1)[0];
     board.resources[i] = {
       type,
-      diveValue: type !== 'dessert' ? diceValue.splice(diceIndex, 1)[0] : null,
+      diceValue: type !== 'dessert' ? diceValue.splice(diceIndex, 1)[0] : null,
       hasRobber: type === 'dessert',
       settlements: createSettlements(t, b),
       roads: createRoads(t, b),
