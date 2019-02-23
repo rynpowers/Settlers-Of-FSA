@@ -1,21 +1,39 @@
-const { Game } = require('../db');
-
 class GameEngine {
-  constructor(board) {
+  constructor(board, gameState) {
     this.board = JSON.parse(board);
     this.players = {};
+    this.gameState = JSON.parse(gameState);
   }
   addPlayer(player) {
     const { playerNumber, state } = player;
     if (!this.players[playerNumber]) {
       this.players[playerNumber] = JSON.parse(state);
-      console.log('adding player:', this.players);
+      this.gameState.players[playerNumber] = this.parsePlayer(
+        this.players[playerNumber]
+      );
+      console.log('adding player:', this.gameState.players);
     }
   }
-  getGameState(game, playerNumber) {
-    const player = this.players[playerNumber];
-    const board = this.board;
-    return { game, player, board };
+
+  parsePlayer(player) {
+    return {
+      resources: Object.keys(player.resources).reduce(
+        (a, v) => a + player.resources[v],
+        0
+      ),
+      largestArmy: player.largestArmy,
+      longestRoad: player.longestRoad,
+      victoryPoints: player.victoryPoints,
+    };
+  }
+
+  getGameState(playerNumber) {
+    const { players, board, gameState } = this;
+    return {
+      player: players[playerNumber],
+      board,
+      gameState: { ...gameState, devCards: gameState.devCards.length },
+    };
   }
 
   update({ type, playerNumber, id }) {
