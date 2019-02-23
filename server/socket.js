@@ -16,12 +16,19 @@ module.exports = io => {
       );
     });
 
-    socket.on('updateBoard', ({ type, playerNumber, game, id }) => {
-      console.log('updating road:', id, playerNumber, game);
-      io.to(game).emit('dispatch', {
-        type: 'SET_BOARD',
-        board: cache.update({ type, playerNumber, game, id }),
-      });
+    socket.on('updateBoard', update => {
+      const board = cache.update(update);
+      io.to(update.game).emit('dispatch', { type: 'SET_BOARD', board });
+    });
+
+    socket.on('updateGame', update => {
+      const game = cache.update(update);
+      io.to(update.game).emit('dispatch', { type: 'SET_GAME', game });
+    });
+
+    socket.on('updatePlayer', (game, playerNumber) => {
+      const player = cache.updatePlayer(game, playerNumber);
+      io.to(socket.id).emit('dispatch', { type: 'SET_PLAYER', player });
     });
 
     socket.on('disconnect', () => {
