@@ -11,22 +11,20 @@ export const Settlement = ({ board, pos, id }) => {
       data-id={settlementId}
       data-type="settlement"
     >
-      <div>
-        {build === 1 && (
-          <div className={`build-${build}`}>
-            <div
-              className={`build-inner-${build} player-${player}`}
-              data-type="settlement"
-              data-id={settlementId}
-            />
-          </div>
-        )}
-        {build === 2 && (
-          <div className={`build-${build}`}>
-            <div className={`build-inner-${build} player-${player}`} />
-          </div>
-        )}
-      </div>
+      {build === 1 && (
+        <div className={`build-${build}`}>
+          <div
+            className={`build-inner-${build} player-${player}`}
+            data-type="settlement"
+            data-id={settlementId}
+          />
+        </div>
+      )}
+      {build === 2 && (
+        <div className={`build-${build}`}>
+          <div className={`build-inner-${build} player-${player}`} />
+        </div>
+      )}
     </div>
   );
 };
