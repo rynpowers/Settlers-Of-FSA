@@ -5,9 +5,15 @@ module.exports = io => {
   io.on('connection', socket => {
     console.log(chalk.blue(`${socket.id} is connected`));
 
-    socket.on('join-game', room => {
+    socket.on('join-game', (room, player) => {
       socket.join(room);
-      console.log(chalk.yellow(`${socket.id} is joining room:`, room));
+      console.log(
+        chalk.yellow(
+          `${socket.id} is joining room:`,
+          room,
+          `as player-${player}`
+        )
+      );
     });
 
     socket.on('updateBoard', ({ type, playerNumber, game, id }) => {

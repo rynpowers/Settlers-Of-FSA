@@ -14,7 +14,8 @@ router.post('/', async (req, res, next) => {
     const { player, game } = await Game.joinGame(name, req.user);
     cache.addGame(game);
     cache.joinGame(player, game);
-    res.json(cache.getGame(name, player.playerNumber));
+    const cachedGame = cache.getGame(name, player.playerNumber);
+    res.json(cachedGame);
   } catch (err) {
     console.log(err);
     res.sendStatus(401);

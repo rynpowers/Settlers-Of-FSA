@@ -8,7 +8,7 @@ class GameCache {
 
   addGame(game) {
     if (!this.games[game.name]) {
-      this.games[game.name] = new GameEngine(game.board);
+      this.games[game.name] = new GameEngine(game.board, game.gameState);
       console.log('game added:', Object.keys(this.games));
     }
   }
@@ -21,7 +21,7 @@ class GameCache {
   getGame(name, playerNumber) {
     const game = this.games[name];
     if (game) {
-      return game.getGameState(name, playerNumber);
+      return game.getGameState(playerNumber);
     }
   }
 
@@ -31,13 +31,6 @@ class GameCache {
     Game.update({ board: JSON.stringify(board) }, { where: { name: game } });
     return board;
   }
-
-  // updateSettlement(settlement, player, name) {
-  //   const curGame = this.games[name];
-  //   const board = curGame.assignRoad(settlement, player);
-  //   Game.update({ board: JSON.stringify(board) }, { where: { name } });
-  //   return board;
-  // }
 }
 
 module.exports = new GameCache();
