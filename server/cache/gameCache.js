@@ -25,11 +25,20 @@ class GameCache {
     }
   }
 
-  update({ type, playerNumber, game, id }) {
+  update(update) {
+    const curGame = this.games[update.game];
+    const newUpdate = curGame.update(update);
+    Game.update(
+      { [newUpdate.type]: JSON.stringify(newUpdate.payload) },
+      { where: { name: update.game } }
+    );
+    return newUpdate.payload;
+  }
+
+  updatePlayer(game, playerNumber) {
     const curGame = this.games[game];
-    const board = curGame.update({ type, playerNumber, game, id });
-    Game.update({ board: JSON.stringify(board) }, { where: { name: game } });
-    return board;
+    const update = curGame.update({ type: 'player', playerNumber });
+    return update;
   }
 }
 
