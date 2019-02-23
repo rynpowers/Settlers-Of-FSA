@@ -6,7 +6,7 @@ import './Resource.scss';
 class Resource extends Component {
   render() {
     const { board, id } = this.props;
-    const { roads, type } = board.resources[id];
+    const { roads, type, diceValue, hasRobber } = board.resources[id];
     return (
       <div style={this.props.style} className="resource-container">
         <div className="resource">
@@ -46,7 +46,15 @@ class Resource extends Component {
               className={`player-${board.roads[roads[3]].player}`}
             />
           </div>
-          <div className={`resource-image ${type}`} />
+          <div className={`resource-image ${type}`}>
+            {hasRobber ? (
+              <div className="resource-image-robber" />
+            ) : (
+              <div className="resource-image-number">
+                <h3>{diceValue}</h3>
+              </div>
+            )}
+          </div>
         </div>
         {renderSettlements({ ...this.props })}
       </div>

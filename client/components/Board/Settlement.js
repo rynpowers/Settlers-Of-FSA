@@ -1,20 +1,33 @@
 import React, { Fragment } from 'react';
-
-const createClassList = (pos, settlement) => {
-  const { build, player } = settlement;
-  return `settlement settlement-${pos} player-${player} build-${build}`;
-};
+import './Settlement.scss';
 
 export const Settlement = ({ board, pos, id }) => {
   const { resources, settlements } = board;
   const settlementId = resources[id].settlements[pos];
-  const settlement = settlements[settlementId];
+  const { player, build } = settlements[settlementId];
   return (
     <div
-      className={createClassList(pos, settlement)}
+      className={`settlement settlement-${pos} player-${player}`}
       data-id={settlementId}
       data-type="settlement"
-    />
+    >
+      <div>
+        {build === 1 && (
+          <div className={`build-${build}`}>
+            <div
+              className={`build-inner-${build} player-${player}`}
+              data-type="settlement"
+              data-id={settlementId}
+            />
+          </div>
+        )}
+        {build === 2 && (
+          <div className={`build-${build}`}>
+            <div className={`build-inner-${build} player-${player}`} />
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

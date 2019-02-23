@@ -26,10 +26,10 @@ const ResourceList = ({
             style={style}
             visible={visible}
             visibleOdd={!(index % 2)}
-            visibleTopLeft={visibleTopLeft}
-            visibleTopRight={visibleTopRight}
-            visibleBottomLeft={visibleBottomLeft}
-            visibleBottomRight={visibleBottomRight}
+            visibleTopLeft={index === 0 && visibleTopLeft}
+            visibleTopRight={index === 3 && visibleTopRight}
+            visibleBottomLeft={index === 0 && visibleBottomLeft}
+            visibleBottomRight={index === 3 && visibleBottomRight}
           />
         );
       })}
