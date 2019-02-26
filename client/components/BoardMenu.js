@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { toggleMenu } from '../store/actions';
+import { toggleMenu, toggleModal } from '../store/actions';
 import { connect } from 'react-redux';
 import './BoardMenu.scss';
 
@@ -16,8 +16,13 @@ class BoardMenu extends Component {
         <div
           onClick={() => this.props.toggleMenu()}
           className={`menu menu-close ${this.props.menu && 'visible active'}`}
-        />
-        <div className={`options ${this.props.menu && 'expand'}`}>
+        >
+          <div />
+        </div>
+        <div
+          onClick={() => this.props.toggleModal()}
+          className={`options ${this.props.menu && 'expand'}`}
+        >
           <div className="menu menu-option menu-option-1">
             <h3>Build</h3>
           </div>
@@ -40,9 +45,9 @@ class BoardMenu extends Component {
   }
 }
 
-const mapStateToProps = ({ menu }) => ({ menu });
+const mapStateToProps = ({ menu }) => ({ menu: menu.main, modal: menu.modal });
 
 export default connect(
   mapStateToProps,
-  { toggleMenu }
+  { toggleMenu, toggleModal }
 )(BoardMenu);

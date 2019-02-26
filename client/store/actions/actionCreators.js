@@ -17,3 +17,4 @@ export const setPlayer = player => ({ type: type.SET_PLAYER, player });
 
 // menu
 export const toggleMenu = () => ({ type: type.TOGGLE_MENU });
+export const toggleModal = () => ({ type: type.TOGGLE_MODAL });
