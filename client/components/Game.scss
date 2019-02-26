@@ -1,6 +1,7 @@
 @import '../sass/mixins.scss';
 
 .game-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -8,4 +9,5 @@
   background-color: var(--color-black);
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }

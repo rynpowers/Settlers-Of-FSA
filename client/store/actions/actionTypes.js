@@ -11,3 +11,7 @@ export const SET_BOARD = 'SET_BOARD';
 
 // player
 export const SET_PLAYER = 'SET_PLAYER';
+
+// menu
+export const TOGGLE_MENU = 'TOGGLE_MENU';
+export const TOGGLE_MODAL = 'TOGGLE_MODAL';

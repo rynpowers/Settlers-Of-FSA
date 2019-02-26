@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { joinGameThunk } from '../store/actions';
 import { BoardController } from './Board';
+import BoardMenu from './BoardMenu';
+import Modal from './Modal';
 import socket from '../socket';
 import { store } from '../store';
 import './Game.scss';
@@ -40,6 +42,8 @@ class Game extends Component {
     return (
       <div className="game-container">
         <BoardController />
+        <BoardMenu />
+        <Modal />
         <div
           style={btnContainerStyles}
           onClick={e => {
