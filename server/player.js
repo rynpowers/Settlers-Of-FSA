@@ -2,8 +2,8 @@ module.exports = playerNumber => ({
   playerNumber,
   victoryPoints: 0,
   playerTurn: false,
-  longestRoad: false,
-  largestArmy: false,
+  longestRoad: 0,
+  largestArmy: 0,
   resources: {
     forrest: 0,
     pasture: 0,

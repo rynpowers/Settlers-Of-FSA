@@ -1,6 +1,10 @@
 import { SET_GAME } from '../actions';
 
-const game = (state = {}, action) => {
+const initailState = {
+  players: {},
+};
+
+const game = (state = initailState, action) => {
   switch (action.type) {
     case SET_GAME:
       return action.game;
