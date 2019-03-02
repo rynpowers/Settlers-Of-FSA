@@ -23,6 +23,10 @@ class GameEngine {
         (a, v) => a + player.resources[v],
         0
       ),
+      devCards: Object.keys(player.devCards).reduce(
+        (a, v) => a + player.devCards[v],
+        0
+      ),
       largestArmy: player.largestArmy,
       longestRoad: player.longestRoad,
       victoryPoints: player.victoryPoints,

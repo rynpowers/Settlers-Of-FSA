@@ -1,0 +1,60 @@
+.player-stats {
+  position: absolute;
+  width: 16rem;
+  font-size: 1.6rem;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  &-list {
+    list-style: none;
+    &-item {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  &-1 {
+    border: 3px solid var(--color-blue);
+    color: var(--color-blue);
+    top: 2rem;
+    left: 2rem;
+  }
+
+  &-2 {
+    color: var(--color-red);
+    border: 3px solid var(--color-red);
+    top: 2rem;
+    right: 2rem;
+  }
+
+  &-3 {
+    color: var(--color-green);
+    border: 3px solid var(--color-green);
+    bottom: 2rem;
+    right: 2rem;
+  }
+
+  &-4 {
+    color: var(--color-orange);
+    border: 3px solid var(--color-orange);
+    bottom: 2rem;
+    left: 2rem;
+  }
+
+  &-active {
+    color: var(--color-white);
+    border: 3px solid transparent;
+    box-shadow: 0px 0px 30px 7px var(--color-white-transparent);
+    &-1 {
+      background-color: var(--color-blue-transparent);
+    }
+    &-2 {
+      background-color: var(--color-red-transparent);
+    }
+    &-3 {
+      background-color: var(--color-green-transparent);
+    }
+    &-4 {
+      background-color: var(--color-orange-transparent);
+    }
+  }
+}

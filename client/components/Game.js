@@ -4,6 +4,7 @@ import { joinGameThunk } from '../store/actions';
 import { BoardController } from './Board';
 import BoardMenu from './BoardMenu';
 import Modal from './Modal';
+import Player from './Player';
 import socket from '../socket';
 import { store } from '../store';
 import './Game.scss';
@@ -39,11 +40,20 @@ class Game extends Component {
 
   render() {
     if (!this.props.board.resources) return <div>Loading...</div>;
+    const { players, player } = this.props;
     return (
       <div className="game-container">
         <BoardController />
         <BoardMenu />
         <Modal />
+        {Object.keys(players).map(i => (
+          <Player
+            key={i}
+            id={i}
+            player={players[i]}
+            isTurn={player.playerTurn === i}
+          />
+        ))}
         <div
           style={btnContainerStyles}
           onClick={e => {
@@ -95,7 +105,12 @@ class Game extends Component {
   }
 }
 
-const mapStateToProps = ({ game, board, player }) => ({ game, board, player });
+const mapStateToProps = ({ game, board, player }) => ({
+  game,
+  players: game.players,
+  board,
+  player,
+});
 
 export default connect(
   mapStateToProps,
