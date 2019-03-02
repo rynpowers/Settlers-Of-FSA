@@ -5,7 +5,6 @@ import './Modal.scss';
 
 class Modal extends Component {
   render() {
-    console.log(this.props.modal);
     return (
       <div className={`modal ${this.props.modal && 'modal-active'}`}>
         <div onClick={() => this.props.toggleModal()} className="modal-close">
