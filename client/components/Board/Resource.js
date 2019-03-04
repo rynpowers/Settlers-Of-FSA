@@ -1,51 +1,77 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { renderSettlements } from './Settlement';
+import * as validators from '../../validators';
+import Roads from './Roads';
 import './Resource.scss';
 
 class Resource extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      road: {
+        'road-0': false,
+        'road-1': false,
+        'road-2': false,
+        'road-3': false,
+        'road-4': false,
+        'road-5': false,
+      },
+    };
+
+    this.handleMouseOver = this.handleMouseOver.bind(this);
+    this.handleMouseOut = this.handleMouseOut.bind(this);
+  }
+
+  handleHover(hover, type, mode, id) {
+    const { road } = this.state;
+    if (validators.validateRoad(id) && mode === type) {
+      this.setState({ road: { ...road, [hover]: !road[hover] } });
+    }
+  }
+
+  handleMouseOver(e) {
+    const { hover, type, id } = e.target.dataset;
+    const { mode } = this.props;
+    if (hover && type === 'road') {
+      this.handleHover(hover, type, mode, id);
+    }
+  }
+
+  handleMouseOut(e) {
+    const { hover, type, id } = e.target.dataset;
+    const { mode } = this.props;
+    if (hover && type === 'road') {
+      this.handleHover(hover, type, mode, id);
+    }
+  }
+
+  validateClick(e) {
+    const { type, id } = e.target.dataset;
+
+    if (type === 'road') {
+      !validators.validateRoad(id) && e.stopPropagation();
+    }
+  }
+
   render() {
-    const { board, id } = this.props;
+    const { board, id, player } = this.props;
     const { roads, type, diceValue, hasRobber } = board.resources[id];
     return (
-      <div style={this.props.style} className="resource-container">
+      <div
+        onClick={this.validateClick}
+        onMouseOver={this.handleMouseOver}
+        onMouseOut={this.handleMouseOut}
+        style={this.props.style}
+        className="resource-container"
+      >
         <div className="resource">
-          <div className="road-container top">
-            <div
-              data-id={roads[0]}
-              data-type="road"
-              className={`player-${board.roads[roads[0]].player}`}
-            />
-            <div
-              data-id={roads[1]}
-              data-type="road"
-              className={`player-${board.roads[roads[1]].player}`}
-            />
-          </div>
-          <div className="road-container middle">
-            <div
-              data-id={roads[4]}
-              data-type="road"
-              className={`player-${board.roads[roads[4]].player}`}
-            />
-            <div
-              data-id={roads[5]}
-              data-type="road"
-              className={`player-${board.roads[roads[5]].player}`}
-            />
-          </div>
-          <div className="road-container bottom">
-            <div
-              data-id={roads[2]}
-              data-type="road"
-              className={`player-${board.roads[roads[2]].player}`}
-            />
-            <div
-              data-id={roads[3]}
-              data-type="road"
-              className={`player-${board.roads[roads[3]].player}`}
-            />
-          </div>
+          <Roads
+            playerNumber={player.playerNumber}
+            hover={this.state.road}
+            roads={roads}
+            board={board}
+          />
           <div className={`resource-image ${type}`}>
             {hasRobber ? (
               <div className="resource-image-robber" />
@@ -62,7 +88,11 @@ class Resource extends Component {
   }
 }
 
-const mapStateToProps = ({ board, player }) => ({ board, player });
+const mapStateToProps = ({ board, player, localState }) => ({
+  board,
+  player,
+  mode: localState.mode,
+});
 
 export default connect(
   mapStateToProps,

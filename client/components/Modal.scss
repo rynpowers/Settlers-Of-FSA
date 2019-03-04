@@ -1,6 +1,8 @@
 @import '../sass/mixins.scss';
 
 .modal {
+  @include flex-center();
+  align-items: center;
   position: absolute;
   top: 100%;
   left: 0;

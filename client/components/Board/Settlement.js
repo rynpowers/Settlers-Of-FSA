@@ -15,7 +15,7 @@ export const Settlement = ({ board, pos, id }) => {
         <div className={`build-${build}`}>
           <div
             className={`build-inner-${build} player-${player}`}
-            data-type="settlement"
+            data-type="city"
             data-id={settlementId}
           />
         </div>

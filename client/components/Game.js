@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { joinGameThunk } from '../store/actions';
 import { BoardController } from './Board';
-import BoardMenu from './BoardMenu';
+import Menu from './Menu';
 import Modal from './Modal';
 import Player from './Player';
 import socket from '../socket';
@@ -44,7 +44,7 @@ class Game extends Component {
     return (
       <div className="game-container">
         <BoardController />
-        <BoardMenu />
+        <Menu />
         <Modal />
         {Object.keys(players).map(i => (
           <Player
