@@ -1,32 +1,75 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { renderSettlements } from './Settlement';
-import * as validators from '../../validators';
+import Settlements from './Settlements';
+import {
+  validateRoad,
+  validateCity,
+  validateSettlement,
+} from '../../validators';
 import Roads from './Roads';
 import './Resource.scss';
+
+const initailState = {
+  road: {
+    'road-0': false,
+    'road-1': false,
+    'road-2': false,
+    'road-3': false,
+    'road-4': false,
+    'road-5': false,
+  },
+  settlement: {
+    'settlement-0': false,
+    'settlement-1': false,
+    'settlement-2': false,
+    'settlement-3': false,
+    'settlement-4': false,
+    'settlement-5': false,
+  },
+};
 
 class Resource extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      road: {
-        'road-0': false,
-        'road-1': false,
-        'road-2': false,
-        'road-3': false,
-        'road-4': false,
-        'road-5': false,
-      },
+      settlement: { ...initailState.settlement },
+      road: { ...initailState.road },
     };
 
     this.handleMouseOver = this.handleMouseOver.bind(this);
     this.handleMouseOut = this.handleMouseOut.bind(this);
+    this.validateClick = this.validateClick.bind(this);
+  }
+  resetState() {
+    console.log('resetting state');
+    this.setState({
+      settlement: { ...initailState.settlement },
+      road: { ...initailState.road },
+    });
   }
 
-  handleHover(hover, type, mode, id) {
+  validate(e, id, validator) {
+    validator(id) ? this.resetState() : e.stopPropagation();
+  }
+
+  handleHoverRoad(hover, type, mode, id) {
     const { road } = this.state;
-    if (validators.validateRoad(id) && mode === type) {
+    if (validateRoad(id) && mode === type) {
       this.setState({ road: { ...road, [hover]: !road[hover] } });
+    }
+  }
+
+  handleHoverSettlement(hover, type, mode, id) {
+    const { settlement } = this.state;
+    const correctMode = mode === 'settlement' || mode === 'city';
+    const validator = mode === 'city' ? validateCity : validateSettlement;
+    if (correctMode && validator(id)) {
+      this.setState(
+        {
+          settlement: { ...settlement, [hover]: !settlement[hover] },
+        },
+        () => console.log(this.state.settlement)
+      );
     }
   }
 
@@ -34,7 +77,9 @@ class Resource extends Component {
     const { hover, type, id } = e.target.dataset;
     const { mode } = this.props;
     if (hover && type === 'road') {
-      this.handleHover(hover, type, mode, id);
+      this.handleHoverRoad(hover, type, mode, id);
+    } else if (hover && type === 'settlement') {
+      this.handleHoverSettlement(hover, type, mode, id);
     }
   }
 
@@ -42,15 +87,21 @@ class Resource extends Component {
     const { hover, type, id } = e.target.dataset;
     const { mode } = this.props;
     if (hover && type === 'road') {
-      this.handleHover(hover, type, mode, id);
+      this.handleHoverRoad(hover, type, mode, id);
+    } else if (hover && type === 'settlement') {
+      this.handleHoverSettlement(hover, type, mode, id);
     }
   }
 
   validateClick(e) {
     const { type, id } = e.target.dataset;
+    const { mode } = this.props;
 
     if (type === 'road') {
-      !validators.validateRoad(id) && e.stopPropagation();
+      this.validate(e, id, validateRoad);
+    } else if (type === 'settlement') {
+      const validator = mode === 'city' ? validateCity : validateSettlement;
+      this.validate(e, id, validator);
     }
   }
 
@@ -64,6 +115,7 @@ class Resource extends Component {
         onMouseOut={this.handleMouseOut}
         style={this.props.style}
         className="resource-container"
+        data-type="resource"
       >
         <div className="resource">
           <Roads
@@ -82,7 +134,7 @@ class Resource extends Component {
             )}
           </div>
         </div>
-        {renderSettlements({ ...this.props })}
+        <Settlements hover={this.state.settlement} {...this.props} />
       </div>
     );
   }
