@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { toggleModal } from '../store/actions';
-import { Build } from './ModalViews';
+import { toggleModal, updateMode, toggleExitMenu } from '../store/actions';
+import { Build, Trade } from './ModalViews';
 import './Modal.scss';
 
 class Modal extends Component {
   renderModalView(view) {
-    const { playerNumber } = this.props;
     switch (view) {
       case 'build':
-        return <Build playerNumber={playerNumber} />;
+        return <Build {...this.props} />;
+      case 'trade':
+        return <Trade {...this.props} />;
       default:
-        return <div />;
     }
   }
   render() {
@@ -34,5 +34,5 @@ const mapStateToProps = ({ menu, player }) => ({
 
 export default connect(
   mapStateToProps,
-  { toggleModal }
+  { toggleModal, updateMode, toggleExitMenu }
 )(Modal);

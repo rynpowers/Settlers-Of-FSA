@@ -37,7 +37,7 @@ class Menu extends Component {
           onClick={e => {
             let isParent = e.target.dataset.value !== undefined;
             let elem = isParent ? e.target : e.target.parentNode;
-            this.props.toggleModal(elem.dataset.value);
+            elem.dataset.value && this.props.toggleModal(elem.dataset.value);
           }}
           className={`options ${this.props.main && 'expand'}`}
         >
@@ -52,7 +52,6 @@ class Menu extends Component {
             className="menu menu-option menu-option-3"
           >
             <h3>Dev</h3>
-            <h3>Cards</h3>
           </div>
           <div data-value="roll" className="menu menu-option menu-option-4">
             <h3>Roll</h3>

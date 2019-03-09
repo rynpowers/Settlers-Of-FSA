@@ -1,0 +1,16 @@
+@import '../../sass/mixins.scss';
+
+.trade-window {
+  @include flex-column-center();
+  justify-content: space-between;
+  font-size: 2rem;
+  height: 30rem;
+
+  & p {
+    background-color: var(--color-black);
+    height: 2.8rem;
+    width: 2.8rem;
+    border-radius: 50%;
+    @include flex-center();
+  }
+}

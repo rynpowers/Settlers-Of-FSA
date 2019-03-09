@@ -1,0 +1,37 @@
+@import '../../sass/mixins.scss';
+
+.trade-resource {
+  color: var(--color-white);
+  font-size: 2rem;
+  font-weight: 200;
+  letter-spacing: 0.2rem;
+  height: var(--resource-height);
+  width: var(--resource-width);
+  @include flex-center();
+
+  &-forest {
+    background-image: var(--forest);
+  }
+  &-hill {
+    background-image: var(--hill);
+  }
+  &-mountain {
+    background-image: var(--mountain);
+  }
+  &-field {
+    background-image: var(--field);
+  }
+  &-pasture {
+    background-image: var(--pasture);
+  }
+
+  & div {
+    background-color: var(--color-black);
+    border-radius: 50%;
+    padding-left: 0.25rem;
+    color: var(--color-white);
+    @include flex-center();
+    height: 2.8rem;
+    width: 2.8rem;
+  }
+}

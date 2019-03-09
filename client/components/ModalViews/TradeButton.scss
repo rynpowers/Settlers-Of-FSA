@@ -1,0 +1,42 @@
+@import '../../sass/mixins.scss';
+
+.trade-button {
+  width: 3.5rem;
+  height: 2.5rem;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.4rem;
+  cursor: pointer;
+  background-color: transparent;
+  transition: all 0.2s;
+  & div {
+    height: 2rem;
+    width: 3rem;
+    @include clip-arrow();
+    transition: all 0.2s;
+  }
+
+  &.green div {
+    background-color: var(--color-green);
+  }
+
+  &.red div {
+    background-color: var(--color-red);
+  }
+
+  &.green:hover div {
+    background-color: var(--color-black);
+  }
+  &.red:hover div {
+    background-color: var(--color-black);
+  }
+
+  &.green:hover {
+    background-color: var(--color-green);
+  }
+  &.red:hover {
+    background-color: var(--color-red);
+  }
+}
