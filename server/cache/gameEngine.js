@@ -34,6 +34,7 @@ class GameEngine {
   }
 
   updateAllPlayers(game) {
+    console.log(game, this.players);
     Object.keys(this.players).forEach(player => {
       this.gameState.players[player] = this.parsePlayer(this.players[player]);
       Player.update(

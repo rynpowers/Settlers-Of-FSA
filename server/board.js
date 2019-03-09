@@ -26,7 +26,7 @@ module.exports = () => {
     'field',
     'field',
     'field',
-    'dessert',
+    'desert',
   ];
 
   const createSettlements = (t, b) => {
@@ -62,8 +62,8 @@ module.exports = () => {
     const type = resources.splice(index, 1)[0];
     board.resources[i] = {
       type,
-      diceValue: type !== 'dessert' ? diceValue.splice(diceIndex, 1)[0] : null,
-      hasRobber: type === 'dessert',
+      diceValue: type !== 'desert' ? diceValue.splice(diceIndex, 1)[0] : null,
+      hasRobber: type === 'desert',
       settlements: createSettlements(t, b),
       roads: createRoads(t, b),
     };

@@ -58,6 +58,7 @@ class Game extends Component {
           style={btnContainerStyles}
           onClick={e => {
             const diceValue = e.target.dataset.value;
+            console.log(this.props.game, diceValue);
             const { name } = this.props.game;
             socket.emit('updateGame', {
               type: 'diceValue',

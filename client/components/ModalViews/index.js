@@ -1,1 +1,2 @@
-export { default as Build } from './build';
+export { default as Build } from './Build';
+export { default as Trade } from './Trade';
