@@ -1,51 +1,129 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { renderSettlements } from './Settlement';
+import Settlements from './Settlements';
+import {
+  validateRoad,
+  validateCity,
+  validateSettlement,
+} from '../../validators';
+import Roads from './Roads';
 import './Resource.scss';
 
+const initailState = {
+  road: {
+    'road-0': false,
+    'road-1': false,
+    'road-2': false,
+    'road-3': false,
+    'road-4': false,
+    'road-5': false,
+  },
+  settlement: {
+    'settlement-0': false,
+    'settlement-1': false,
+    'settlement-2': false,
+    'settlement-3': false,
+    'settlement-4': false,
+    'settlement-5': false,
+  },
+};
+
 class Resource extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      settlement: { ...initailState.settlement },
+      road: { ...initailState.road },
+    };
+
+    this.handleMouseOver = this.handleMouseOver.bind(this);
+    this.handleMouseOut = this.handleMouseOut.bind(this);
+    this.validateClick = this.validateClick.bind(this);
+  }
+  resetState() {
+    console.log('resetting state');
+    this.setState({
+      settlement: { ...initailState.settlement },
+      road: { ...initailState.road },
+    });
+  }
+
+  validate(e, id, validator) {
+    validator(id) ? this.resetState() : e.stopPropagation();
+  }
+
+  handleHoverRoad(hover, type, mode, id) {
+    const { road } = this.state;
+    if (validateRoad(id) && mode === type) {
+      this.setState({ road: { ...road, [hover]: !road[hover] } });
+    }
+  }
+
+  handleHoverSettlement(hover, type, mode, id) {
+    const { settlement } = this.state;
+    const correctMode = mode === 'settlement' || mode === 'city';
+    const validator = mode === 'city' ? validateCity : validateSettlement;
+    if (correctMode && validator(id)) {
+      this.setState(
+        {
+          settlement: { ...settlement, [hover]: !settlement[hover] },
+        },
+        () => console.log(this.state.settlement)
+      );
+    }
+  }
+
+  handleMouseOver(e) {
+    const { hover, type, id } = e.target.dataset;
+    const { mode } = this.props;
+    if (hover && type === 'road') {
+      this.handleHoverRoad(hover, type, mode, id);
+    } else if (hover && type === 'settlement') {
+      this.handleHoverSettlement(hover, type, mode, id);
+    }
+  }
+
+  handleMouseOut(e) {
+    const { hover, type, id } = e.target.dataset;
+    const { mode } = this.props;
+    if (hover && type === 'road') {
+      this.handleHoverRoad(hover, type, mode, id);
+    } else if (hover && type === 'settlement') {
+      this.handleHoverSettlement(hover, type, mode, id);
+    }
+  }
+
+  validateClick(e) {
+    const { type, id } = e.target.dataset;
+    const { mode } = this.props;
+
+    if (type === 'road') {
+      this.validate(e, id, validateRoad);
+    } else if (type === 'settlement') {
+      const validator = mode === 'city' ? validateCity : validateSettlement;
+      this.validate(e, id, validator);
+    }
+  }
+
   render() {
-    const { board, id } = this.props;
+    const { board, id, player } = this.props;
     const { roads, type, diceValue, hasRobber } = board.resources[id];
     return (
-      <div style={this.props.style} className="resource-container">
+      <div
+        onClick={this.validateClick}
+        onMouseOver={this.handleMouseOver}
+        onMouseOut={this.handleMouseOut}
+        style={this.props.style}
+        className="resource-container"
+        data-type="resource"
+      >
         <div className="resource">
-          <div className="road-container top">
-            <div
-              data-id={roads[0]}
-              data-type="road"
-              className={`player-${board.roads[roads[0]].player}`}
-            />
-            <div
-              data-id={roads[1]}
-              data-type="road"
-              className={`player-${board.roads[roads[1]].player}`}
-            />
-          </div>
-          <div className="road-container middle">
-            <div
-              data-id={roads[4]}
-              data-type="road"
-              className={`player-${board.roads[roads[4]].player}`}
-            />
-            <div
-              data-id={roads[5]}
-              data-type="road"
-              className={`player-${board.roads[roads[5]].player}`}
-            />
-          </div>
-          <div className="road-container bottom">
-            <div
-              data-id={roads[2]}
-              data-type="road"
-              className={`player-${board.roads[roads[2]].player}`}
-            />
-            <div
-              data-id={roads[3]}
-              data-type="road"
-              className={`player-${board.roads[roads[3]].player}`}
-            />
-          </div>
+          <Roads
+            playerNumber={player.playerNumber}
+            hover={this.state.road}
+            roads={roads}
+            board={board}
+          />
           <div className={`resource-image ${type}`}>
             {hasRobber ? (
               <div className="resource-image-robber" />
@@ -56,13 +134,17 @@ class Resource extends Component {
             )}
           </div>
         </div>
-        {renderSettlements({ ...this.props })}
+        <Settlements hover={this.state.settlement} {...this.props} />
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ board, player }) => ({ board, player });
+const mapStateToProps = ({ board, player, localState }) => ({
+  board,
+  player,
+  mode: localState.mode,
+});
 
 export default connect(
   mapStateToProps,

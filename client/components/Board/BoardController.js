@@ -9,16 +9,35 @@ class BoardController extends Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
-  isValidType(type) {
-    console.log('checking type');
-    const types = ['settlement', 'road'];
-    return types.includes(type);
+  handleClickSettlement(elem) {
+    const { type, id } = elem.dataset;
+    const { mode } = this.props;
+
+    if (mode === 'settlement' || mode === 'city') {
+      this.props.updateBoardThunk(id, type);
+      this.props.reset();
+    }
+  }
+
+  handleClickRoad(elem) {
+    const { type, id } = elem.dataset;
+    const { mode } = this.props;
+
+    if (mode === 'road') {
+      this.props.updateBoardThunk(id, type);
+      this.props.reset();
+    }
   }
 
   handleClick(e) {
-    const { type, id } = e.target.dataset;
-    console.log(e.target);
-    if (this.isValidType(type)) this.props.updateBoardThunk(id, type);
+    const elem = e.target;
+    switch (elem.dataset.type) {
+      case 'road':
+        return this.handleClickRoad(elem);
+      case 'settlement':
+        return this.handleClickSettlement(elem);
+      default:
+    }
   }
 
   render() {
@@ -30,9 +49,12 @@ class BoardController extends Component {
   }
 }
 
+const mapStateToProps = ({ localState }) => ({ mode: localState.mode });
+
 export default connect(
-  null,
+  mapStateToProps,
   {
     updateBoardThunk: actions.updateBoardThunk,
+    reset: actions.reset,
   }
 )(BoardController);

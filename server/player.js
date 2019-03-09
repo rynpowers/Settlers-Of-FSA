@@ -5,7 +5,7 @@ module.exports = playerNumber => ({
   longestRoad: 0,
   largestArmy: 0,
   resources: {
-    forrest: 0,
+    forest: 0,
     pasture: 0,
     hill: 0,
     field: 0,

@@ -4,6 +4,7 @@ import game from './game';
 import board from './board';
 import player from './player';
 import menu from './menu';
+import localState from './localState';
 
 const reducer = combineReducers({
   user,
@@ -11,6 +12,7 @@ const reducer = combineReducers({
   board,
   player,
   menu,
+  localState,
 });
 
 export default reducer;
