@@ -7,13 +7,23 @@ module.exports = io => {
 
     socket.on('join-game', (room, player) => {
       socket.join(room);
+      cache.games[room].addSocket(socket.id, player);
       console.log(
         chalk.yellow(
           `${socket.id} is joining room:`,
           room,
-          `as player-${player}`
+          `as player-${player}`,
+          Object.keys(cache.games)
         )
       );
+    });
+
+    socket.on('tradeOffer', ({ trade, active, game }) => {
+      const curGame = cache.games[game];
+      curGame.createTrade(trade, active, (offer, socketId) => {
+        io.to(socketId).emit('dispatch', offer);
+      });
+      console.log('trade offer submitted', trade, active, game);
     });
 
     socket.on('updateBoard', update => {

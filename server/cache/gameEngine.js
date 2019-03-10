@@ -5,7 +5,36 @@ class GameEngine {
     this.board = JSON.parse(board);
     this.players = {};
     this.gameState = JSON.parse(gameState);
+    this.sockets = {};
   }
+  addSocket(socket, player) {
+    this.sockets = { ...this.sockets, [player]: socket };
+    console.log(this.sockets);
+  }
+
+  // removeSocket(socket, fn) {
+  //   Object.keys(this.sockets).forEach(player => {
+  //     if (this.sockets[player] === socket) delete this.sockets[player];
+  //   });
+
+  //   if (Object.keys(this.sockets).length === 0) fn();
+  // }
+
+  createTrade(proposal, active, fn) {
+    const responded = active;
+    const offers = [];
+
+    active.forEach((item, i) => {
+      if (responded[i]) fn(proposal, this.sockets[i]);
+      responded[i] = !responded[i];
+    });
+
+    this.trade = (offer, responder) => {
+      offers.push(offer);
+      responded[responder] = true;
+    };
+  }
+
   addPlayer(player) {
     const { playerNumber, state } = player;
     if (!this.players[playerNumber]) {

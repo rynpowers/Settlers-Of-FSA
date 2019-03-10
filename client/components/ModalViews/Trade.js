@@ -7,12 +7,7 @@ class Trade extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: {
-        1: false,
-        2: false,
-        3: false,
-        4: false,
-      },
+      active: [false, false, false, false, false],
       resources: {
         forest: 0,
         hill: 0,
@@ -36,20 +31,21 @@ class Trade extends Component {
   submitTradeOffer() {
     const { resources, active } = this.state;
     const trade = { ...resources };
+    const { name } = this.props.game;
+    console.log(this.props.game);
 
     Object.keys(trade).forEach(key => {
       if (trade[key]) trade[key] *= -1;
     });
 
-    socket.emit('tradeOffer', { trade, active });
+    socket.emit('tradeOffer', { trade, active, game: name });
   }
 
   handleClickActive(playerNumber) {
     this.setState(prevState => ({
-      active: {
-        ...prevState.active,
-        [playerNumber]: !prevState.active[playerNumber],
-      },
+      active: prevState.active.map((item, i) =>
+        i == playerNumber ? !prevState.active[playerNumber] : item
+      ),
     }));
   }
 
@@ -69,14 +65,13 @@ class Trade extends Component {
       <Fragment>
         <div className="trade-partners">
           <div className="trade-partners-container">
-            {players.map(playerNumber => (
+            {players.map(player => (
               <div
-                key={playerNumber}
-                onClick={() => this.handleClickActive(playerNumber)}
-                className={`btn-${playerNumber} ${active[playerNumber] &&
-                  'active'}`}
+                key={player}
+                onClick={() => this.handleClickActive(player)}
+                className={`btn-${player} ${active[player] && 'active'}`}
               >
-                {playerNumber}
+                {player}
               </div>
             ))}
           </div>
