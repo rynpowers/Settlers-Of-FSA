@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import './Trade.scss';
 import TradeWindow from './TradeWindow';
+import socket from '../../socket';
 
 class Trade extends Component {
   constructor(props) {
@@ -22,6 +23,7 @@ class Trade extends Component {
     };
 
     this.handleClick = this.handleClick.bind(this);
+    this.submitTradeOffer = this.submitTradeOffer.bind(this);
   }
 
   isValidState(nextState) {
@@ -29,6 +31,17 @@ class Trade extends Component {
       Object.keys(nextState).some(key => nextState[key] < 0) &&
       Object.keys(nextState).some(key => nextState[key] > 0)
     );
+  }
+
+  submitTradeOffer() {
+    const { resources, active } = this.state;
+    const trade = { ...resources };
+
+    Object.keys(trade).forEach(key => {
+      if (trade[key]) trade[key] *= -1;
+    });
+
+    socket.emit('tradeOffer', { trade, active });
   }
 
   handleClickActive(playerNumber) {
@@ -49,9 +62,8 @@ class Trade extends Component {
 
   render() {
     const { active, resources } = this.state;
-    let players = Object.keys(this.props.game.players).filter(
-      id => id != this.props.playerNumber
-    );
+    const { game, playerNumber } = this.props;
+    let players = Object.keys(game.players).filter(id => id != playerNumber);
 
     return (
       <Fragment>
@@ -69,7 +81,11 @@ class Trade extends Component {
             ))}
           </div>
 
-          <button type="submit" className="modal-submit">
+          <button
+            onClick={this.submitTradeOffer}
+            type="submit"
+            className="modal-submit"
+          >
             Offer Trade
           </button>
         </div>
