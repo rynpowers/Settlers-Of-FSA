@@ -22,7 +22,7 @@ module.exports = io => {
       const curGame = cache.games[game];
       curGame.createTrade(trade, active, (socketId, player) => {
         console.log('calling fn:', socketId, player);
-        io.to(socketId).emit('dispatch', { type: 'INIT_TRADE' });
+        io.to(socketId).emit('dispatch', { type: 'OFFER_TRADE' });
       });
       console.log('trade offer submitted', trade, active, game);
     });

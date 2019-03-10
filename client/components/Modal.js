@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { toggleModal, updateMode, toggleExitMenu } from '../store/actions';
-import { Build, Trade } from './ModalViews';
+import { Build, CreateTrade } from './ModalViews';
 import './Modal.scss';
 
 class Modal extends Component {
@@ -9,8 +9,8 @@ class Modal extends Component {
     switch (view) {
       case 'build':
         return <Build {...this.props} />;
-      case 'trade':
-        return <Trade {...this.props} />;
+      case 'create-trade':
+        return <CreateTrade {...this.props} />;
       default:
     }
   }

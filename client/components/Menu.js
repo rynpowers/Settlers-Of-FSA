@@ -44,7 +44,10 @@ class Menu extends Component {
           <div data-value="build" className="menu menu-option menu-option-1">
             <h3>Build</h3>
           </div>
-          <div data-value="trade" className="menu menu-option menu-option-2">
+          <div
+            data-value="create-trade"
+            className="menu menu-option menu-option-2"
+          >
             <h3>Trade</h3>
           </div>
           <div
