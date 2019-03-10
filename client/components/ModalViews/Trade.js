@@ -1,12 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import './Trade.scss';
-import TradeWindow from './TradeWindow';
+import CreateTrade from './CreateTrade';
 import socket from '../../socket';
 
 class Trade extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      status: 'create',
       active: [false, false, false, false, false],
       resources: {
         forest: 0,
@@ -18,6 +19,7 @@ class Trade extends Component {
     };
 
     this.handleClick = this.handleClick.bind(this);
+    this.handleClickActive = this.handleClickActive.bind(this);
     this.submitTradeOffer = this.submitTradeOffer.bind(this);
   }
 
@@ -63,37 +65,14 @@ class Trade extends Component {
 
     return (
       <Fragment>
-        <div className="trade-partners">
-          <div className="trade-partners-container">
-            {players.map(player => (
-              <div
-                key={player}
-                onClick={() => this.handleClickActive(player)}
-                className={`btn-${player} ${active[player] && 'active'}`}
-              >
-                {player}
-              </div>
-            ))}
-          </div>
-
-          <button
-            onClick={this.submitTradeOffer}
-            type="submit"
-            className="modal-submit"
-          >
-            Offer Trade
-          </button>
-        </div>
-        <div className="trade-resources">
-          {Object.keys(resources).map(type => (
-            <TradeWindow
-              key={type}
-              type={type}
-              val={resources[type]}
-              handleClick={this.handleClick}
-            />
-          ))}
-        </div>
+        <CreateTrade
+          active={active}
+          resources={resources}
+          players={players}
+          submitTradeOffer={this.submitTradeOffer}
+          handleClick={this.handleClick}
+          handleClickActive={this.handleClickActive}
+        />
       </Fragment>
     );
   }

@@ -20,8 +20,9 @@ module.exports = io => {
 
     socket.on('tradeOffer', ({ trade, active, game }) => {
       const curGame = cache.games[game];
-      curGame.createTrade(trade, active, (offer, socketId) => {
-        io.to(socketId).emit('dispatch', offer);
+      curGame.createTrade(trade, active, (socketId, player) => {
+        console.log('calling fn:', socketId, player);
+        io.to(socketId).emit('dispatch', { type: 'INIT_TRADE' });
       });
       console.log('trade offer submitted', trade, active, game);
     });

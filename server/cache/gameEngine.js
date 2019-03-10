@@ -24,8 +24,11 @@ class GameEngine {
     const responded = active;
     const offers = [];
 
-    active.forEach((item, i) => {
-      if (responded[i]) fn(proposal, this.sockets[i]);
+    responded.forEach((item, i) => {
+      if (responded[i]) {
+        this.players[i].trades = [proposal];
+        fn(this.sockets[i]);
+      }
       responded[i] = !responded[i];
     });
 

@@ -12,6 +12,7 @@ export const SET_BOARD = 'SET_BOARD';
 
 // player
 export const SET_PLAYER = 'SET_PLAYER';
+export const INIT_TRADE = 'INIT_TRADE';
 
 // menu
 export const TOGGLE_MENU = 'TOGGLE_MENU';
