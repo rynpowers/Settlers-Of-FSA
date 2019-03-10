@@ -23,3 +23,4 @@ export const toggleExitMenu = () => ({ type: type.TOGGLE_EXIT_MENU });
 
 // localState
 export const updateMode = mode => ({ type: type.UPDATE_MODE, mode });
+export const updateOffer = offer => ({ type: type.UPDATE_OFFER, offer });

@@ -26,8 +26,7 @@ class GameEngine {
 
     responded.forEach((item, i) => {
       if (responded[i]) {
-        this.players[i].trades = [proposal];
-        fn(this.sockets[i]);
+        fn(this.sockets[i], proposal);
       }
       responded[i] = !responded[i];
     });

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import './CreateTrade.scss';
-import TradeWindow from './TradeWindow';
+import Trade from './Trade';
 import socket from '../../socket';
 
 class CreateTrade extends Component {
@@ -8,13 +8,6 @@ class CreateTrade extends Component {
     super(props);
     this.state = {
       active: [false, false, false, false, false],
-      resources: {
-        forest: 0,
-        hill: 0,
-        field: 0,
-        mountain: 0,
-        pasture: 0,
-      },
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -29,10 +22,9 @@ class CreateTrade extends Component {
   }
 
   submitTradeOffer() {
-    const { resources, active } = this.state;
-    const trade = { ...resources };
+    const { active } = this.state;
+    const trade = { ...this.props.localState.offer };
     const { name } = this.props.game;
-    console.log(this.props.game);
 
     Object.keys(trade).forEach(key => {
       if (trade[key]) trade[key] *= -1;
@@ -50,15 +42,13 @@ class CreateTrade extends Component {
   }
 
   handleClick(type, val) {
-    this.setState(prevState => {
-      const { resources } = prevState;
-      return { resources: { ...resources, [type]: resources[type] + val } };
-    });
+    const { offer } = this.props.localState;
+    this.props.updateOffer({ ...offer, [type]: offer[type] + val });
   }
 
   render() {
-    const { active, resources } = this.state;
-    const { game, playerNumber } = this.props;
+    const { active } = this.state;
+    const { game, playerNumber, localState } = this.props;
     let players = Object.keys(game.players).filter(id => id != playerNumber);
 
     return (
@@ -84,16 +74,7 @@ class CreateTrade extends Component {
             Offer Trade
           </button>
         </div>
-        <div className="trade-resources">
-          {Object.keys(resources).map(type => (
-            <TradeWindow
-              key={type}
-              type={type}
-              val={resources[type]}
-              handleClick={this.handleClick}
-            />
-          ))}
-        </div>
+        <Trade resources={localState.offer} handleClick={this.handleClick} />
       </Fragment>
     );
   }
