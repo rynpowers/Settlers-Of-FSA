@@ -26,10 +26,11 @@ class Modal extends Component {
   }
 }
 
-const mapStateToProps = ({ menu, player }) => ({
+const mapStateToProps = ({ menu, player, game }) => ({
   modal: menu.modal,
   modalView: menu.modalView,
   playerNumber: player.playerNumber,
+  game,
 });
 
 export default connect(

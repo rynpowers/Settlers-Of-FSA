@@ -1,10 +1,10 @@
 import React from 'react';
 import './TradeResource.scss';
 
-function TradeResource({ type, quantity }) {
+function TradeResource({ type, quantity, color }) {
   return (
     <div className={`trade-resource trade-resource-${type}`}>
-      <div>{quantity}</div>
+      <div style={{ color: `var(--color-${color})` }}>{quantity}</div>
     </div>
   );
 }
