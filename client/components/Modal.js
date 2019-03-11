@@ -13,6 +13,14 @@ class Modal extends Component {
         return <CreateTrade {...this.props} />;
       case 'offer-trade':
         return <OfferTrade {...this.props} />;
+      case 'responding':
+        return (
+          <div>
+            <h1 style={{ color: `var(--color-white)` }}>
+              Waiting for players...
+            </h1>
+          </div>
+        );
       default:
     }
   }
@@ -47,6 +55,7 @@ export default connect(
   mapStateToProps,
   {
     toggleModal: actions.toggleModal,
+    updateModalView: actions.updateModalView,
     updateMode: actions.updateMode,
     toggleExitMenu: actions.toggleExitMenu,
     updateOffer: actions.updateOffer,

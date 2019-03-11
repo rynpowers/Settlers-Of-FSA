@@ -20,15 +20,16 @@ class GameEngine {
   //   if (Object.keys(this.sockets).length === 0) fn();
   // }
 
-  createTrade(proposal, active, fn) {
-    const responded = active;
+  createTrade(proposal, player, fn) {
+    const responded = [true, true, true, true, true];
     const offers = [];
 
     responded.forEach((item, i) => {
-      if (responded[i]) {
+      if (i != player) {
+        console.log(proposal);
         fn(this.sockets[i], proposal);
+        responded[i] = !responded[i];
       }
-      responded[i] = !responded[i];
     });
 
     this.trade = (offer, responder) => {

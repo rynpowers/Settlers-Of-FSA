@@ -18,6 +18,7 @@ export const UPDATE_TRADE = 'OFFER_TRADE';
 // menu
 export const TOGGLE_MENU = 'TOGGLE_MENU';
 export const TOGGLE_MODAL = 'TOGGLE_MODAL';
+export const UPDATE_MODAL_VIEW = 'UPDATE_MODAL_VIEW';
 export const TOGGLE_EXIT_MENU = 'TOGGLE_EXIT_MENU';
 
 // localState
