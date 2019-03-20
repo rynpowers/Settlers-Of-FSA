@@ -8,26 +8,30 @@ export class OfferTrade extends Component {
     super(props);
     this.state = {
       counter: false,
+      offerSent: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  componentDidMount() {
+    socket.emit('initiateTrade');
+  }
+
   handleSubmit() {
-    console.log(this.props.localState.offer);
+    this.setState({ offerSent: true });
   }
 
   handleClick(type, val) {
     const { offer } = this.props.localState;
     this.props.updateOffer({ ...offer, [type]: offer[type] + val });
   }
-  render() {
+
+  renderTradeScreen() {
     const { offer } = this.props.localState;
     const { resources } = this.props.player;
     const disabled = Object.keys(resources)
       .map(type => resources[type] + offer[type])
       .every(item => item >= 0);
-
-    console.log(disabled);
 
     return (
       <Fragment>
@@ -62,6 +66,14 @@ export class OfferTrade extends Component {
           handleClick={(type, val) => this.handleClick(type, val)}
         />
       </Fragment>
+    );
+  }
+
+  render() {
+    return this.state.offerSent ? (
+      <h1>Waiting for players...</h1>
+    ) : (
+      this.renderTradeScreen()
     );
   }
 }
