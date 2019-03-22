@@ -1,8 +1,7 @@
 import React from 'react';
 import TradeWindow from './TradeWindow';
 
-const Trade = ({ handleClick, resources, hidden, original }) => {
-  console.log(original);
+const Trade = ({ handleClick, resources, hidden, player }) => {
   return (
     <div className="trade-resources">
       {Object.keys(resources).map(type => (
@@ -11,7 +10,7 @@ const Trade = ({ handleClick, resources, hidden, original }) => {
           type={type}
           hidden={hidden}
           val={resources[type]}
-          original={original[type]}
+          original={player.resources[type]}
           handleClick={handleClick}
         />
       ))}

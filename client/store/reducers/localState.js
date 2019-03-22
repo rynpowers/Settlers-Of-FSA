@@ -1,4 +1,4 @@
-import { UPDATE_MODE, RESET, OFFER_TRADE, UPDATE_OFFER } from '../actions';
+import { UPDATE_MODE, RESET } from '../actions';
 
 const initailState = {
   mode: '',
@@ -15,10 +15,6 @@ const localState = (state = initailState, action) => {
   switch (action.type) {
     case UPDATE_MODE:
       return { ...state, mode: action.mode };
-    case UPDATE_OFFER:
-      return { ...state, offer: action.offer };
-    case OFFER_TRADE:
-      return { ...state, mode: 'offer-trade', offer: action.offer };
     case RESET:
       return { ...state, mode: '' };
     default:

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions';
-import { Build, CreateTrade, OfferTrade } from './ModalViews';
+import { Build, TradeView } from './ModalViews';
 import './Modal.scss';
 
 class Modal extends Component {
@@ -9,23 +9,13 @@ class Modal extends Component {
     switch (view) {
       case 'build':
         return <Build {...this.props} />;
-      case 'create-trade':
-        return <CreateTrade {...this.props} />;
-      case 'offer-trade':
-        return <OfferTrade {...this.props} />;
-      case 'responding':
-        return (
-          <div>
-            <h1 style={{ color: `var(--color-white)` }}>
-              Waiting for players...
-            </h1>
-          </div>
-        );
+      case 'trade':
+        return <TradeView {...this.props} />;
       default:
     }
   }
   render() {
-    const views = ['create-trade', 'build'];
+    const views = ['trade', 'build'];
     return (
       <div className={`modal ${this.props.modal && 'modal-active'}`}>
         {this.renderModalView(this.props.modalView)}
