@@ -18,12 +18,12 @@ module.exports = io => {
       );
     });
 
-    socket.on('tradeOffer', ({ trade, playerNumber, game }) => {
-      const curGame = cache.games[game];
-      curGame.createTrade(trade, playerNumber, (socketId, offer) => {
-        io.to(socketId).emit('dispatch', { type: 'OFFER_TRADE', offer });
+    socket.on('get-messages', room => {
+      const game = cache.games[room];
+      game.sendMessages(messages => {
+        console.log('sending messages', messages);
+        io.to(room).emit('trade-messages', messages);
       });
-      console.log('trade offer submitted', trade, game);
     });
 
     socket.on('updateBoard', update => {

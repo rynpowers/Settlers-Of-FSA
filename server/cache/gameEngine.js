@@ -6,36 +6,31 @@ class GameEngine {
     this.players = {};
     this.gameState = JSON.parse(gameState);
     this.sockets = {};
+    this.messages = [
+      {
+        player: 1,
+        message:
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make",
+      },
+      {
+        player: 2,
+        message:
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make",
+      },
+      {
+        player: 3,
+        message:
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make",
+      },
+      {
+        player: 4,
+        message:
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make",
+      },
+    ];
   }
   addSocket(socket, player) {
     this.sockets = { ...this.sockets, [player]: socket };
-    console.log(this.sockets);
-  }
-
-  // removeSocket(socket, fn) {
-  //   Object.keys(this.sockets).forEach(player => {
-  //     if (this.sockets[player] === socket) delete this.sockets[player];
-  //   });
-
-  //   if (Object.keys(this.sockets).length === 0) fn();
-  // }
-
-  createTrade(proposal, player, fn) {
-    const responded = [true, true, true, true, true];
-    const offers = [];
-
-    responded.forEach((item, i) => {
-      if (i != player) {
-        console.log(proposal);
-        fn(this.sockets[i], proposal);
-        responded[i] = !responded[i];
-      }
-    });
-
-    this.trade = (offer, responder) => {
-      offers.push(offer);
-      responded[responder] = true;
-    };
   }
 
   addPlayer(player) {
@@ -47,6 +42,10 @@ class GameEngine {
       );
       console.log('adding player:', this.gameState.players);
     }
+  }
+
+  sendMessages(fn) {
+    fn(this.messages);
   }
 
   parsePlayer(player) {

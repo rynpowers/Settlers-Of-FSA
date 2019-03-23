@@ -1,0 +1,70 @@
+@import '../../sass/mixins.scss';
+
+.box {
+  width: 300px;
+  margin: 50px auto;
+  padding: 20px;
+  text-align: center;
+  font-weight: 300;
+  font-size: 1.4rem;
+  letter-spacing: 1.2px;
+  color: var(--color-white);
+  font-family: arial;
+  border-radius: 5px;
+  position: relative;
+}
+
+.bubble-1 {
+  background: var(--color-blue-transparent);
+}
+.bubble-2 {
+  background: var(--color-red-transparent);
+}
+.bubble-3 {
+  background: var(--color-green-transparent);
+}
+.bubble-4 {
+  background: var(--color-orange-transparent);
+}
+
+.sb1-1:before {
+  @include bubble-arrow-right();
+  border-left: 10px solid var(--color-blue-transparent);
+  border-top: 10px solid var(--color-blue-transparent);
+}
+.sb1-2:before {
+  @include bubble-arrow-right();
+  border-left: 10px solid var(--color-red-transparent);
+  border-top: 10px solid var(--color-red-transparent);
+}
+.sb1-3:before {
+  @include bubble-arrow-right();
+  border-left: 10px solid var(--color-green-transparent);
+  border-top: 10px solid var(--color-green-transparent);
+}
+.sb1-4:before {
+  @include bubble-arrow-right();
+  border-left: 10px solid var(--color-orange-transparent);
+  border-top: 10px solid var(--color-orange-transparent);
+}
+
+.sb2-1:before {
+  @include bubble-arrow-left();
+  border-right: 10px solid var(--color-blue-transparent);
+  border-top: 10px solid var(--color-blue-transparent);
+}
+.sb2-2:before {
+  @include bubble-arrow-left();
+  border-right: 10px solid var(--color-red-transparent);
+  border-top: 10px solid var(--color-red-transparent);
+}
+.sb2-3:before {
+  @include bubble-arrow-left();
+  border-right: 10px solid var(--color-green-transparent);
+  border-top: 10px solid var(--color-green-transparent);
+}
+.sb2-4:before {
+  @include bubble-arrow-left();
+  border-right: 10px solid var(--color-orange-transparent);
+  border-top: 10px solid var(--color-orange-transparent);
+}
