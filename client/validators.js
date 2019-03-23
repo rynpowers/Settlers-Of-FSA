@@ -59,6 +59,7 @@ export const validateSettlement = id => {
   const neighbors = getSettlementNeighbors(id, board);
   return (
     neighbors.every(neighbor => neighbor.player === null) &&
-    roads.some(r => r.player === player.playerNumber)
+    roads.some(r => r.player === player.playerNumber) &&
+    settlement.build === 0
   );
 };
