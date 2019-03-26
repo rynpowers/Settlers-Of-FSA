@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Chat from './Chat';
 import Trade from './Trade';
 import socket from '../../socket';
@@ -32,6 +32,7 @@ export class TradeView extends Component {
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -47,6 +48,15 @@ export class TradeView extends Component {
         this.setState({ loaded: true }, () => this.setScroll());
       }
     });
+  }
+
+  handleClick(type, val) {
+    this.setState(prevState => ({
+      resources: {
+        ...prevState.resources,
+        [type]: prevState.resources[type] + val,
+      },
+    }));
   }
 
   setMessages(messages) {
@@ -106,7 +116,11 @@ export class TradeView extends Component {
     const { player } = this.props;
     return (
       <div style={style}>
-        <Trade resources={resources} player={player} />
+        <Trade
+          resources={resources}
+          player={player}
+          handleClick={this.handleClick}
+        />
         <div
           style={{
             display: 'flex',
