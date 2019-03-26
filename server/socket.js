@@ -18,10 +18,14 @@ module.exports = io => {
       );
     });
 
+    socket.on('message', message => {
+      const game = cache.games[message.room];
+      game.update(message);
+    });
+
     socket.on('get-messages', room => {
       const game = cache.games[room];
       game.sendMessages(messages => {
-        console.log('sending messages', messages);
         io.to(room).emit('trade-messages', messages);
       });
     });

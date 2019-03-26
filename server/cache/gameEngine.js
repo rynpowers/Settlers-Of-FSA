@@ -6,28 +6,7 @@ class GameEngine {
     this.players = {};
     this.gameState = JSON.parse(gameState);
     this.sockets = {};
-    this.messages = [
-      {
-        player: 1,
-        message:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make",
-      },
-      {
-        player: 2,
-        message:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make",
-      },
-      {
-        player: 3,
-        message:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make",
-      },
-      {
-        player: 4,
-        message:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make",
-      },
-    ];
+    this.messages = [];
   }
   addSocket(socket, player) {
     this.sockets = { ...this.sockets, [player]: socket };
@@ -94,6 +73,10 @@ class GameEngine {
         return this.updateDice(update);
       case 'player':
         return this.players[update.playerNumber];
+      case 'message':
+        this.messages.push(update);
+        console.log(this.messages);
+        return this.messages;
       default:
     }
   }
