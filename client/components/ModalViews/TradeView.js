@@ -14,6 +14,7 @@ export class TradeView extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loaded: false,
       messages: [],
       resources: {
         forest: 0,
@@ -42,17 +43,25 @@ export class TradeView extends Component {
 
     socket.on('trade-messages', messages => {
       this.setMessages(messages);
+      if (!this.state.loaded) {
+        this.setState({ loaded: true }, () => this.setScroll());
+      }
     });
   }
 
   setMessages(messages) {
+    const el = document.querySelector('.chat-container');
+    const cur = el.getBoundingClientRect().bottom + el.scrollTop;
+    const notScrolling = cur === el.scrollHeight;
+
     this.setState({ messages }, () => {
-      const el = document.querySelector('.chat-container');
-      const cur = el.getBoundingClientRect().bottom + el.scrollTop;
-      if (cur >= el.scrollHeight - 50) {
-        el.scrollTop = el.scrollHeight;
-      }
+      notScrolling && this.setScroll();
     });
+  }
+
+  setScroll() {
+    const el = document.querySelector('.chat-container');
+    el.scrollTop = el.scrollHeight;
   }
 
   handleKeyPress(e) {
@@ -82,6 +91,7 @@ export class TradeView extends Component {
       { message: '', height: 37, messages: [...messages, message] },
       () => {
         socket.emit('message', message);
+        this.setScroll();
       }
     );
   }
@@ -107,8 +117,9 @@ export class TradeView extends Component {
           }}
         >
           <div className="chat-container">
-            {messages.map(m => (
+            {messages.map((m, i) => (
               <Chat
+                style={i === 0 ? { marginTop: 'auto' } : {}}
                 key={m.date}
                 message={m.message}
                 player={m.player}
