@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import Chat from './Chat';
 import Trade from './Trade';
 import socket from '../../socket';
+import './TradeView.scss';
 
-const style = {
-  display: 'flex',
-  justifyContent: 'space-evenly',
-  width: '100%',
-  height: '100%',
+const initResources = {
+  forest: 0,
+  hill: 0,
+  pasture: 0,
+  mountain: 0,
+  field: 0,
 };
 
 export class TradeView extends Component {
@@ -16,13 +18,7 @@ export class TradeView extends Component {
     this.state = {
       loaded: false,
       messages: [],
-      resources: {
-        forest: 0,
-        hill: 0,
-        pasture: 0,
-        mountain: 0,
-        field: 0,
-      },
+      resources: { ...initResources },
       message: '',
       height: 16,
     };
@@ -33,6 +29,7 @@ export class TradeView extends Component {
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.handleSendResources = this.handleSendResources.bind(this);
   }
 
   componentDidMount() {
@@ -93,6 +90,23 @@ export class TradeView extends Component {
     };
   }
 
+  handleSendResources() {
+    const resources = Object.keys(this.state.resources).reduce((a, v) => {
+      const val = this.state.resources[v];
+      a[v] = val ? val * -1 : val;
+      return a;
+    }, {});
+
+    this.setState({ resources: { ...initResources } }, () => {
+      socket.emit('incoming-trade', {
+        type: 'trade',
+        player: this.props.playerNumber,
+        room: this.props.game.name,
+        resources,
+      });
+    });
+  }
+
   handleSubmit(e) {
     e.preventDefault();
     const { messages } = this.state;
@@ -115,21 +129,24 @@ export class TradeView extends Component {
     const { resources, messages, message, height } = this.state;
     const { player } = this.props;
     return (
-      <div style={style}>
-        <Trade
-          resources={resources}
-          player={player}
-          handleClick={this.handleClick}
-        />
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flex: 1,
-          }}
-        >
+      <div className="trade">
+        <div className="trade-windows">
+          <div className="trade-windows-create">
+            <Trade
+              resources={resources}
+              player={player}
+              handleClick={this.handleClick}
+            />
+            <button
+              type="submit"
+              className="trade-submit"
+              onClick={this.handleSendResources}
+            >
+              Send
+            </button>
+          </div>
+        </div>
+        <div className="trade-chat">
           <div className="chat-container">
             {messages.map((m, i) => (
               <Chat

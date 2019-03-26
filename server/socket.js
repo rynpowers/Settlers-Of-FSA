@@ -18,6 +18,12 @@ module.exports = io => {
       );
     });
 
+    socket.on('incoming-trade', trade => {
+      const game = cache.games[trade.room];
+      const trades = game.update(trade);
+      console.log(trades);
+    });
+
     socket.on('message', message => {
       const game = cache.games[message.room];
       game.update(message);
@@ -26,7 +32,7 @@ module.exports = io => {
     socket.on('get-messages', room => {
       const game = cache.games[room];
       game.sendMessages(messages => {
-        io.to(room).emit('trade-messages', messages);
+        io.to(socket.id).emit('trade-messages', messages);
       });
     });
 

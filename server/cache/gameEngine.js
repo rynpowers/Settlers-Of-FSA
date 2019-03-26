@@ -7,6 +7,7 @@ class GameEngine {
     this.gameState = JSON.parse(gameState);
     this.sockets = {};
     this.messages = [];
+    this.trades = { 1: {}, 2: {}, 3: {}, 4: {} };
   }
   addSocket(socket, player) {
     this.sockets = { ...this.sockets, [player]: socket };
@@ -75,8 +76,10 @@ class GameEngine {
         return this.players[update.playerNumber];
       case 'message':
         this.messages.push(update);
-        console.log(this.messages);
         return this.messages;
+      case 'trade':
+        this.trades[update.player] = update.resources;
+        return this.trades;
       default:
     }
   }
