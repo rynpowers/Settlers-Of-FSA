@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Chat from './Chat';
 import Trade from './Trade';
+import TradeCreate from './TradeCreate';
+import TradeOffer from './TradeOffer';
 import socket from '../../socket';
 import './TradeView.scss';
 
-const initResources = {
-  forest: 0,
-  hill: 0,
-  pasture: 0,
-  mountain: 0,
-  field: 0,
+const initTrades = {
+  2: { forest: -1, hill: 3, pasture: 3, mountain: -2, field: 3 },
+  3: { forest: -2, hill: 2, pasture: 2, mountain: -3, field: 2 },
+  4: { forest: -3, hill: 1, pasture: 1, mountain: -1, field: 1 },
 };
 
 export class TradeView extends Component {
@@ -18,7 +18,8 @@ export class TradeView extends Component {
     this.state = {
       loaded: false,
       messages: [],
-      resources: { ...initResources },
+      selectedTrade: 0,
+      trades: { ...initTrades },
       message: '',
       height: 16,
     };
@@ -28,7 +29,7 @@ export class TradeView extends Component {
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleClick = this.handleClick.bind(this);
+    this.handleViewTrade = this.handleViewTrade.bind(this);
     this.handleSendResources = this.handleSendResources.bind(this);
   }
 
@@ -47,13 +48,17 @@ export class TradeView extends Component {
     });
   }
 
-  handleClick(type, val) {
-    this.setState(prevState => ({
-      resources: {
-        ...prevState.resources,
-        [type]: prevState.resources[type] + val,
-      },
-    }));
+  handleSendResources(resources) {
+    socket.emit('incoming-trade', {
+      type: 'trade',
+      player: this.props.playerNumber,
+      room: this.props.game.name,
+      resources,
+    });
+  }
+
+  handleViewTrade(selectedTrade) {
+    this.setState({ selectedTrade });
   }
 
   setMessages(messages) {
@@ -90,23 +95,6 @@ export class TradeView extends Component {
     };
   }
 
-  handleSendResources() {
-    const resources = Object.keys(this.state.resources).reduce((a, v) => {
-      const val = this.state.resources[v];
-      a[v] = val ? val * -1 : val;
-      return a;
-    }, {});
-
-    this.setState({ resources: { ...initResources } }, () => {
-      socket.emit('incoming-trade', {
-        type: 'trade',
-        player: this.props.playerNumber,
-        room: this.props.game.name,
-        resources,
-      });
-    });
-  }
-
   handleSubmit(e) {
     e.preventDefault();
     const { messages } = this.state;
@@ -126,24 +114,48 @@ export class TradeView extends Component {
   }
 
   render() {
-    const { resources, messages, message, height } = this.state;
-    const { player } = this.props;
+    const { trades, selectedTrade, messages, message, height } = this.state;
+    const { player, playerNumber, game } = this.props;
     return (
       <div className="trade">
         <div className="trade-windows">
           <div className="trade-windows-create">
-            <Trade
-              resources={resources}
-              player={player}
-              handleClick={this.handleClick}
-            />
-            <button
-              type="submit"
-              className="trade-submit"
-              onClick={this.handleSendResources}
-            >
-              Send
-            </button>
+            {this.state.selectedTrade ||
+            playerNumber !== game.playerTurn + 1 ? (
+              <Fragment>
+                <div
+                  style={{ display: !this.state.selectedTrade && 'none' }}
+                  onClick={() => this.setState({ selectedTrade: 0 })}
+                  className="modal-close"
+                >
+                  <div />
+                </div>
+                <Trade
+                  hidden={playerNumber === game.playerTurn + 1}
+                  resources={trades[selectedTrade]}
+                  player={player}
+                  handleClick={this.handleClick}
+                />
+              </Fragment>
+            ) : (
+              <TradeCreate
+                player={player}
+                handleSubmitCB={this.handleSendResources}
+              />
+            )}
+          </div>
+          <div className="trade-windows-offers">
+            {Object.keys(this.state.trades)
+              .filter(trade => trade != playerNumber)
+              .map(trade => (
+                <TradeOffer
+                  key={trade}
+                  player={trade}
+                  resources={this.state.trades[trade]}
+                  selectedTrade={selectedTrade}
+                  handleViewTrade={this.handleViewTrade}
+                />
+              ))}
           </div>
         </div>
         <div className="trade-chat">

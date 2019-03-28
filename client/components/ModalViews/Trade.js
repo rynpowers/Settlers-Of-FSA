@@ -7,7 +7,16 @@ const style = {
   justifyContent: 'space-evenly',
 };
 
+const initResources = {
+  forest: 0,
+  hill: 0,
+  pasture: 0,
+  mountain: 0,
+  field: 0,
+};
+
 const Trade = ({ handleClick, resources, hidden, player }) => {
+  resources = resources || initResources;
   return (
     <div className="trade-resources" style={style}>
       {Object.keys(resources).map(type => (
