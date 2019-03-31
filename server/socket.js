@@ -19,15 +19,13 @@ module.exports = io => {
     });
 
     socket.on('incoming-trade', trade => {
-      const game = cache.games[trade.room];
-      const trades = game.update(trade);
-      socket.broadcast.to(trade.room).emit('trades', { trades });
+      const trades = cache.updateGame(trade);
+      socket.broadcast.to(trade.game).emit('trades', { trades });
     });
 
     socket.on('message', message => {
-      const game = cache.games[message.room];
-      const messages = game.update(message);
-      socket.broadcast.to(message.room).emit('messages', { messages });
+      const messages = cache.updateGame(message);
+      socket.broadcast.to(message.game).emit('messages', { messages });
     });
 
     socket.on('get', (key, room) => {
@@ -38,12 +36,12 @@ module.exports = io => {
     });
 
     socket.on('updateBoard', update => {
-      const board = cache.update(update);
+      const board = cache.updateGame(update);
       io.to(update.game).emit('dispatch', { type: 'SET_BOARD', board });
     });
 
     socket.on('updateGame', update => {
-      const game = cache.update(update);
+      const game = cache.updateGame(update);
       io.to(update.game).emit('dispatch', { type: 'SET_GAME', game });
     });
 

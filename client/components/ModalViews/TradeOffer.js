@@ -28,7 +28,7 @@ function TradeOffer({
           ];
         return a;
       }, [])}
-      {game.playerTurn + 1 == player.playerNumber && (
+      {game.playerTurn == player.playerNumber && (
         <div
           className="trade-offer-btns"
           style={{ display: 'flex', flexDirection: 'column' }}

@@ -63,7 +63,7 @@ export class TradeView extends Component {
           player: playerNumber,
           type: 'trade',
           action: 'reject',
-          room: this.props.game.name,
+          game: this.props.game.name,
         });
       }
     );
@@ -74,7 +74,7 @@ export class TradeView extends Component {
       player: playerNumber,
       type: 'trade',
       action: 'accept',
-      room: this.props.game.name,
+      game: this.props.game.name,
     });
   }
 
@@ -90,7 +90,7 @@ export class TradeView extends Component {
       type: 'trade',
       action: 'add',
       player: this.props.player.playerNumber,
-      room: this.props.game.name,
+      game: this.props.game.name,
       resources,
     });
   }
@@ -98,14 +98,11 @@ export class TradeView extends Component {
   render() {
     const { trades, selectedTrade, offered } = this.state;
     const { player, playerNumber, game } = this.props;
-
     return (
       <div className="trade">
         <div className="trade-windows">
           <div className="trade-windows-create">
-            {offered ||
-            selectedTrade ||
-            playerNumber === game.playerTurn + 1 ? (
+            {offered || selectedTrade || playerNumber == game.playerTurn ? (
               <Fragment>
                 <div
                   style={{ display: !this.state.selectedTrade && 'none' }}

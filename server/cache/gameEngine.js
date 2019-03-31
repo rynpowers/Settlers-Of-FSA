@@ -64,19 +64,33 @@ class GameEngine {
     };
   }
 
+  exchangeResources(player) {
+    const { playerTurn } = this.gameState;
+    const resources = this.trades[player];
+    Object.keys(resources).forEach(type => {
+      this.players[playerTurn].resources[type] += resources[type];
+      this.players[player].resources[type] -= resources[type];
+    });
+  }
+
   handleTrade({ resources, player, action }) {
     switch (action) {
       case 'add':
         this.trades[player] = resources;
-        return this.trades;
+        return { type: null, payload: this.trades };
       case 'reject':
         delete this.trades[player];
-        return this.trades;
+        return { type: null, payload: this.trades };
       case 'accept':
-        return this.exchangeResources();
+        return this.exchangeResources(player);
       default:
         return this.trades;
     }
+  }
+
+  handleMessages(message) {
+    this.messages.push(message);
+    return { type: null, payload: this.messages };
   }
 
   update(update) {
@@ -90,8 +104,7 @@ class GameEngine {
       case 'player':
         return this.players[update.playerNumber];
       case 'message':
-        this.messages.push(update);
-        return this.messages;
+        return this.handleMessages(update);
       case 'trade':
         return this.handleTrade(update);
       default:

@@ -56,7 +56,7 @@ export class Chat extends Component {
       type: 'message',
       message: this.state.message,
       player: this.props.player.playerNumber,
-      room: this.props.game.name,
+      game: this.props.game.name,
       date: `${Date.now()}-${this.props.player.playerNumber}`,
     };
   }
