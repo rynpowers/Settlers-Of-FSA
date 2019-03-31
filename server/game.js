@@ -1,6 +1,6 @@
 module.exports = name => ({
   name,
-  playerTurn: 0,
+  playerTurn: 1,
   responded: [true, false, false, false, false],
   devCards: [
     ...Array(14).fill('knight'),

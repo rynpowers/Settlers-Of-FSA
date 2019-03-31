@@ -30,7 +30,6 @@ export class TradeCreate extends Component {
   }
 
   handleSubmit() {
-    const { handleSubmitCB } = this.props;
     const resources = Object.keys(this.state.resources).reduce((a, v) => {
       const val = this.state.resources[v];
       a[v] = val ? val * -1 : val;
@@ -38,7 +37,7 @@ export class TradeCreate extends Component {
     }, {});
 
     this.setState({ resources: { ...initResources } }, () => {
-      handleSubmitCB(resources);
+      this.props.handleSubmitCB(resources);
     });
   }
 
@@ -46,17 +45,20 @@ export class TradeCreate extends Component {
     return (
       <Fragment>
         <Trade
+          hidden={this.props.hidden}
           resources={this.state.resources}
           player={this.props.player}
           handleClick={this.handleClick}
         />
-        <button
-          onClick={this.handleSubmit}
-          type="submit"
-          className="trade-btn trade-submit"
-        >
-          Send
-        </button>
+        {!this.props.hidden && (
+          <button
+            onClick={this.handleSubmit}
+            type="submit"
+            className="trade-btn trade-submit"
+          >
+            Send
+          </button>
+        )}
       </Fragment>
     );
   }

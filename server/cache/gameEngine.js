@@ -7,7 +7,7 @@ class GameEngine {
     this.gameState = JSON.parse(gameState);
     this.sockets = {};
     this.messages = [];
-    this.trades = { 1: {}, 2: {}, 3: {}, 4: {} };
+    this.trades = {};
   }
   addSocket(socket, player) {
     this.sockets = { ...this.sockets, [player]: socket };
@@ -24,8 +24,8 @@ class GameEngine {
     }
   }
 
-  sendMessages(fn) {
-    fn(this.messages);
+  send(key, fn) {
+    fn({ [key]: this[key] });
   }
 
   parsePlayer(player) {
@@ -64,6 +64,21 @@ class GameEngine {
     };
   }
 
+  handleTrade({ resources, player, action }) {
+    switch (action) {
+      case 'add':
+        this.trades[player] = resources;
+        return this.trades;
+      case 'reject':
+        delete this.trades[player];
+        return this.trades;
+      case 'accept':
+        return this.exchangeResources();
+      default:
+        return this.trades;
+    }
+  }
+
   update(update) {
     switch (update.type) {
       case 'road':
@@ -78,8 +93,7 @@ class GameEngine {
         this.messages.push(update);
         return this.messages;
       case 'trade':
-        this.trades[update.player] = update.resources;
-        return this.trades;
+        return this.handleTrade(update);
       default:
     }
   }

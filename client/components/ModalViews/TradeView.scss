@@ -11,8 +11,9 @@
     flex-direction: column;
 
     &-create {
-      flex: 1 1 50%;
+      flex: 0 1 50%;
       display: flex;
+      padding: 2rem;
     }
     &-offers {
       flex: 1 1 50%;

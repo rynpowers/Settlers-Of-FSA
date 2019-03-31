@@ -21,18 +21,19 @@ module.exports = io => {
     socket.on('incoming-trade', trade => {
       const game = cache.games[trade.room];
       const trades = game.update(trade);
-      console.log(trades);
+      socket.broadcast.to(trade.room).emit('trades', { trades });
     });
 
     socket.on('message', message => {
       const game = cache.games[message.room];
-      game.update(message);
+      const messages = game.update(message);
+      socket.broadcast.to(message.room).emit('messages', { messages });
     });
 
-    socket.on('get-messages', room => {
+    socket.on('get', (key, room) => {
       const game = cache.games[room];
-      game.sendMessages(messages => {
-        io.to(socket.id).emit('trade-messages', messages);
+      game.send(key, payload => {
+        io.to(socket.id).emit(key, payload);
       });
     });
 

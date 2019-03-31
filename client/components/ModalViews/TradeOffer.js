@@ -2,7 +2,16 @@ import React from 'react';
 import TradeResource from './TradeResource';
 import './TradeOffer.scss';
 
-function TradeOffer({ resources, player, selectedTrade, handleViewTrade }) {
+function TradeOffer({
+  resources,
+  selectedTrade,
+  handleViewTrade,
+  handleAcceptTrade,
+  handleRejectTrade,
+  player,
+  trade,
+  game,
+}) {
   return (
     <div className="trade-offer">
       {Object.keys(resources).reduce((a, key) => {
@@ -19,33 +28,37 @@ function TradeOffer({ resources, player, selectedTrade, handleViewTrade }) {
           ];
         return a;
       }, [])}
-      <div
-        className="trade-offer-btns"
-        style={{ display: 'flex', flexDirection: 'column' }}
-      >
-        <button
-          style={{ display: player === selectedTrade && 'none' }}
-          onClick={() => handleViewTrade(player)}
-          type="submit"
-          className="trade-btn trade-submit"
+      {game.playerTurn + 1 == player.playerNumber && (
+        <div
+          className="trade-offer-btns"
+          style={{ display: 'flex', flexDirection: 'column' }}
         >
-          View
-        </button>
-        <button
-          style={{ display: player !== selectedTrade && 'none' }}
-          type="submit"
-          className="trade-btn trade-accept"
-        >
-          Accept
-        </button>
-        <button
-          style={{ display: player !== selectedTrade && 'none' }}
-          type="submit"
-          className="trade-btn trade-reject"
-        >
-          Reject
-        </button>
-      </div>
+          <button
+            style={{ display: trade == selectedTrade && 'none' }}
+            onClick={() => handleViewTrade(trade)}
+            type="submit"
+            className="trade-btn trade-submit"
+          >
+            View
+          </button>
+          <button
+            style={{ display: trade != selectedTrade && 'none' }}
+            type="submit"
+            className="trade-btn trade-accept"
+            onClick={() => handleAcceptTrade(trade)}
+          >
+            Accept
+          </button>
+          <button
+            style={{ display: trade != selectedTrade && 'none' }}
+            type="submit"
+            className="trade-btn trade-reject"
+            onClick={() => handleRejectTrade(trade)}
+          >
+            Reject
+          </button>
+        </div>
+      )}
     </div>
   );
 }
