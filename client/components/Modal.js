@@ -16,10 +16,12 @@ class Modal extends Component {
   }
 
   render() {
+    const views = ['trade', 'build'];
+    const modalActive = views.includes(this.props.game.mode);
     return (
-      <div className={`modal ${this.props.modal && 'modal-active'}`}>
-        {this.renderModalView(this.props.modalView)}
-        <div onClick={() => this.props.toggleModal('')} className="modal-close">
+      <div className={`modal ${modalActive && 'modal-active'}`}>
+        {this.renderModalView(this.props.game.mode)}
+        <div onClick={() => this.props.updateMode('')} className="modal-close">
           <div />
         </div>
       </div>
@@ -29,7 +31,6 @@ class Modal extends Component {
 
 const mapStateToProps = ({ menu, player, game }) => ({
   modal: menu.modal,
-  modalView: menu.modalView,
   playerNumber: player.playerNumber,
   player,
   game,
@@ -38,10 +39,7 @@ const mapStateToProps = ({ menu, player, game }) => ({
 export default connect(
   mapStateToProps,
   {
-    toggleModal: actions.toggleModal,
-    updateModalView: actions.updateModalView,
     updateMode: actions.updateMode,
     toggleExitMenu: actions.toggleExitMenu,
-    updateOffer: actions.updateOffer,
   }
 )(Modal);

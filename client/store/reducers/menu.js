@@ -1,11 +1,4 @@
-import {
-  TOGGLE_MENU,
-  TOGGLE_MODAL,
-  TOGGLE_EXIT_MENU,
-  RESET,
-  TOGGLE_TRADE,
-  UPDATE_MODAL_VIEW,
-} from '../actions';
+import { TOGGLE_MENU, TOGGLE_EXIT_MENU, RESET } from '../actions';
 
 const initailState = {
   main: false,
@@ -18,12 +11,6 @@ const menu = (state = initailState, action) => {
   switch (action.type) {
     case TOGGLE_MENU:
       return { ...state, main: !state.main };
-    case TOGGLE_TRADE:
-      return { ...state, modal: true, modalView: 'trade' };
-    case TOGGLE_MODAL:
-      return { ...state, modal: !state.modal, modalView: action.view };
-    case UPDATE_MODAL_VIEW:
-      return { ...state, modalView: action.view };
     case TOGGLE_EXIT_MENU:
       return {
         ...state,
