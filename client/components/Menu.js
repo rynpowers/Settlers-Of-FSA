@@ -5,11 +5,40 @@ import {
   toggleExitMenu,
   updateMode,
 } from '../store/actions';
+import socket from '../socket';
 import Exit from './Exit';
 import { connect } from 'react-redux';
 import './Menu.scss';
 
 class Menu extends Component {
+  constructor(props) {
+    super(props);
+    this.handleMenuCLick = this.handleMenuCLick.bind(this);
+  }
+
+  toggle(menu, cb) {
+    this.props.toggleModal(menu);
+    if (cb) cb();
+  }
+
+  handleMenuCLick(e) {
+    let isParent = e.target.dataset.value !== undefined;
+    let elem = isParent ? e.target : e.target.parentNode;
+    let menu = elem.dataset.value;
+
+    switch (menu) {
+      case 'trade':
+        return this.toggle(menu, () =>
+          socket.emit('updateGame', {
+            type: 'game',
+            game: this.props.game.name,
+            payload: { mode: 'trade' },
+          })
+        );
+      default:
+        return this.props.toggleModal(menu);
+    }
+  }
   render() {
     return (
       <Fragment>
@@ -34,11 +63,7 @@ class Menu extends Component {
         </div>
         <Exit handleClick={this.props.toggleMenu} show={this.props.main} />
         <div
-          onClick={e => {
-            let isParent = e.target.dataset.value !== undefined;
-            let elem = isParent ? e.target : e.target.parentNode;
-            elem.dataset.value && this.props.toggleModal(elem.dataset.value);
-          }}
+          onClick={this.handleMenuCLick}
           className={`options ${this.props.main && 'expand'}`}
         >
           <div data-value="build" className="menu menu-option menu-option-1">
@@ -65,10 +90,11 @@ class Menu extends Component {
   }
 }
 
-const mapStateToProps = ({ menu }) => ({
+const mapStateToProps = ({ menu, game }) => ({
   main: menu.main,
   modal: menu.modal,
   exit: menu.exit,
+  game,
 });
 
 export default connect(

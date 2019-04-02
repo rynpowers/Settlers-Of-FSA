@@ -14,30 +14,24 @@ class Modal extends Component {
       default:
     }
   }
+
   render() {
-    const views = ['trade', 'build'];
     return (
       <div className={`modal ${this.props.modal && 'modal-active'}`}>
         {this.renderModalView(this.props.modalView)}
-        {views.includes(this.props.modalView) && (
-          <div
-            onClick={() => this.props.toggleModal('')}
-            className="modal-close"
-          >
-            <div />
-          </div>
-        )}
+        <div onClick={() => this.props.toggleModal('')} className="modal-close">
+          <div />
+        </div>
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ menu, player, game, localState }) => ({
+const mapStateToProps = ({ menu, player, game }) => ({
   modal: menu.modal,
   modalView: menu.modalView,
   playerNumber: player.playerNumber,
   player,
-  localState,
   game,
 });
 

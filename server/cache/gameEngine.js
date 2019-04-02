@@ -93,6 +93,14 @@ class GameEngine {
     return { type: null, payload: this.messages };
   }
 
+  handleGameState({ payload }) {
+    console.log('handling gamestate', payload);
+    Object.keys(payload).forEach(key => {
+      this.gameState[key] = payload[key];
+    });
+    return { type: 'game', payload: this.gameState };
+  }
+
   update(update) {
     switch (update.type) {
       case 'road':
@@ -107,6 +115,8 @@ class GameEngine {
         return this.handleMessages(update);
       case 'trade':
         return this.handleTrade(update);
+      case 'game':
+        return this.handleGameState(update);
       default:
     }
   }
