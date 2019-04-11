@@ -140,10 +140,10 @@ class Resource extends Component {
   }
 }
 
-const mapStateToProps = ({ board, player, localState }) => ({
+const mapStateToProps = ({ board, player, game }) => ({
   board,
   player,
-  mode: localState.mode,
+  mode: game.mode,
 });
 
 export default connect(

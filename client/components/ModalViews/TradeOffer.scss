@@ -1,0 +1,12 @@
+.trade-offer {
+  display: flex;
+  justify-content: space-evenly;
+  color: var(--color-white);
+  margin: 0.25rem;
+  border-radius: 5px;
+  align-items: center;
+}
+
+.trade-offer * {
+  transform: scale(0.9);
+}

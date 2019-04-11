@@ -5,7 +5,14 @@ class GameEngine {
     this.board = JSON.parse(board);
     this.players = {};
     this.gameState = JSON.parse(gameState);
+    this.sockets = {};
+    this.messages = [];
+    this.trades = {};
   }
+  addSocket(socket, player) {
+    this.sockets = { ...this.sockets, [player]: socket };
+  }
+
   addPlayer(player) {
     const { playerNumber, state } = player;
     if (!this.players[playerNumber]) {
@@ -15,6 +22,10 @@ class GameEngine {
       );
       console.log('adding player:', this.gameState.players);
     }
+  }
+
+  send(key, fn) {
+    fn({ [key]: this[key] });
   }
 
   parsePlayer(player) {
@@ -33,13 +44,12 @@ class GameEngine {
     };
   }
 
-  updateAllPlayers(game) {
-    console.log(game, this.players);
-    Object.keys(this.players).forEach(player => {
+  updatePlayers(...args) {
+    args.forEach(player => {
       this.gameState.players[player] = this.parsePlayer(this.players[player]);
       Player.update(
         { state: JSON.stringify(this.players[player]) },
-        { where: { playerNumber: player, gameName: game } }
+        { where: { playerNumber: player, gameName: this.gameState.name } }
       );
     });
   }
@@ -53,6 +63,46 @@ class GameEngine {
     };
   }
 
+  exchangeResources(player) {
+    const { playerTurn } = this.gameState;
+    const resources = this.trades[player];
+    Object.keys(resources).forEach(type => {
+      this.players[playerTurn].resources[type] += resources[type];
+      this.players[player].resources[type] -= resources[type];
+    });
+    this.gameState.mode = '';
+    this.updatePlayers(playerTurn, player);
+    this.trades = {};
+    return { payload: { game: this.gameState, accepted: true } };
+  }
+
+  handleTrade({ resources, player, action }) {
+    switch (action) {
+      case 'add':
+        this.trades[player] = resources;
+        return { type: null, payload: this.trades };
+      case 'reject':
+        delete this.trades[player];
+        return { type: null, payload: this.trades };
+      case 'accept':
+        return this.exchangeResources(player);
+      default:
+        return this.trades;
+    }
+  }
+
+  handleMessages(message) {
+    this.messages.push(message);
+    return { type: null, payload: this.messages };
+  }
+
+  handleGameState({ payload }) {
+    Object.keys(payload).forEach(key => {
+      this.gameState[key] = payload[key];
+    });
+    return { payload: this.gameState };
+  }
+
   update(update) {
     switch (update.type) {
       case 'road':
@@ -63,6 +113,12 @@ class GameEngine {
         return this.updateDice(update);
       case 'player':
         return this.players[update.playerNumber];
+      case 'message':
+        return this.handleMessages(update);
+      case 'trade':
+        return this.handleTrade(update);
+      case 'game':
+        return this.handleGameState(update);
       default:
     }
   }
@@ -78,26 +134,28 @@ class GameEngine {
     return { type: 'board', payload: this.board };
   }
 
-  updateDice({ diceValue, game }) {
+  updateDice({ diceValue }) {
     this.gameState.diceValue = diceValue;
-    this.distributeResources(diceValue);
-    this.updateAllPlayers(game);
+    this.updatePlayers(...this.distributeResources(diceValue));
     return { type: 'game', payload: this.gameState };
   }
 
   distributeResources(diceValue) {
     const { resources, settlements } = this.board;
+    const updatedPlayers = {};
     Object.keys(resources).forEach(id => {
       const resource = resources[id];
       if (resource.diceValue == diceValue) {
         resource.settlements.forEach(settlementId => {
           const { build, player } = settlements[settlementId];
           if (build) {
+            updatedPlayers[player] = true;
             this.players[player].resources[resource.type] += build;
           }
         });
       }
     });
+    return Object.keys(updatedPlayers);
   }
 }
 

@@ -25,13 +25,15 @@ class GameCache {
     }
   }
 
-  update(update) {
+  updateGame(update) {
     const curGame = this.games[update.game];
     const newUpdate = curGame.update(update);
-    Game.update(
-      { [newUpdate.type]: JSON.stringify(newUpdate.payload) },
-      { where: { name: update.game } }
-    );
+    if (newUpdate.type) {
+      Game.update(
+        { [newUpdate.type]: JSON.stringify(newUpdate.payload) },
+        { where: { name: update.game } }
+      );
+    }
     return newUpdate.payload;
   }
 

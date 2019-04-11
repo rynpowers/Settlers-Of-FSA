@@ -1,24 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { toggleModal } from '../store/actions';
-import { Build } from './ModalViews';
+import * as actions from '../store/actions';
+import { Build, TradeView } from './ModalViews';
 import './Modal.scss';
 
 class Modal extends Component {
   renderModalView(view) {
-    const { playerNumber } = this.props;
     switch (view) {
       case 'build':
-        return <Build playerNumber={playerNumber} />;
+        return <Build {...this.props} />;
+      case 'trade':
+        return <TradeView {...this.props} />;
       default:
-        return <div />;
     }
   }
+
   render() {
+    const views = ['trade', 'build'];
+    const modalActive = views.includes(this.props.game.mode);
     return (
-      <div className={`modal ${this.props.modal && 'modal-active'}`}>
-        {this.renderModalView(this.props.modalView)}
-        <div onClick={() => this.props.toggleModal('')} className="modal-close">
+      <div className={`modal ${modalActive && 'modal-active'}`}>
+        {this.renderModalView(this.props.game.mode)}
+        <div onClick={() => this.props.updateMode('')} className="modal-close">
           <div />
         </div>
       </div>
@@ -26,13 +29,17 @@ class Modal extends Component {
   }
 }
 
-const mapStateToProps = ({ menu, player }) => ({
+const mapStateToProps = ({ menu, player, game }) => ({
   modal: menu.modal,
-  modalView: menu.modalView,
   playerNumber: player.playerNumber,
+  player,
+  game,
 });
 
 export default connect(
   mapStateToProps,
-  { toggleModal }
+  {
+    updateMode: actions.updateMode,
+    toggleExitMenu: actions.toggleExitMenu,
+  }
 )(Modal);

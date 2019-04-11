@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { updateMode, toggleExitMenu } from '../../store/actions';
 import './Build.scss';
 
 class Build extends Component {
@@ -69,11 +67,4 @@ class Build extends Component {
   }
 }
 
-const mapStateToProps = ({ player }) => ({
-  playerNumber: player.playerNumber,
-});
-
-export default connect(
-  mapStateToProps,
-  { updateMode, toggleExitMenu }
-)(Build);
+export default Build;

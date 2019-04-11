@@ -49,7 +49,7 @@ class BoardController extends Component {
   }
 }
 
-const mapStateToProps = ({ localState }) => ({ mode: localState.mode });
+const mapStateToProps = ({ game }) => ({ mode: game.mode });
 
 export default connect(
   mapStateToProps,

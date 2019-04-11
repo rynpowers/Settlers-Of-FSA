@@ -1,0 +1,65 @@
+.trade {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  height: 100%;
+  &-windows {
+    position: relative;
+    padding: 2rem 0;
+    flex: 3 1 auto;
+    display: flex;
+    flex-direction: column;
+
+    &-create {
+      flex: 0 1 50%;
+      display: flex;
+      padding: 2rem;
+    }
+    &-offers {
+      flex: 1 1 50%;
+      display: flex;
+      flex-direction: column;
+      overflow-y: scroll;
+    }
+  }
+
+  &-chat {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    flex: 2 1 auto;
+  }
+
+  &-btn {
+    border: none;
+    height: 4rem;
+    width: 6rem;
+    color: var(--color-white);
+    cursor: pointer;
+    border-radius: 5px;
+    outline: none;
+    font-size: 1.4rem;
+  }
+
+  &-submit {
+    background-color: var(--color-blue);
+  }
+
+  &-accept {
+    background-color: var(--color-green);
+  }
+  &-reject {
+    background-color: var(--color-red);
+  }
+
+  &-submit:hover {
+    background-color: var(--color-blue-dark);
+  }
+  &-accept:hover {
+    background-color: var(--color-green-dark);
+  }
+  &-reject:hover {
+    background-color: var(--color-red-dark);
+  }
+}

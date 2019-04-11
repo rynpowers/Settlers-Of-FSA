@@ -8,8 +8,8 @@
     display: flex;
     flex-direction: column;
     background-color: var(--color-sand);
-    height: 9.6rem;
-    width: 8.2rem;
+    height: var(--resource-height);
+    width: var(--resource-width);
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     z-index: 1;
 
@@ -44,27 +44,27 @@
     }
 
     .desert {
-      background-image: url('../../../public/images/resources/desert.png');
+      background-image: var(--desert);
     }
 
     .forest {
-      background-image: url('../../../public/images/resources/forest.png');
+      background-image: var(--forest);
     }
 
     .hill {
-      background-image: url('../../../public/images/resources/hill.png');
+      background-image: var(--hill);
     }
 
     .pasture {
-      background-image: url('../../../public/images/resources/pasture.png');
+      background-image: var(--pasture);
     }
 
     .field {
-      background-image: url('../../../public/images/resources/field.png');
+      background-image: var(--field);
     }
 
     .mountain {
-      background-image: url('../../../public/images/resources/mountain.png');
+      background-image: var(--mountain);
     }
 
     &-image {
@@ -73,8 +73,8 @@
       top: 50%;
       left: 49%;
       transform: translate(-50%, -50%) scale(0.85);
-      height: 9.6rem;
-      width: 8.2rem;
+      height: var(--resource-height);
+      width: var(--resource-width);
       clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
       z-index: 5;
 
@@ -89,7 +89,7 @@
       &-robber {
         height: 4.6rem;
         width: 2.2rem;
-        background-image: url('../../../public/images/robber.png');
+        background-image: var(--robber);
         background-size: cover;
       }
     }
