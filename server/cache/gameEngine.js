@@ -44,13 +44,12 @@ class GameEngine {
     };
   }
 
-  updateAllPlayers(game) {
-    console.log(game, this.players);
-    Object.keys(this.players).forEach(player => {
+  updatePlayers(...args) {
+    args.forEach(player => {
       this.gameState.players[player] = this.parsePlayer(this.players[player]);
       Player.update(
         { state: JSON.stringify(this.players[player]) },
-        { where: { playerNumber: player, gameName: game } }
+        { where: { playerNumber: player, gameName: this.gameState.name } }
       );
     });
   }
@@ -71,6 +70,10 @@ class GameEngine {
       this.players[playerTurn].resources[type] += resources[type];
       this.players[player].resources[type] -= resources[type];
     });
+    this.gameState.mode = '';
+    this.updatePlayers(playerTurn, player);
+    this.trades = {};
+    return { payload: { game: this.gameState, accepted: true } };
   }
 
   handleTrade({ resources, player, action }) {
@@ -94,11 +97,10 @@ class GameEngine {
   }
 
   handleGameState({ payload }) {
-    console.log('handling gamestate', payload);
     Object.keys(payload).forEach(key => {
       this.gameState[key] = payload[key];
     });
-    return { type: 'game', payload: this.gameState };
+    return { payload: this.gameState };
   }
 
   update(update) {
@@ -132,26 +134,28 @@ class GameEngine {
     return { type: 'board', payload: this.board };
   }
 
-  updateDice({ diceValue, game }) {
+  updateDice({ diceValue }) {
     this.gameState.diceValue = diceValue;
-    this.distributeResources(diceValue);
-    this.updateAllPlayers(game);
+    this.updatePlayers(...this.distributeResources(diceValue));
     return { type: 'game', payload: this.gameState };
   }
 
   distributeResources(diceValue) {
     const { resources, settlements } = this.board;
+    const updatedPlayers = {};
     Object.keys(resources).forEach(id => {
       const resource = resources[id];
       if (resource.diceValue == diceValue) {
         resource.settlements.forEach(settlementId => {
           const { build, player } = settlements[settlementId];
           if (build) {
+            updatedPlayers[player] = true;
             this.players[player].resources[resource.type] += build;
           }
         });
       }
     });
+    return Object.keys(updatedPlayers);
   }
 }
 

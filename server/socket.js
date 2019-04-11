@@ -20,7 +20,12 @@ module.exports = io => {
 
     socket.on('incoming-trade', trade => {
       const trades = cache.updateGame(trade);
-      socket.broadcast.to(trade.game).emit('trades', { trades });
+      if (trades.accepted) {
+        const { game } = trades;
+        io.to(trade.game).emit('dispatch', { type: 'SET_GAME', game });
+      } else {
+        socket.broadcast.to(trade.game).emit('trades', { trades });
+      }
     });
 
     socket.on('message', message => {

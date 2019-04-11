@@ -13,6 +13,7 @@ export class TradeView extends Component {
       selectedTrade: 0,
       trades: {},
       offered: false,
+      loaded: false,
     };
     this.handleViewTrade = this.handleViewTrade.bind(this);
     this.handleAcceptTrade = this.handleAcceptTrade.bind(this);
@@ -21,15 +22,32 @@ export class TradeView extends Component {
   }
 
   componentDidMount() {
+    if (this.props.playerNumber === this.props.game.playerTurn) {
+      socket.emit('updateGame', {
+        type: 'game',
+        game: this.props.game.name,
+        payload: { mode: 'trade' },
+      });
+    }
     socket.emit('get', 'trades', this.props.game.name);
-
     socket.on('trades', ({ trades }) => {
-      this.setState({ trades, offered: !!trades[this.props.playerNumber] });
+      this.setState({
+        trades,
+        offered: !!trades[this.props.playerNumber],
+        loaded: true,
+      });
     });
   }
 
   componentWillUnmount() {
     socket.removeAllListeners('trades');
+    if (this.props.playerNumber === this.props.game.playerTurn) {
+      socket.emit('updateGame', {
+        type: 'game',
+        game: this.props.game.name,
+        payload: { mode: '' },
+      });
+    }
   }
 
   handleViewTrade(selectedTrade) {
@@ -98,6 +116,9 @@ export class TradeView extends Component {
   render() {
     const { trades, selectedTrade, offered } = this.state;
     const { player, playerNumber, game } = this.props;
+
+    if (!this.state.loaded) return <div>loading...</div>;
+
     return (
       <div className="trade">
         <div className="trade-windows">

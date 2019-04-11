@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import * as actions from '../store/actions';
 import Exit from './Exit';
+import MenuBtn from './MenuBtn';
 import { connect } from 'react-redux';
 import './Menu.scss';
 
@@ -13,12 +14,14 @@ class Menu extends Component {
   handleMenuCLick(e) {
     let isParent = e.target.dataset.value !== undefined;
     let elem = isParent ? e.target : e.target.parentNode;
-    this.props.updateMode(elem.dataset.value);
+    let mode = elem.dataset.value;
+    this.props.updateMode(mode);
   }
 
   render() {
     const { exit, toggleMenu, toggleExitMenu, main, updateMode } = this.props;
     const menuClassList = `${main && 'active'} ${exit && 'exit-active'}`;
+    const btns = ['build', 'trade', 'dev', 'roll', 'exit'];
 
     return (
       <Fragment>
@@ -34,21 +37,9 @@ class Menu extends Component {
           onClick={this.handleMenuCLick}
           className={`options ${main && 'expand'}`}
         >
-          <div data-value="build" className="menu menu-option menu-option-1">
-            <h3>Build</h3>
-          </div>
-          <div data-value="trade" className="menu menu-option menu-option-2">
-            <h3>Trade</h3>
-          </div>
-          <div data-value="dev" className="menu menu-option menu-option-3">
-            <h3>Dev</h3>
-          </div>
-          <div data-value="roll" className="menu menu-option menu-option-4">
-            <h3>Roll</h3>
-          </div>
-          <div data-value="exit" className="menu menu-option menu-option-5">
-            <h3>Exit</h3>
-          </div>
+          {btns.map((value, i) => (
+            <MenuBtn key={value} value={value} index={i} />
+          ))}
         </div>
       </Fragment>
     );

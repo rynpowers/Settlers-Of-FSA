@@ -13,7 +13,7 @@ function TradeOffer({
   game,
 }) {
   return (
-    <div className="trade-offer">
+    <div className={`trade-offer border-${trade}`}>
       {Object.keys(resources).reduce((a, key) => {
         const num = resources[key];
         if (num !== 0)
