@@ -6,17 +6,24 @@ import './Modal.scss';
 
 class Modal extends Component {
   renderModalView(view) {
+    console.log(view);
     switch (view) {
       case 'build':
         return <Build {...this.props} />;
       case 'trade':
         return <TradeView {...this.props} />;
+      case 'robber':
+        return (
+          <div>
+            <h1>Robber</h1>
+          </div>
+        );
       default:
     }
   }
 
   render() {
-    const views = ['trade', 'build'];
+    const views = ['trade', 'build', 'robber'];
     const modalActive = views.includes(this.props.game.mode);
     return (
       <div className={`modal ${modalActive && 'modal-active'}`}>

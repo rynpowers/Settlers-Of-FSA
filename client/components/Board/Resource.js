@@ -26,6 +26,7 @@ const initailState = {
     'settlement-4': false,
     'settlement-5': false,
   },
+  robber: false,
 };
 
 class Resource extends Component {
@@ -41,11 +42,22 @@ class Resource extends Component {
     this.validateClick = this.validateClick.bind(this);
   }
   resetState() {
-    console.log('resetting state');
     this.setState({
       settlement: { ...initailState.settlement },
       road: { ...initailState.road },
     });
+  }
+
+  renderRobber() {
+    const { board, id } = this.props;
+    const { hasRobber, diceValue } = board.resources[id];
+    return hasRobber || this.state.robber ? (
+      <div className="resource-image-robber" />
+    ) : (
+      <div className="resource-image-number">
+        <h3>{diceValue}</h3>
+      </div>
+    );
   }
 
   validate(e, id, validator) {
@@ -75,21 +87,25 @@ class Resource extends Component {
 
   handleMouseOver(e) {
     const { hover, type, id } = e.target.dataset;
-    const { mode } = this.props;
+    const { mode, isTurn } = this.props;
     if (hover && type === 'road') {
       this.handleHoverRoad(hover, type, mode, id);
     } else if (hover && type === 'settlement') {
       this.handleHoverSettlement(hover, type, mode, id);
+    } else if (mode === 'robber' && isTurn) {
+      this.setState({ robber: true });
     }
   }
 
   handleMouseOut(e) {
     const { hover, type, id } = e.target.dataset;
-    const { mode } = this.props;
+    const { mode, isTurn } = this.props;
     if (hover && type === 'road') {
       this.handleHoverRoad(hover, type, mode, id);
     } else if (hover && type === 'settlement') {
       this.handleHoverSettlement(hover, type, mode, id);
+    } else if (mode === 'robber' && isTurn) {
+      this.setState({ robber: false });
     }
   }
 
@@ -107,7 +123,7 @@ class Resource extends Component {
 
   render() {
     const { board, id, player } = this.props;
-    const { roads, type, diceValue, hasRobber } = board.resources[id];
+    const { roads, type } = board.resources[id];
     return (
       <div
         onClick={this.validateClick}
@@ -124,15 +140,7 @@ class Resource extends Component {
             roads={roads}
             board={board}
           />
-          <div className={`resource-image ${type}`}>
-            {hasRobber ? (
-              <div className="resource-image-robber" />
-            ) : (
-              <div className="resource-image-number">
-                <h3>{diceValue}</h3>
-              </div>
-            )}
-          </div>
+          <div className={`resource-image ${type}`}>{this.renderRobber()}</div>
         </div>
         <Settlements hover={this.state.settlement} {...this.props} />
       </div>
@@ -144,6 +152,7 @@ const mapStateToProps = ({ board, player, game }) => ({
   board,
   player,
   mode: game.mode,
+  isTurn: game.playerTurn === player.playerNumber,
 });
 
 export default connect(

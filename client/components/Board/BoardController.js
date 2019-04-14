@@ -9,33 +9,23 @@ class BoardController extends Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
-  handleClickSettlement(elem) {
+  handleUpdate(e) {
+    const elem = e.target;
     const { type, id } = elem.dataset;
-    const { mode } = this.props;
 
-    if (mode === 'settlement' || mode === 'city') {
-      this.props.updateBoardThunk(id, type);
-      this.props.reset();
-    }
-  }
-
-  handleClickRoad(elem) {
-    const { type, id } = elem.dataset;
-    const { mode } = this.props;
-
-    if (mode === 'road') {
-      this.props.updateBoardThunk(id, type);
-      this.props.reset();
-    }
+    this.props.updateBoardThunk(id, type);
+    this.props.reset();
   }
 
   handleClick(e) {
-    const elem = e.target;
-    switch (elem.dataset.type) {
+    const { mode } = this.props;
+    switch (mode) {
       case 'road':
-        return this.handleClickRoad(elem);
+        return this.handleUpdate(e);
       case 'settlement':
-        return this.handleClickSettlement(elem);
+        return this.handleUpdate(e);
+      case 'city':
+        return this.handleUpdate(e);
       default:
     }
   }
