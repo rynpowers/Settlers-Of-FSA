@@ -1,29 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions';
-import { Build, TradeView } from './ModalViews';
+import { Build, TradeView, Robber } from './ModalViews';
 import './Modal.scss';
 
 class Modal extends Component {
   renderModalView(view) {
-    console.log(view);
     switch (view) {
       case 'build':
         return <Build {...this.props} />;
       case 'trade':
         return <TradeView {...this.props} />;
       case 'robber':
-        return (
-          <div>
-            <h1>Robber</h1>
-          </div>
-        );
+        return <Robber {...this.props} />;
       default:
     }
   }
 
   render() {
-    const views = ['trade', 'build', 'robber'];
+    const views = ['trade', 'build', this.props.totalResources > 6 && 'robber'];
     const modalActive = views.includes(this.props.game.mode);
     return (
       <div className={`modal ${modalActive && 'modal-active'}`}>
@@ -39,6 +34,10 @@ class Modal extends Component {
 const mapStateToProps = ({ menu, player, game }) => ({
   modal: menu.modal,
   playerNumber: player.playerNumber,
+  totalResources: Object.keys(player.resources).reduce(
+    (a, v) => a + player.resources[v],
+    0
+  ),
   player,
   game,
 });

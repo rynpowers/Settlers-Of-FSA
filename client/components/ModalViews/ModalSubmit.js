@@ -1,8 +1,13 @@
 import React from 'react';
 
-function ModalSubmit({ handleSubmit, text }) {
+function ModalSubmit({ handleSubmit, text, style }) {
   return (
-    <button onClick={handleSubmit} type="submit" className="modal-submit">
+    <button
+      style={style}
+      onClick={handleSubmit}
+      type="submit"
+      className="modal-submit"
+    >
       {text}
     </button>
   );

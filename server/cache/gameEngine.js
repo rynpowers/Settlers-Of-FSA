@@ -136,9 +136,9 @@ class GameEngine {
 
   updateDice({ diceValue }) {
     this.gameState.diceValue = diceValue;
+    this.gameState.mode = 'roll';
     if (this.gameState.diceValue == 7) {
       this.gameState.mode = 'robber';
-      console.log('hello');
       return { type: 'game', payload: this.gameState };
     }
     this.updatePlayers(...this.distributeResources(diceValue));

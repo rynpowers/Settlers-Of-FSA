@@ -3,7 +3,7 @@ import TradeResource from './TradeResource';
 import TradeButton from './TradeButton';
 import './TradeWindow.scss';
 
-function TradeWindow({ type, val, handleClick, hidden, original }) {
+function TradeWindow({ type, val, handleClick, hidden, original, hidePlus }) {
   const add = val > 0 ? val : 0;
   const minus = val < 0 ? val : 0;
   const quantity = original + add + minus;
@@ -39,7 +39,7 @@ function TradeWindow({ type, val, handleClick, hidden, original }) {
             color="green"
             dir="down"
           />
-          <p style={{ color: 'var(--color-green)' }}>{add}</p>
+          {!hidePlus && <p style={{ color: 'var(--color-green)' }}>{add}</p>}
         </Fragment>
       )}
     </div>
