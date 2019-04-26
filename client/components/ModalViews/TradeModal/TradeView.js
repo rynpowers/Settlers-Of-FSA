@@ -3,7 +3,7 @@ import Chat from './Chat';
 import Trade from './Trade';
 import TradeCreate from './TradeCreate';
 import TradeOffer from './TradeOffer';
-import socket from '../../socket';
+import socket from '../../../socket';
 import './TradeView.scss';
 
 export class TradeView extends Component {
