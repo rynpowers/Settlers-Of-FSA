@@ -80,10 +80,10 @@ class GameEngine {
     switch (action) {
       case 'add':
         this.trades[player] = resources;
-        return { type: null, payload: this.trades };
+        return { payload: { trades: this.trades } };
       case 'reject':
         delete this.trades[player];
-        return { type: null, payload: this.trades };
+        return { payload: { trades: this.trades } };
       case 'accept':
         return this.exchangeResources(player);
       default:
@@ -93,14 +93,14 @@ class GameEngine {
 
   handleMessages(message) {
     this.messages.push(message);
-    return { type: null, payload: this.messages };
+    return { payload: { messages: this.messages } };
   }
 
   handleGameState({ payload }) {
     Object.keys(payload).forEach(key => {
       this.gameState[key] = payload[key];
     });
-    return { payload: this.gameState };
+    return { payload: { game: this.gameState } };
   }
 
   handleRobber(update) {
@@ -134,10 +134,8 @@ class GameEngine {
     this.gameState.mode = 'acknowledgeRobSettlement';
 
     return {
-      type: 'board',
-      payload: this.board,
-      game: this.gameState,
-      board: this.board,
+      type: ['board'],
+      payload: { board: this.board, game: this.gameState },
     };
   }
 
@@ -169,13 +167,13 @@ class GameEngine {
 
   assignRoad({ id, playerNumber }) {
     this.board.roads[id].player = playerNumber;
-    return { type: 'board', payload: this.board };
+    return { type: ['board'], payload: { board: this.board } };
   }
 
   assignSettlement({ id, playerNumber }) {
     this.board.settlements[id].player = playerNumber;
     this.board.settlements[id].build += 1;
-    return { type: 'board', payload: this.board };
+    return { type: ['board'], payload: { board: this.board } };
   }
 
   updateDice({ diceValue }) {
@@ -186,10 +184,10 @@ class GameEngine {
       this.gameState.responded = this.gameState.responded.map((bool, i) => {
         return !i || (i && this.gameState.players[i].resources < 8);
       });
-      return { type: 'game', payload: this.gameState };
+      return { type: ['game'], payload: { game: this.gameState } };
     }
     this.updatePlayers(...this.distributeResources(diceValue));
-    return { type: 'game', payload: this.gameState };
+    return { type: ['game'], payload: { game: this.gameState } };
   }
 
   distributeResources(diceValue) {

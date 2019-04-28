@@ -19,9 +19,8 @@ module.exports = io => {
     });
 
     socket.on('incoming-trade', trade => {
-      const trades = cache.updateGame(trade);
-      if (trades.accepted) {
-        const { game } = trades;
+      const { game, accepted, trades } = cache.updateGame(trade);
+      if (accepted) {
         io.to(trade.game).emit('dispatch', { type: 'SET_GAME', game });
       } else {
         socket.broadcast.to(trade.game).emit('trades', { trades });
@@ -45,7 +44,7 @@ module.exports = io => {
     });
 
     socket.on('message', message => {
-      const messages = cache.updateGame(message);
+      const { messages } = cache.updateGame(message);
       socket.broadcast.to(message.game).emit('messages', { messages });
     });
 
@@ -57,12 +56,12 @@ module.exports = io => {
     });
 
     socket.on('updateBoard', update => {
-      const board = cache.updateGame(update);
+      const { board } = cache.updateGame(update);
       io.to(update.game).emit('dispatch', { type: 'SET_BOARD', board });
     });
 
     socket.on('updateGame', update => {
-      const game = cache.updateGame(update);
+      const { game } = cache.updateGame(update);
       io.to(update.game).emit('dispatch', { type: 'SET_GAME', game });
     });
 

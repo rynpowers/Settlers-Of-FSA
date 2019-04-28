@@ -29,10 +29,12 @@ class GameCache {
     const curGame = this.games[update.game];
     const newUpdate = curGame.update(update);
     if (newUpdate.type) {
-      Game.update(
-        { [newUpdate.type]: JSON.stringify(newUpdate.payload) },
-        { where: { name: update.game } }
-      );
+      newUpdate.type.forEach(model => {
+        Game.update(
+          { [model]: JSON.stringify(newUpdate.payload[model]) },
+          { where: { name: update.game } }
+        );
+      });
     }
     return newUpdate.payload;
   }
