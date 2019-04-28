@@ -18,6 +18,8 @@ class Modal extends Component {
   }
 
   render() {
+    console.log(this.props.player);
+
     const views = ['trade', 'build', this.props.totalResources > 6 && 'robber'];
     const modalActive = views.includes(this.props.game.mode);
     return (
