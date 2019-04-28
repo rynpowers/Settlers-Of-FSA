@@ -103,6 +103,11 @@ class GameEngine {
     return { payload: this.gameState };
   }
 
+  handleRobber(update) {
+    this.gameState.responded[update.playerNumber] = true;
+    return { payload: { robbery: { game: this.gameState, complete: false } } };
+  }
+
   update(update) {
     switch (update.type) {
       case 'road':
@@ -119,6 +124,8 @@ class GameEngine {
         return this.handleTrade(update);
       case 'game':
         return this.handleGameState(update);
+      case 'robber':
+        return this.handleRobber(update);
       default:
     }
   }
@@ -139,6 +146,9 @@ class GameEngine {
     this.gameState.mode = 'roll';
     if (this.gameState.diceValue == 7) {
       this.gameState.mode = 'robber';
+      this.gameState.responded = this.gameState.responded.map((bool, i) => {
+        return !i || (i && this.gameState.players[i].resources < 7);
+      });
       return { type: 'game', payload: this.gameState };
     }
     this.updatePlayers(...this.distributeResources(diceValue));

@@ -28,6 +28,12 @@ module.exports = io => {
       }
     });
 
+    socket.on('robbing-player', payload => {
+      const { robbery } = cache.updateGame(payload);
+      const { game } = robbery;
+      io.to(game.name).emit('dispatch', { type: 'SET_GAME', game });
+    });
+
     socket.on('message', message => {
       const messages = cache.updateGame(message);
       socket.broadcast.to(message.game).emit('messages', { messages });

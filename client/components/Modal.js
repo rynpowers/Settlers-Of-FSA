@@ -49,5 +49,6 @@ export default connect(
   {
     updateMode: actions.updateMode,
     toggleExitMenu: actions.toggleExitMenu,
+    updateResources: actions.updateResources,
   }
 )(Modal);
