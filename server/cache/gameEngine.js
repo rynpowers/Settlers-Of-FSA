@@ -105,7 +105,14 @@ class GameEngine {
 
   handleRobber(update) {
     this.gameState.responded[update.playerNumber] = true;
-    return { payload: { robbery: { game: this.gameState, complete: false } } };
+    const complete = this.gameState.responded.every(player => player);
+
+    if (complete) {
+      this.gameState.mode = 'rob-player';
+      this.gameState.responded = [true, false, false, false, false];
+    }
+
+    return { payload: { robbery: { game: this.gameState } } };
   }
 
   update(update) {
