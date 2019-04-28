@@ -29,8 +29,12 @@ module.exports = io => {
     });
 
     socket.on('robbing-player', payload => {
-      const { robbery } = cache.updateGame(payload);
-      const { game } = robbery;
+      const { game } = cache.updateGame(payload);
+      io.to(game.name).emit('dispatch', { type: 'SET_GAME', game });
+    });
+
+    socket.on('flash', payload => {
+      const { game } = cache.updateGame(payload);
       io.to(game.name).emit('dispatch', { type: 'SET_GAME', game });
     });
 

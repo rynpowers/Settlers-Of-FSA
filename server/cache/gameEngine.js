@@ -108,11 +108,20 @@ class GameEngine {
     const complete = this.gameState.responded.every(player => player);
 
     if (complete) {
-      this.gameState.mode = 'rob-player';
+      this.gameState.mode = 'acknowledgeMoveRobber';
+      this.gameState.flash = `Player-${
+        this.gameState.playerTurn
+      } please move the robber`;
       this.gameState.responded = [true, false, false, false, false];
     }
 
-    return { payload: { robbery: { game: this.gameState } } };
+    return { payload: { game: this.gameState } };
+  }
+
+  handleFlash(update) {
+    this.gameState.flash = '';
+    this.gameState.mode = update.mode;
+    return { payload: { game: this.gameState } };
   }
 
   update(update) {
@@ -133,6 +142,8 @@ class GameEngine {
         return this.handleGameState(update);
       case 'robber':
         return this.handleRobber(update);
+      case 'flash':
+        return this.handleFlash(update);
       default:
     }
   }
@@ -154,7 +165,7 @@ class GameEngine {
     if (this.gameState.diceValue == 7) {
       this.gameState.mode = 'robber';
       this.gameState.responded = this.gameState.responded.map((bool, i) => {
-        return !i || (i && this.gameState.players[i].resources < 7);
+        return !i || (i && this.gameState.players[i].resources < 8);
       });
       return { type: 'game', payload: this.gameState };
     }

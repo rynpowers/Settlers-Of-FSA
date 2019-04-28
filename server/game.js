@@ -3,6 +3,7 @@ module.exports = name => ({
   mode: '',
   playerTurn: 1,
   responded: [true, false, false, false, false],
+  flash: '',
   devCards: [
     ...Array(14).fill('knight'),
     ...Array(5).fill('victory point'),

@@ -92,7 +92,7 @@ class Resource extends Component {
       this.handleHoverRoad(hover, type, mode, id);
     } else if (hover && type === 'settlement') {
       this.handleHoverSettlement(hover, type, mode, id);
-    } else if (mode === 'rob-player' && isTurn) {
+    } else if (mode === 'move-robber' && isTurn) {
       this.setState({ robber: true });
     }
   }
@@ -104,7 +104,7 @@ class Resource extends Component {
       this.handleHoverRoad(hover, type, mode, id);
     } else if (hover && type === 'settlement') {
       this.handleHoverSettlement(hover, type, mode, id);
-    } else if (mode === 'rob-player' && isTurn) {
+    } else if (mode === 'move-robber' && isTurn) {
       this.setState({ robber: false });
     }
   }
