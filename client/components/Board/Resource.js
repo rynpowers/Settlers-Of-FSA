@@ -52,7 +52,7 @@ class Resource extends Component {
     const { board, id } = this.props;
     const { hasRobber, diceValue } = board.resources[id];
     return hasRobber || this.state.robber ? (
-      <div className="resource-image-robber" />
+      <div className="resource-image-robber" data-type="robber" data-id={id} />
     ) : (
       <div className="resource-image-number">
         <h3>{diceValue}</h3>
@@ -140,7 +140,13 @@ class Resource extends Component {
             roads={roads}
             board={board}
           />
-          <div className={`resource-image ${type}`}>{this.renderRobber()}</div>
+          <div
+            className={`resource-image ${type}`}
+            data-type="resource"
+            data-id={id}
+          >
+            {this.renderRobber()}
+          </div>
         </div>
         <Settlements hover={this.state.settlement} {...this.props} />
       </div>

@@ -124,6 +124,23 @@ class GameEngine {
     return { payload: { game: this.gameState } };
   }
 
+  handleMoveRobber(update) {
+    this.board.resources = Object.keys(this.board.resources).reduce((a, v) => {
+      a[v] = { ...this.board.resources[v], hasRobber: false };
+      if (v == update.id) a[v].hasRobber = true;
+      return a;
+    }, {});
+
+    this.gameState.mode = 'acknowledgeRobSettlement';
+
+    return {
+      type: 'board',
+      payload: this.board,
+      game: this.gameState,
+      board: this.board,
+    };
+  }
+
   update(update) {
     switch (update.type) {
       case 'road':
@@ -144,6 +161,8 @@ class GameEngine {
         return this.handleRobber(update);
       case 'flash':
         return this.handleFlash(update);
+      case 'move-robber':
+        return this.handleMoveRobber(update);
       default:
     }
   }

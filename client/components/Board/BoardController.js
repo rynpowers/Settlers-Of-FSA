@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 import Board from './Board';
+import socket from '../../socket';
 
 class BoardController extends Component {
   constructor(props) {
@@ -17,6 +18,15 @@ class BoardController extends Component {
     this.props.reset();
   }
 
+  handleMoveRobber(e) {
+    const { mode, name } = this.props;
+    const elem = e.target;
+    const { type, id } = elem.dataset;
+
+    if (type === 'robber' || type === 'resource')
+      socket.emit('move-robber', { id, type: mode, game: name });
+  }
+
   handleClick(e) {
     const { mode } = this.props;
     switch (mode) {
@@ -26,6 +36,8 @@ class BoardController extends Component {
         return this.handleUpdate(e);
       case 'city':
         return this.handleUpdate(e);
+      case 'move-robber':
+        return this.handleMoveRobber(e);
       default:
     }
   }
@@ -39,7 +51,10 @@ class BoardController extends Component {
   }
 }
 
-const mapStateToProps = ({ game }) => ({ mode: game.mode });
+const mapStateToProps = ({ game, player }) => ({
+  mode: game.mode,
+  name: game.name,
+});
 
 export default connect(
   mapStateToProps,
