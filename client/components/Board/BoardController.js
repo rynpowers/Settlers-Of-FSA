@@ -10,10 +10,7 @@ class BoardController extends Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
-  handleUpdate(e) {
-    const elem = e.target;
-    const { type, id } = elem.dataset;
-
+  handleUpdate(type, id) {
     this.props.updateBoardThunk(id, type);
     this.props.reset();
   }
@@ -29,13 +26,16 @@ class BoardController extends Component {
 
   handleClick(e) {
     const { mode } = this.props;
+    const elem = e.target;
+    const { type, id } = elem.dataset;
+
     switch (mode) {
       case 'road':
-        return this.handleUpdate(e);
+        return type === 'road' && this.handleUpdate(type, id);
       case 'settlement':
-        return this.handleUpdate(e);
+        return type === 'settlement' && this.handleUpdate(type, id);
       case 'city':
-        return this.handleUpdate(e);
+        return type === 'settlement' && this.handleUpdate(type, id);
       case 'move-robber':
         return this.handleMoveRobber(e);
       default:

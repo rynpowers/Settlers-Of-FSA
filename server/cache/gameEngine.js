@@ -187,9 +187,9 @@ class GameEngine {
   updateDice({ diceValue }) {
     this.gameState.diceValue = diceValue;
     this.gameState.mode = 'roll';
-    this.gameState.mode = 'robber';
 
     if (this.gameState.diceValue == 7) {
+      this.gameState.mode = 'robber';
       this.gameState.responded = this.gameState.responded.map((bool, i) => {
         return !i || (i && this.gameState.players[i].resources < 8);
       });
