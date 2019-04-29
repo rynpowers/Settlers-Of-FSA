@@ -54,9 +54,11 @@ class Resource extends Component {
     return hasRobber || this.state.robber ? (
       <div className="resource-image-robber" data-type="robber" data-id={id} />
     ) : (
-      <div className="resource-image-number">
-        <h3>{diceValue}</h3>
-      </div>
+      diceValue && (
+        <div className="resource-image-number">
+          <h3>{diceValue}</h3>
+        </div>
+      )
     );
   }
 
