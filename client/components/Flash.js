@@ -6,6 +6,7 @@ import './Flash.scss';
 
 const next = {
   acknowledgeMoveRobber: 'move-robber',
+  acknowledgeRobSettlement: 'rob-settlement',
 };
 
 class Flash extends Component {
@@ -15,9 +16,6 @@ class Flash extends Component {
   }
   handleSubmit() {
     const { name, playerNumber, mode } = this.props;
-    console.log('====================');
-    console.log(mode);
-    console.log('====================');
     socket.emit('flash', {
       mode: next[mode],
       type: 'flash',

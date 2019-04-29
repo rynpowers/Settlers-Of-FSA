@@ -34,8 +34,8 @@ module.exports = io => {
 
     socket.on('move-robber', payload => {
       const { board, game } = cache.updateGame(payload);
-      io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
       io.to(payload.game).emit('dispatch', { type: 'SET_BOARD', board });
+      io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
     });
 
     socket.on('flash', payload => {

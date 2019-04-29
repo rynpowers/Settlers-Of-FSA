@@ -41,6 +41,7 @@ class Resource extends Component {
     this.handleMouseOut = this.handleMouseOut.bind(this);
     this.validateClick = this.validateClick.bind(this);
   }
+
   resetState() {
     this.setState({
       settlement: { ...initailState.settlement },
@@ -78,12 +79,9 @@ class Resource extends Component {
     const correctMode = mode === 'settlement' || mode === 'city';
     const validator = mode === 'city' ? validateCity : validateSettlement;
     if (correctMode && validator(id)) {
-      this.setState(
-        {
-          settlement: { ...settlement, [hover]: !settlement[hover] },
-        },
-        () => console.log(this.state.settlement)
-      );
+      this.setState({
+        settlement: { ...settlement, [hover]: !settlement[hover] },
+      });
     }
   }
 
@@ -101,12 +99,12 @@ class Resource extends Component {
 
   handleMouseOut(e) {
     const { hover, type, id } = e.target.dataset;
-    const { mode, isTurn } = this.props;
+    const { mode } = this.props;
     if (hover && type === 'road') {
       this.handleHoverRoad(hover, type, mode, id);
     } else if (hover && type === 'settlement') {
       this.handleHoverSettlement(hover, type, mode, id);
-    } else if (mode === 'move-robber' && isTurn) {
+    } else {
       this.setState({ robber: false });
     }
   }

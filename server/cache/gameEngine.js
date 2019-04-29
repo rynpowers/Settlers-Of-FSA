@@ -104,7 +104,12 @@ class GameEngine {
   }
 
   handleRobber(update) {
-    this.gameState.responded[update.playerNumber] = true;
+    if (update) {
+      this.gameState.responded[update.playerNumber] = true;
+      this.players[update.playerNumber].resources = update.resources;
+      this.updatePlayers(update.playerNumber);
+    }
+
     const complete = this.gameState.responded.every(player => player);
 
     if (complete) {
@@ -115,7 +120,7 @@ class GameEngine {
       this.gameState.responded = [true, false, false, false, false];
     }
 
-    return { payload: { game: this.gameState } };
+    return { type: ['game'], payload: { game: this.gameState } };
   }
 
   handleFlash(update) {
@@ -132,6 +137,9 @@ class GameEngine {
     }, {});
 
     this.gameState.mode = 'acknowledgeRobSettlement';
+    this.gameState.flash = `player-${
+      this.gameState.playerTurn
+    } choose a settlement to rob`;
 
     return {
       type: ['board'],
@@ -179,12 +187,13 @@ class GameEngine {
   updateDice({ diceValue }) {
     this.gameState.diceValue = diceValue;
     this.gameState.mode = 'roll';
+    this.gameState.mode = 'robber';
+
     if (this.gameState.diceValue == 7) {
-      this.gameState.mode = 'robber';
       this.gameState.responded = this.gameState.responded.map((bool, i) => {
         return !i || (i && this.gameState.players[i].resources < 8);
       });
-      return { type: ['game'], payload: { game: this.gameState } };
+      return this.handleRobber();
     }
     this.updatePlayers(...this.distributeResources(diceValue));
     return { type: ['game'], payload: { game: this.gameState } };
@@ -195,7 +204,7 @@ class GameEngine {
     const updatedPlayers = {};
     Object.keys(resources).forEach(id => {
       const resource = resources[id];
-      if (resource.diceValue == diceValue) {
+      if (resource.diceValue == diceValue && !resource.hasRobber) {
         resource.settlements.forEach(settlementId => {
           const { build, player } = settlements[settlementId];
           if (build) {
