@@ -129,25 +129,55 @@ class GameEngine {
     return { payload: { game: this.gameState } };
   }
 
-  handleMoveRobber(update) {
-    this.board.resources = Object.keys(this.board.resources).reduce((a, v) => {
-      a[v] = { ...this.board.resources[v], hasRobber: false };
-      if (v == update.id) {
-        a[v].hasRobber = true;
-        this.board.robber = v;
-      }
+  canRob(update) {
+    const { resources, settlements } = this.board;
+    const set = resources[update.id].settlements.reduce((a, v) => {
+      const { player } = settlements[v];
+      if (player && player != update.player) a.add(player);
       return a;
-    }, {});
+    }, new Set());
 
-    this.gameState.mode = 'acknowledgeRobSettlement';
-    this.gameState.flash = `player-${
-      this.gameState.playerTurn
-    } choose a settlement to rob`;
+    return set.size !== 0;
+  }
+
+  handleMoveRobber(update) {
+    const { robber, resources } = this.board;
+
+    resources[robber].hasRobber = false;
+    resources[update.id].hasRobber = true;
+    this.board.robber = update.id;
+
+    if (this.canRob(update)) {
+      this.gameState.mode = 'acknowledgeRobSettlement';
+      this.gameState.flash = `player-${
+        this.gameState.playerTurn
+      } choose a settlement to rob`;
+    } else this.gameState.mode = '';
 
     return {
-      type: ['board'],
+      type: ['board', 'game'],
       payload: { board: this.board, game: this.gameState },
     };
+  }
+
+  handleRobSettlement(update) {
+    const { settlements } = this.board;
+    const player = this.players[settlements[update.id].player];
+
+    const resources = Object.keys(player.resources).filter(type => {
+      return player.resources[type] != 0;
+    });
+
+    const resource = resources[Math.floor(Math.random() * resources.length)];
+
+    if (resource) {
+      this.players[update.player].resources[resource]++;
+      player.resources[resource]--;
+      this.updatePlayers(update.player, player.playerNumber);
+      this.gameState.mode = '';
+    }
+
+    return { type: ['game'], payload: { game: this.gameState } };
   }
 
   update(update) {
@@ -172,6 +202,8 @@ class GameEngine {
         return this.handleFlash(update);
       case 'move-robber':
         return this.handleMoveRobber(update);
+      case 'rob-settlement':
+        return this.handleRobSettlement(update);
       default:
     }
   }

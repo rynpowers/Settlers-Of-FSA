@@ -15,13 +15,28 @@ class BoardController extends Component {
     this.props.reset();
   }
 
-  handleMoveRobber(e) {
-    const { mode, name } = this.props;
-    const elem = e.target;
+  handleMoveRobber(elem) {
+    const { mode, name, playerNumber } = this.props;
     const { type, id } = elem.dataset;
 
-    if (type === 'robber' || type === 'resource')
-      socket.emit('move-robber', { id, type: mode, game: name });
+    if (type === 'robber')
+      socket.emit('move-robber', {
+        id,
+        type: mode,
+        game: name,
+        player: playerNumber,
+      });
+  }
+
+  handleRobSettlement(elem) {
+    const { id } = elem.dataset;
+    const { playerNumber, name } = this.props;
+    socket.emit('rob-settlement', {
+      type: 'rob-settlement',
+      id,
+      player: playerNumber,
+      game: name,
+    });
   }
 
   handleClick(e) {
@@ -38,7 +53,12 @@ class BoardController extends Component {
         case 'city':
           return type === 'settlement' && this.handleUpdate(type, id);
         case 'move-robber':
-          return type === 'robber' && this.handleMoveRobber(e);
+          return type === 'robber' && this.handleMoveRobber(elem);
+        case 'rob-settlement':
+          return (
+            elem.classList.contains('rob-settlement') &&
+            this.handleRobSettlement(elem)
+          );
         default:
       }
     }
@@ -57,6 +77,7 @@ const mapStateToProps = ({ game, player }) => ({
   mode: game.mode,
   name: game.name,
   isTurn: player.playerNumber === game.playerTurn,
+  playerNumber: player.playerNumber,
 });
 
 export default connect(
