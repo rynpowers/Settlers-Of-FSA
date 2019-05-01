@@ -25,20 +25,22 @@ class BoardController extends Component {
   }
 
   handleClick(e) {
-    const { mode } = this.props;
-    const elem = e.target;
-    const { type, id } = elem.dataset;
+    const { mode, isTurn } = this.props;
+    if (isTurn) {
+      const elem = e.target;
+      const { type, id } = elem.dataset;
 
-    switch (mode) {
-      case 'road':
-        return type === 'road' && this.handleUpdate(type, id);
-      case 'settlement':
-        return type === 'settlement' && this.handleUpdate(type, id);
-      case 'city':
-        return type === 'settlement' && this.handleUpdate(type, id);
-      case 'move-robber':
-        return this.handleMoveRobber(e);
-      default:
+      switch (mode) {
+        case 'road':
+          return type === 'road' && this.handleUpdate(type, id);
+        case 'settlement':
+          return type === 'settlement' && this.handleUpdate(type, id);
+        case 'city':
+          return type === 'settlement' && this.handleUpdate(type, id);
+        case 'move-robber':
+          return type === 'robber' && this.handleMoveRobber(e);
+        default:
+      }
     }
   }
 
@@ -54,6 +56,7 @@ class BoardController extends Component {
 const mapStateToProps = ({ game, player }) => ({
   mode: game.mode,
   name: game.name,
+  isTurn: player.playerNumber === game.playerTurn,
 });
 
 export default connect(

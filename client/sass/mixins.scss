@@ -68,3 +68,11 @@
   left: 19px;
   bottom: -19px;
 }
+
+@mixin settlement {
+  clip-path: polygon(50% 0, 100% 50%, 100% 100%, 0 100%, 0 50%);
+  height: 1.5rem;
+  width: 1.5rem;
+  border-radius: 0%;
+  background-color: var(--color-black);
+}

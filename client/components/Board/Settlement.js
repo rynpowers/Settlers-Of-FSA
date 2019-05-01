@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { validateSettlement, validateCity } from '../../validators';
+import {
+  validateSettlement,
+  validateCity,
+  validateRob,
+} from '../../validators';
 
 class Settlement extends Component {
   constructor(props) {
@@ -8,26 +12,14 @@ class Settlement extends Component {
     this.state = {
       hover: false,
     };
-
     this.handleMouseOut = this.handleMouseOut.bind(this);
     this.handleMouseOver = this.handleMouseOver.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
 
   handleMouseOver() {
-    const { mode, isTurn, id, pos, resources } = this.props;
-    const settlementId = resources[id].settlements[pos];
-    const validCity = validateCity(settlementId) && mode === 'city';
-    const validSettlement =
-      validateSettlement(settlementId) && mode === 'settlement';
-    const valid =
-      mode === 'city'
-        ? validCity
-        : mode === 'settlement'
-        ? validSettlement
-        : false;
-
-    if (isTurn && valid) this.setState({ hover: true });
+    const { id, validator } = this.props;
+    if (validator(id)) this.setState({ hover: true });
   }
 
   handleMouseOut() {
@@ -35,20 +27,18 @@ class Settlement extends Component {
   }
 
   handleClick(e) {
-    const { mode, isTurn, id, pos, resources } = this.props;
-    const settlementId = resources[id].settlements[pos];
-    const validator = mode === 'city' ? validateCity : validateSettlement;
-    const valid = validator(settlementId) && isTurn;
-    if (!valid) e.stopPropagation();
+    const { id, validator } = this.props;
+    if (!validator(id)) e.stopPropagation();
   }
 
   render() {
     const { hover } = this.state;
-    const { pos, id, playerNumber, resources, settlements, mode } = this.props;
-    const settlementId = resources[id].settlements[pos];
-    const settlement = settlements[settlementId];
+    const { pos, id, playerNumber, settlements, hoverMode, mode } = this.props;
+    const settlement = settlements[id];
     const { build, player } = settlement;
-    const hoverMode = mode === 'settlement' || mode === 'city';
+    const buildHover = hover && hoverMode ? build + 1 : build;
+    const playerClass = hover && hoverMode ? playerNumber : player;
+    const robHover = validateRob(id) && 'rob-settlement';
 
     return (
       <div
@@ -58,13 +48,11 @@ class Settlement extends Component {
         onClick={this.handleClick}
       >
         {
-          <div className={`build-${hover && hoverMode ? build + 1 : build}`}>
+          <div className={`build-${buildHover}`}>
             <div
-              data-id={settlementId}
+              data-id={id}
               data-type="settlement"
-              className={`build-inner-${
-                hover && hoverMode ? build + 1 : build
-              } player-${hover && hoverMode ? playerNumber : player}`}
+              className={`build-inner-${buildHover} player-${playerClass} ${robHover}`}
             />
           </div>
         }
@@ -78,6 +66,14 @@ const mapStateToProps = ({ board, player, game }) => ({
   settlements: board.settlements,
   playerNumber: player.playerNumber,
   isTurn: player.playerNumber === game.playerTurn,
+  hoverMode: game.mode === 'city' || game.mode === 'settlement',
+  validator:
+    game.mode === 'city'
+      ? validateCity
+      : game.mode === 'settlement'
+      ? validateSettlement
+      : validateRob,
+  robber: board.robber,
   mode: game.mode,
 });
 

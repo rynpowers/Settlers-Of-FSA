@@ -132,7 +132,10 @@ class GameEngine {
   handleMoveRobber(update) {
     this.board.resources = Object.keys(this.board.resources).reduce((a, v) => {
       a[v] = { ...this.board.resources[v], hasRobber: false };
-      if (v == update.id) a[v].hasRobber = true;
+      if (v == update.id) {
+        a[v].hasRobber = true;
+        this.board.robber = v;
+      }
       return a;
     }, {});
 

@@ -2,66 +2,70 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Settlements from './Settlements';
 import Roads from './Roads';
+import Robber from './Robber';
 import './Resource.scss';
 
 class Resource extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      robber: false,
+      hover: false,
     };
 
     this.handleMouseOver = this.handleMouseOver.bind(this);
     this.handleMouseOut = this.handleMouseOut.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
-  renderRobber() {
-    const { board, id } = this.props;
-    const { hasRobber, diceValue } = board.resources[id];
-    return hasRobber || this.state.robber ? (
-      <div className="resource-image-robber" data-type="robber" data-id={id} />
-    ) : (
-      diceValue && (
-        <div className="resource-image-number">
-          <h3>{diceValue}</h3>
-        </div>
-      )
-    );
+  getParent(e) {
+    let elem = e.target;
+    while (elem.dataset.type !== 'robber') {
+      elem = elem.parentNode;
+    }
+    return elem;
   }
 
   handleMouseOver() {
     const { mode, isTurn } = this.props;
     if (mode === 'move-robber' && isTurn) {
-      this.setState({ robber: true });
+      this.setState({ hover: true });
     }
   }
 
   handleMouseOut() {
-    this.setState({ robber: false });
+    this.setState({ hover: false });
+  }
+
+  handleClick(e) {
+    const { board, id, mode } = this.props;
+    const resource = board.resources[id];
+
+    if (mode === 'move-robber') {
+      resource.hasRobber && e.stopPropagation();
+      e.target = this.getParent(e);
+    }
   }
 
   render() {
     const { board, id } = this.props;
-    const { roads, type } = board.resources[id];
+    const { roads, type, settlements } = board.resources[id];
     return (
       <div
         onMouseOver={this.handleMouseOver}
         onMouseOut={this.handleMouseOut}
+        onClick={this.handleClick}
         style={this.props.style}
         className="resource-container"
-        data-type="resource"
+        data-type="robber"
+        data-id={id}
       >
         <div className="resource">
-          <Roads roads={roads} board={board} />
-          <div
-            className={`resource-image ${type}`}
-            data-type="resource"
-            data-id={id}
-          >
-            {this.renderRobber()}
+          <Roads roads={roads} />
+          <div className={`resource-image ${type}`}>
+            <Robber board={board} id={id} hover={this.state.hover} />
           </div>
         </div>
-        <Settlements hover={this.state.settlement} {...this.props} />
+        <Settlements settlements={settlements} {...this.props} />
       </div>
     );
   }

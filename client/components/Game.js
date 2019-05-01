@@ -14,6 +14,7 @@ const btnContainerStyles = {
   display: 'flex',
   width: '50%',
   justifyContent: 'space-evenly',
+  zIndex: 10,
 };
 
 const btnStyles = {

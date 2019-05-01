@@ -10,7 +10,7 @@
   cursor: pointer;
   &-0 {
     top: 26.5%;
-    left: 0;
+    left: -2%;
     transform: translateY(-50%);
   }
 
@@ -22,13 +22,13 @@
 
   &-2 {
     top: 26.5%;
-    right: 0;
+    right: -2%;
     transform: translateY(-50%);
   }
 
   &-3 {
     bottom: 26.5%;
-    left: 0;
+    left: -2%;
     transform: translateY(50%);
   }
 
@@ -40,7 +40,7 @@
 
   &-5 {
     bottom: 26.5%;
-    right: 0;
+    right: -2%;
     transform: translateY(50%);
   }
 }
@@ -51,11 +51,7 @@
     height: 100%;
   }
   &-1 {
-    clip-path: polygon(50% 0, 100% 50%, 100% 100%, 0 100%, 0 50%);
-    height: 1.5rem;
-    width: 1.5rem;
-    border-radius: 0%;
-    background-color: var(--color-black);
+    @include settlement();
   }
   &-2 {
     clip-path: polygon(25% 0, 50% 50%, 100% 50%, 100% 100%, 0 100%, 0 55%);
@@ -79,4 +75,13 @@
     width: 2.2rem;
     clip-path: polygon(25% 15%, 40% 60%, 90% 60%, 90% 90%, 10% 90%, 10% 60%);
   }
+}
+
+.rob-settlement {
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.rob-settlement:hover {
+  opacity: 0.5;
 }
