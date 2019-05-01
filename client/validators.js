@@ -47,20 +47,37 @@ const getSettlementNeighbors = (id, board) => {
 };
 
 export const validateCity = id => {
-  const { board, player } = store.getState();
+  const { board, player, game } = store.getState();
   const settlement = board.settlements[id];
-  return settlement.build === 1 && settlement.player === player.playerNumber;
+  return (
+    game.mode === 'city' &&
+    settlement.build === 1 &&
+    settlement.player === player.playerNumber
+  );
 };
 
 export const validateSettlement = id => {
-  const { board, player } = store.getState();
+  const { board, player, game } = store.getState();
   const settlement = board.settlements[id];
   const roads = settlement.roads.map(r => board.roads[r]);
   const neighbors = getSettlementNeighbors(id, board);
 
   return (
+    game.mode === 'settlement' &&
     neighbors.every(neighbor => neighbor.player === null) &&
     roads.some(r => r.player === player.playerNumber) &&
     settlement.build === 0
   );
+};
+
+export const validateRob = id => {
+  const { board, player, game } = store.getState();
+  const { robber, resources, settlements } = board;
+  const resource = resources[robber];
+  const settlement = settlements[id];
+  const hasSettlement = resource && resource.settlements.includes(id);
+  const canRob =
+    settlement.build != 0 && settlement.player != player.playerNumber;
+
+  return hasSettlement && canRob && game.mode === 'rob-settlement';
 };

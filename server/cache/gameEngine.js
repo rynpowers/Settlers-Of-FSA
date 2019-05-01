@@ -80,10 +80,10 @@ class GameEngine {
     switch (action) {
       case 'add':
         this.trades[player] = resources;
-        return { type: null, payload: this.trades };
+        return { payload: { trades: this.trades } };
       case 'reject':
         delete this.trades[player];
-        return { type: null, payload: this.trades };
+        return { payload: { trades: this.trades } };
       case 'accept':
         return this.exchangeResources(player);
       default:
@@ -93,14 +93,91 @@ class GameEngine {
 
   handleMessages(message) {
     this.messages.push(message);
-    return { type: null, payload: this.messages };
+    return { payload: { messages: this.messages } };
   }
 
   handleGameState({ payload }) {
     Object.keys(payload).forEach(key => {
       this.gameState[key] = payload[key];
     });
-    return { payload: this.gameState };
+    return { payload: { game: this.gameState } };
+  }
+
+  handleRobber(update) {
+    if (update) {
+      this.gameState.responded[update.playerNumber] = true;
+      this.players[update.playerNumber].resources = update.resources;
+      this.updatePlayers(update.playerNumber);
+    }
+
+    const complete = this.gameState.responded.every(player => player);
+
+    if (complete) {
+      this.gameState.mode = 'acknowledgeMoveRobber';
+      this.gameState.flash = `Player-${
+        this.gameState.playerTurn
+      } please move the robber`;
+      this.gameState.responded = [true, false, false, false, false];
+    }
+
+    return { type: ['game'], payload: { game: this.gameState } };
+  }
+
+  handleFlash(update) {
+    this.gameState.flash = '';
+    this.gameState.mode = update.mode;
+    return { payload: { game: this.gameState } };
+  }
+
+  canRob(update) {
+    const { resources, settlements } = this.board;
+    const set = resources[update.id].settlements.reduce((a, v) => {
+      const { player } = settlements[v];
+      if (player && player != update.player) a.add(player);
+      return a;
+    }, new Set());
+
+    return set.size !== 0;
+  }
+
+  handleMoveRobber(update) {
+    const { robber, resources } = this.board;
+
+    resources[robber].hasRobber = false;
+    resources[update.id].hasRobber = true;
+    this.board.robber = update.id;
+
+    if (this.canRob(update)) {
+      this.gameState.mode = 'acknowledgeRobSettlement';
+      this.gameState.flash = `player-${
+        this.gameState.playerTurn
+      } choose a settlement to rob`;
+    } else this.gameState.mode = '';
+
+    return {
+      type: ['board', 'game'],
+      payload: { board: this.board, game: this.gameState },
+    };
+  }
+
+  handleRobSettlement(update) {
+    const { settlements } = this.board;
+    const player = this.players[settlements[update.id].player];
+
+    const resources = Object.keys(player.resources).filter(type => {
+      return player.resources[type] != 0;
+    });
+
+    const resource = resources[Math.floor(Math.random() * resources.length)];
+
+    if (resource) {
+      this.players[update.player].resources[resource]++;
+      player.resources[resource]--;
+      this.updatePlayers(update.player, player.playerNumber);
+      this.gameState.mode = '';
+    }
+
+    return { type: ['game'], payload: { game: this.gameState } };
   }
 
   update(update) {
@@ -119,30 +196,42 @@ class GameEngine {
         return this.handleTrade(update);
       case 'game':
         return this.handleGameState(update);
+      case 'robber':
+        return this.handleRobber(update);
+      case 'flash':
+        return this.handleFlash(update);
+      case 'move-robber':
+        return this.handleMoveRobber(update);
+      case 'rob-settlement':
+        return this.handleRobSettlement(update);
       default:
     }
   }
 
   assignRoad({ id, playerNumber }) {
     this.board.roads[id].player = playerNumber;
-    return { type: 'board', payload: this.board };
+    return { type: ['board'], payload: { board: this.board } };
   }
 
   assignSettlement({ id, playerNumber }) {
     this.board.settlements[id].player = playerNumber;
     this.board.settlements[id].build += 1;
-    return { type: 'board', payload: this.board };
+    return { type: ['board'], payload: { board: this.board } };
   }
 
   updateDice({ diceValue }) {
     this.gameState.diceValue = diceValue;
     this.gameState.mode = 'roll';
+
     if (this.gameState.diceValue == 7) {
       this.gameState.mode = 'robber';
-      return { type: 'game', payload: this.gameState };
+      this.gameState.responded = this.gameState.responded.map((bool, i) => {
+        return !i || (i && this.gameState.players[i].resources < 8);
+      });
+      return this.handleRobber();
     }
     this.updatePlayers(...this.distributeResources(diceValue));
-    return { type: 'game', payload: this.gameState };
+    return { type: ['game'], payload: { game: this.gameState } };
   }
 
   distributeResources(diceValue) {
@@ -150,7 +239,7 @@ class GameEngine {
     const updatedPlayers = {};
     Object.keys(resources).forEach(id => {
       const resource = resources[id];
-      if (resource.diceValue == diceValue) {
+      if (resource.diceValue == diceValue && !resource.hasRobber) {
         resource.settlements.forEach(settlementId => {
           const { build, player } = settlements[settlementId];
           if (build) {

@@ -4,6 +4,7 @@ import { joinGameThunk } from '../store/actions';
 import { BoardController } from './Board';
 import Menu from './Menu';
 import Modal from './Modal';
+import Flash from './Flash';
 import Player from './Player';
 import socket from '../socket';
 import { store } from '../store';
@@ -13,6 +14,7 @@ const btnContainerStyles = {
   display: 'flex',
   width: '50%',
   justifyContent: 'space-evenly',
+  zIndex: 10,
 };
 
 const btnStyles = {
@@ -46,6 +48,7 @@ class Game extends Component {
         <BoardController />
         <Menu />
         <Modal />
+        <Flash />
         {Object.keys(players).map(i => (
           <Player
             key={i}

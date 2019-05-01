@@ -18,12 +18,13 @@ class Modal extends Component {
   }
 
   render() {
-    const views = ['trade', 'build', this.props.totalResources > 6 && 'robber'];
-    const modalActive = views.includes(this.props.game.mode);
+    const { game, playerNumber, updateMode } = this.props;
+    const views = ['trade', 'build', !game.responded[playerNumber] && 'robber'];
+    const modalActive = views.includes(game.mode);
     return (
       <div className={`modal ${modalActive && 'modal-active'}`}>
-        {this.renderModalView(this.props.game.mode)}
-        <div onClick={() => this.props.updateMode('')} className="modal-close">
+        {this.renderModalView(game.mode)}
+        <div onClick={() => updateMode('')} className="modal-close">
           <div />
         </div>
       </div>
