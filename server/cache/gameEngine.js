@@ -174,8 +174,9 @@ class GameEngine {
       this.players[update.player].resources[resource]++;
       player.resources[resource]--;
       this.updatePlayers(update.player, player.playerNumber);
-      this.gameState.mode = '';
     }
+
+    this.gameState.mode = '';
 
     return { type: ['game'], payload: { game: this.gameState } };
   }
