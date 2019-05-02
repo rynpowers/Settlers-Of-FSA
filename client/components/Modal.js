@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions';
-import { Build, TradeView, Robber, DevModal } from './ModalViews';
+import {
+  Build,
+  TradeView,
+  Robber,
+  DevModal,
+  Monopoly,
+  YearOfPlenty,
+} from './ModalViews';
 import './Modal.scss';
 
 class Modal extends Component {
@@ -15,6 +22,10 @@ class Modal extends Component {
         return <Robber {...this.props} />;
       case 'dev':
         return <DevModal {...this.props} />;
+      case 'monopoly':
+        return <Monopoly {...this.props} />;
+      case 'yearOfPlenty':
+        return <YearOfPlenty {...this.props} />;
       default:
     }
   }
@@ -26,6 +37,8 @@ class Modal extends Component {
       'build',
       !game.responded[playerNumber] && 'robber',
       'dev',
+      'monopoly',
+      'yearOfPlenty',
     ];
     const modalActive = views.includes(game.mode);
     return (

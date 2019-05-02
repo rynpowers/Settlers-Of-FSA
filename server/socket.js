@@ -49,6 +49,7 @@ module.exports = io => {
     });
 
     socket.on('play-card', payload => {
+      console.log(payload);
       const { game, board } = cache.updateGame(payload);
       io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
       board &&
