@@ -35,7 +35,7 @@ class GameEngine {
         0
       ),
       devCards: Object.keys(player.devCards).reduce(
-        (a, v) => a + player.devCards[v],
+        (a, v) => a + +player.devCards[v],
         0
       ),
       largestArmy: player.largestArmy,
@@ -181,6 +181,19 @@ class GameEngine {
     return { type: ['game'], payload: { game: this.gameState } };
   }
 
+  handleDevCard(update) {
+    const cards = this.gameState.devCards;
+    const index = Math.floor(Math.random() * cards.length);
+    const card = cards.splice(index, 1)[0];
+
+    this.players[update.player].devCards[card]++;
+    console.log(this.players[update.player]);
+    this.updatePlayers(update.player);
+    // this.gameState.flash = `you have bought a ${card} card`;
+
+    return { payload: { game: this.gameState } };
+  }
+
   update(update) {
     switch (update.type) {
       case 'road':
@@ -205,6 +218,8 @@ class GameEngine {
         return this.handleMoveRobber(update);
       case 'rob-settlement':
         return this.handleRobSettlement(update);
+      case 'get-card':
+        return this.handleDevCard(update);
       default:
     }
   }

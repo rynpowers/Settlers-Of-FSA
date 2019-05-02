@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../store/actions';
-import { Build, TradeView, Robber } from './ModalViews';
+import { Build, TradeView, Robber, DevModal } from './ModalViews';
 import './Modal.scss';
 
 class Modal extends Component {
@@ -13,13 +13,20 @@ class Modal extends Component {
         return <TradeView {...this.props} />;
       case 'robber':
         return <Robber {...this.props} />;
+      case 'dev':
+        return <DevModal {...this.props} />;
       default:
     }
   }
 
   render() {
     const { game, playerNumber, updateMode } = this.props;
-    const views = ['trade', 'build', !game.responded[playerNumber] && 'robber'];
+    const views = [
+      'trade',
+      'build',
+      !game.responded[playerNumber] && 'robber',
+      'dev',
+    ];
     const modalActive = views.includes(game.mode);
     return (
       <div className={`modal ${modalActive && 'modal-active'}`}>
@@ -41,6 +48,7 @@ const mapStateToProps = ({ menu, player, game }) => ({
   ),
   player,
   game,
+  name: game.name,
 });
 
 export default connect(

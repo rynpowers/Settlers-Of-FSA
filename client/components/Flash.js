@@ -7,6 +7,7 @@ import './Flash.scss';
 const next = {
   acknowledgeMoveRobber: 'move-robber',
   acknowledgeRobSettlement: 'rob-settlement',
+  dev: 'dev',
 };
 
 class Flash extends Component {
