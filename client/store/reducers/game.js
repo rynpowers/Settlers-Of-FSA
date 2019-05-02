@@ -8,7 +8,7 @@ const initailState = {
 const game = (state = initailState, action) => {
   switch (action.type) {
     case UPDATE_MODE:
-      return { ...state, mode: action.mode };
+      return { ...state, mode: action.mode || '' };
     case RESET:
       return { ...state, mode: '' };
     case SET_GAME:

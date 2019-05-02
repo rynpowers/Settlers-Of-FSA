@@ -3,7 +3,6 @@ module.exports = () => {
     resources: {},
     settlements: {},
     roads: {},
-    robber: 0,
   };
 
   const diceValue = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12];
@@ -68,6 +67,9 @@ module.exports = () => {
       settlements: createSettlements(t, b),
       roads: createRoads(t, b),
     };
+
+    type === 'desert' && (board.robber = i);
+
     t += 2;
     b += 2;
     if (t === 7) [t, b] = rows[1];

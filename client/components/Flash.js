@@ -8,6 +8,7 @@ const next = {
   acknowledgeMoveRobber: 'move-robber',
   acknowledgeRobSettlement: 'rob-settlement',
   dev: 'dev',
+  roadBuilding: 'road',
 };
 
 class Flash extends Component {

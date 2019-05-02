@@ -125,7 +125,7 @@ class GameEngine {
 
   handleFlash(update) {
     this.gameState.flash = '';
-    this.gameState.mode = update.mode;
+    this.gameState.mode = update.mode || '';
     return { payload: { game: this.gameState } };
   }
 
@@ -193,6 +193,43 @@ class GameEngine {
     return { type: ['game'], payload: { game: this.gameState } };
   }
 
+  handleKnight(update) {
+    this.gameState.responded = this.gameState.responded.map(() => true);
+    this.players[update.player].devCards[update.card]--;
+    this.updatePlayers(update.player);
+    return this.handleRobber();
+  }
+
+  handleRoadBuilding(update) {
+    if (!this.gameState.roadBuilding) {
+      const cards = this.players[update.player].devCards[update.card];
+      this.players[update.player].devCards[update.card] = cards - 1;
+      this.updatePlayers(update.player);
+      this.gameState.roadBuilding = 1;
+    } else {
+      this.gameState.roadBuilding--;
+    }
+
+    this.gameState.mode = 'roadBuilding';
+    this.gameState.flash = 'Build a road';
+
+    return {
+      type: ['game', 'board'],
+      payload: { game: this.gameState, board: this.board },
+    };
+  }
+
+  handlePlayCard(update) {
+    switch (update.card) {
+      case 'knight':
+        return this.handleKnight(update);
+      case 'roadBuilding':
+        return this.handleRoadBuilding(update);
+      default:
+        return { payload: { game: this.gameState, update } };
+    }
+  }
+
   update(update) {
     switch (update.type) {
       case 'road':
@@ -219,12 +256,17 @@ class GameEngine {
         return this.handleRobSettlement(update);
       case 'get-card':
         return this.handleDevCard(update);
+      case 'play-card':
+        return this.handlePlayCard(update);
       default:
     }
   }
 
-  assignRoad({ id, playerNumber }) {
-    this.board.roads[id].player = playerNumber;
+  assignRoad(update) {
+    this.board.roads[update.id].player = update.playerNumber;
+    if (this.gameState.roadBuilding) {
+      return this.handleRoadBuilding(update);
+    }
     return { type: ['board'], payload: { board: this.board } };
   }
 
