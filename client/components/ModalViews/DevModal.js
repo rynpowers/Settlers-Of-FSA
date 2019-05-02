@@ -30,6 +30,7 @@ class DevModal extends Component {
 
   handleSubmit() {
     const { playerNumber, name } = this.props;
+    this.props.reset();
     socket.emit('get-card', {
       player: playerNumber,
       game: name,
