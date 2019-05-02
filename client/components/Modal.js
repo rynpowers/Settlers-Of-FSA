@@ -55,6 +55,7 @@ export default connect(
   mapStateToProps,
   {
     updateMode: actions.updateMode,
+    reset: actions.reset,
     toggleExitMenu: actions.toggleExitMenu,
   }
 )(Modal);

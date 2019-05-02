@@ -187,11 +187,10 @@ class GameEngine {
     const card = cards.splice(index, 1)[0];
 
     this.players[update.player].devCards[card]++;
-    console.log(this.players[update.player]);
     this.updatePlayers(update.player);
-    // this.gameState.flash = `you have bought a ${card} card`;
+    this.gameState.flash = `you have bought a ${card} card`;
 
-    return { payload: { game: this.gameState } };
+    return { type: ['game'], payload: { game: this.gameState } };
   }
 
   update(update) {

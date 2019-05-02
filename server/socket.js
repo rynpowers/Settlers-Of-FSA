@@ -45,8 +45,7 @@ module.exports = io => {
 
     socket.on('get-card', payload => {
       const { game } = cache.updateGame(payload);
-      console.log(game);
-      // io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
+      io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
     });
 
     socket.on('flash', payload => {
