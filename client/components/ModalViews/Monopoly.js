@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import ResourceBtn from './ResourceBtn';
 import './ResourceBtn.scss';
 import socket from '../../socket';
+import ResourceBtnList from './ResourceBtnList';
 
 class Monopoly extends Component {
   constructor(props) {
@@ -27,15 +27,7 @@ class Monopoly extends Component {
     return (
       <div className="resource-btn-container">
         <h1>Select a resource</h1>
-        <div style={{ display: 'flex' }}>
-          {Object.keys(player.resources).map(type => (
-            <ResourceBtn
-              key={type}
-              type={type}
-              handleClick={() => this.handleClick(type)}
-            />
-          ))}
-        </div>
+        <ResourceBtnList resources={player.resources} />
       </div>
     );
   }

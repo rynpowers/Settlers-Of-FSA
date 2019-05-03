@@ -126,13 +126,7 @@ class GameEngine {
   handleFlash(update) {
     this.gameState.flash = '';
     this.gameState.mode = update.mode || '';
-
-    switch (update.mode) {
-      case 'monopoly':
-        return this.handleMonopoly(update);
-      default:
-        return { payload: { game: this.gameState } };
-    }
+    return { payload: { game: this.gameState } };
   }
 
   canRob(update) {
@@ -248,6 +242,20 @@ class GameEngine {
     return { type: ['game'], payload: { game: this.gameState } };
   }
 
+  handleYearOfPlenty(update) {
+    if (this.gameState.mode === 'yearOfPlenty') {
+      Object.keys(update.resources).forEach(key => {
+        this.players[update.player].resources[key] += update.resources[key];
+      });
+      this.gameState.mode = '';
+      this.players[update.player].devCards[update.card]--;
+      this.updatePlayers(update.player);
+    } else {
+      this.gameState.mode = 'yearOfPlenty';
+    }
+    return { type: ['game'], payload: { game: this.gameState } };
+  }
+
   handlePlayCard(update) {
     switch (update.card) {
       case 'knight':
@@ -256,6 +264,8 @@ class GameEngine {
         return this.handleRoadBuilding(update);
       case 'monopoly':
         return this.handleMonopoly(update);
+      case 'yearOfPlenty':
+        return this.handleYearOfPlenty(update);
       default:
         return { payload: { game: this.gameState, update } };
     }
