@@ -7,6 +7,9 @@ import './Flash.scss';
 const next = {
   acknowledgeMoveRobber: 'move-robber',
   acknowledgeRobSettlement: 'rob-settlement',
+  dev: 'dev',
+  roadBuilding: 'road',
+  monopoly: 'monopoly',
 };
 
 class Flash extends Component {

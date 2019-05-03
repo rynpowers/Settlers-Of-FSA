@@ -43,6 +43,18 @@ module.exports = io => {
       io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
     });
 
+    socket.on('get-card', payload => {
+      const { game } = cache.updateGame(payload);
+      io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
+    });
+
+    socket.on('play-card', payload => {
+      const { game, board } = cache.updateGame(payload);
+      io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
+      board &&
+        io.to(payload.game).emit('dispatch', { type: 'SET_BOARD', board });
+    });
+
     socket.on('flash', payload => {
       const { game } = cache.updateGame(payload);
       io.to(game.name).emit('dispatch', { type: 'SET_GAME', game });
@@ -61,8 +73,9 @@ module.exports = io => {
     });
 
     socket.on('updateBoard', update => {
-      const { board } = cache.updateGame(update);
+      const { board, game } = cache.updateGame(update);
       io.to(update.game).emit('dispatch', { type: 'SET_BOARD', board });
+      game && io.to(update.game).emit('dispatch', { type: 'SET_GAME', game });
     });
 
     socket.on('updateGame', update => {

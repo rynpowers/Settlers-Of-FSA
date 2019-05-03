@@ -42,13 +42,13 @@ class Game extends Component {
 
   render() {
     if (!this.props.board.resources) return <div>Loading...</div>;
-    const { players, player } = this.props;
+    const { players, player, game } = this.props;
     return (
       <div className="game-container">
         <BoardController />
         <Menu />
         <Modal />
-        <Flash />
+        {player.playerNumber === game.playerTurn && <Flash />}
         {Object.keys(players).map(i => (
           <Player
             key={i}
