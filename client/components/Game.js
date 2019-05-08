@@ -103,16 +103,6 @@ class Game extends Component {
           <button style={btnStyles} type="submit" data-value={12}>
             12
           </button>
-          <button
-            style={btnStyles}
-            type="submit"
-            onClick={e => {
-              e.stopPropagation();
-              longestRoad('12-13');
-            }}
-          >
-            road
-          </button>
         </div>
       </div>
     );

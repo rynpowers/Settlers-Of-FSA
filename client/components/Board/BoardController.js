@@ -18,15 +18,13 @@ class BoardController extends Component {
 
   handleUpdateRoad(type, id) {
     const { playerNumber, name } = this.props;
-    // socket.emit('road', {
-    //   id,
-    //   player: playerNumber,
-    //   type,
-    //   longestRoad: longestRoad(id),
-    //   game: name,
-    // });
-    console.log(longestRoad(id));
-    // this.props.reset();
+    const payload = {
+      id,
+      player: playerNumber,
+      type,
+      game: name,
+    };
+    this.props.updateRoadThunk(payload, this.props.reset);
   }
 
   handleMoveRobber(elem) {
@@ -98,5 +96,6 @@ export default connect(
   {
     updateBoardThunk: actions.updateBoardThunk,
     reset: actions.reset,
+    updateRoadThunk: actions.updateRoadThunk,
   }
 )(BoardController);
