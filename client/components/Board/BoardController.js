@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
-import { longestRoad } from '../../validators';
 import Board from './Board';
 import socket from '../../socket';
 
@@ -17,14 +16,15 @@ class BoardController extends Component {
   }
 
   handleUpdateRoad(type, id) {
-    const { playerNumber, name } = this.props;
-    const payload = {
-      id,
-      player: playerNumber,
-      type,
-      game: name,
-    };
-    this.props.updateRoadThunk(payload, this.props.reset);
+    this.props.updateRoadThunk(
+      {
+        id,
+        player: this.props.playerNumber,
+        type,
+        game: this.props.name,
+      },
+      this.props.reset
+    );
   }
 
   handleMoveRobber(elem) {
