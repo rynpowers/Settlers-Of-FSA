@@ -13,6 +13,7 @@ export const updateMode = mode => ({ type: type.UPDATE_MODE, mode });
 
 // board
 export const setBoard = board => ({ type: type.SET_BOARD, board });
+export const setRoad = (id, player) => ({ type: type.SET_ROAD, id, player });
 
 // player
 export const setPlayer = player => ({ type: type.SET_PLAYER, player });

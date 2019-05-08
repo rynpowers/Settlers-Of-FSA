@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { joinGameThunk } from '../store/actions';
 import { BoardController } from './Board';
+import { longestRoad } from '../validators';
 import Menu from './Menu';
 import Modal from './Modal';
 import Flash from './Flash';

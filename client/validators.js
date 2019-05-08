@@ -81,3 +81,80 @@ export const validateRob = id => {
 
   return hasSettlement && canRob && game.mode === 'rob-settlement';
 };
+
+// helper functions for longest Road, BFS end point search and DFS max road fn
+
+const getPlayerNeighbors = (node, settlements, roads, player) =>
+  settlements[node].roads.reduce((a, v) => {
+    if (roads[v].player == player) {
+      const [s1, s2] = v.split('-');
+      s1 != settlements[node].id ? a.push(s1) : a.push(s2);
+    }
+    return a;
+  }, []);
+
+const getPlayerRoads = (node, settlements, roads, player) =>
+  settlements[node].roads.filter(road => roads[road].player == player);
+
+const isEndPoint = (node, neighbors, settlements, player) => {
+  const curPlayer = settlements[node].player;
+  const notPlayer = curPlayer && curPlayer !== player;
+
+  return neighbors.length === 1 || neighbors.length === 3 || notPlayer;
+};
+
+const traverseRoad = (node, road) =>
+  node == road.settlements[0] ? road.settlements[1] : road.settlements[0];
+
+// BFS for all end points for connected roads
+
+const getEndpoints = (node, settlements, roads, player) => {
+  let visited = new Set();
+  let queue = [node];
+  let endPoints = [];
+  let pointer = 0;
+
+  while (queue[pointer]) {
+    let cur = queue[pointer++];
+    if (!visited.has(cur)) {
+      visited.add(cur);
+      let neighbors = getPlayerNeighbors(cur, settlements, roads, player);
+      neighbors.forEach(
+        neighbor => !visited.has(neighbor) && queue.push(neighbor)
+      );
+      isEndPoint(cur, neighbors, settlements, player) && endPoints.push(cur);
+    }
+  }
+  return endPoints.length ? endPoints : [node];
+};
+
+// DFS search for longest road from an individual end point
+
+const getMaxRoad = (start, settlements, roads, player) => {
+  let max = -Infinity;
+
+  const helper = (node, visited = new Set(), arr = []) => {
+    const curPlayer = settlements[node].player;
+    if (arr.length && curPlayer && curPlayer !== player) return;
+    getPlayerRoads(node, settlements, roads, player).forEach(r => {
+      if (!visited.has(r)) {
+        arr.push(r);
+        visited.add(r);
+        helper(traverseRoad(node, roads[r]), visited, arr);
+        max = Math.max(max, arr.length);
+        arr.pop();
+        visited.delete(r);
+      }
+    });
+  };
+
+  helper(start);
+  return max;
+};
+
+// longest Road function
+
+export const longestRoad = (start, settlements, roads, player) =>
+  getEndpoints(start, settlements, roads, player)
+    .map(n => getMaxRoad(n, settlements, roads, player))
+    .reduce((a, v) => Math.max(a, v));

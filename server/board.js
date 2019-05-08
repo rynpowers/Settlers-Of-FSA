@@ -32,7 +32,13 @@ module.exports = () => {
   const createSettlements = (t, b) => {
     const arr = [t, t + 1, t + 2, b, b + 1, b + 2];
     arr.forEach(item => {
-      board.settlements[item] = { player: null, roads: [], build: 0 };
+      board.settlements[item] = {
+        id: item,
+        player: null,
+        roads: [],
+        build: 0,
+        neighbors: [],
+      };
     });
     return arr;
   };
@@ -47,7 +53,12 @@ module.exports = () => {
     ];
 
     arr.forEach(road => {
-      board.roads[road] = { player: null, settlements: [] };
+      board.roads[road] = {
+        id: road,
+        player: null,
+        neighbors: [],
+        settlements: [],
+      };
     });
 
     return arr;
@@ -61,6 +72,7 @@ module.exports = () => {
     const diceIndex = Math.floor(Math.random() * diceValue.length);
     const type = resources.splice(index, 1)[0];
     board.resources[i] = {
+      id: i,
       type,
       diceValue: type !== 'desert' ? diceValue.splice(diceIndex, 1)[0] : null,
       hasRobber: type === 'desert',
@@ -80,9 +92,23 @@ module.exports = () => {
 
   Object.keys(board.roads).forEach(road => {
     const settlements = road.split('-');
-    board.settlements[settlements[0]].roads.push(road);
-    board.settlements[settlements[1]].roads.push(road);
-    board.roads[road].settlements = settlements;
+    const s1 = board.settlements[settlements[0]];
+    const s2 = board.settlements[settlements[1]];
+    board.roads[road].settlements.push(s1.id);
+    board.roads[road].settlements.push(s2.id);
+    s1.roads.push(road);
+    s2.roads.push(road);
+    s1.neighbors.push(s2.id);
+    s2.neighbors.push(s1.id);
   });
+
+  Object.keys(board.roads).forEach(road => {
+    const settlements = road.split('-');
+    const s1 = board.settlements[settlements[0]];
+    const s2 = board.settlements[settlements[1]];
+    const neighbors = [...s1.roads, ...s2.roads].filter(r => r !== road);
+    board.roads[road].neighbors = neighbors;
+  });
+
   return board;
 };

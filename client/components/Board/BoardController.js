@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
+import { longestRoad } from '../../validators';
 import Board from './Board';
 import socket from '../../socket';
 
@@ -15,17 +16,27 @@ class BoardController extends Component {
     this.props.reset();
   }
 
+  handleUpdateRoad(type, id) {
+    const { playerNumber, name } = this.props;
+    const payload = {
+      id,
+      player: playerNumber,
+      type,
+      game: name,
+    };
+    this.props.updateRoadThunk(payload, this.props.reset);
+  }
+
   handleMoveRobber(elem) {
     const { mode, name, playerNumber } = this.props;
-    const { type, id } = elem.dataset;
+    const { id } = elem.dataset;
 
-    if (type === 'robber')
-      socket.emit('move-robber', {
-        id,
-        type: mode,
-        game: name,
-        player: playerNumber,
-      });
+    socket.emit('move-robber', {
+      id,
+      type: mode,
+      game: name,
+      player: playerNumber,
+    });
   }
 
   handleRobSettlement(elem) {
@@ -47,7 +58,7 @@ class BoardController extends Component {
 
       switch (mode) {
         case 'road':
-          return type === 'road' && this.handleUpdate(type, id);
+          return type === 'road' && this.handleUpdateRoad(type, id);
         case 'settlement':
           return type === 'settlement' && this.handleUpdate(type, id);
         case 'city':
@@ -85,5 +96,6 @@ export default connect(
   {
     updateBoardThunk: actions.updateBoardThunk,
     reset: actions.reset,
+    updateRoadThunk: actions.updateRoadThunk,
   }
 )(BoardController);

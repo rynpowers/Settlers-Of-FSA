@@ -11,6 +11,7 @@ export const UPDATE_OFFER = 'UPDATE_OFFER';
 
 // board
 export const SET_BOARD = 'SET_BOARD';
+export const SET_ROAD = 'SET_ROAD';
 
 // player
 export const SET_PLAYER = 'SET_PLAYER';
