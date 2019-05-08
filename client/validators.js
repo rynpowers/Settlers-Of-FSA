@@ -81,3 +81,89 @@ export const validateRob = id => {
 
   return hasSettlement && canRob && game.mode === 'rob-settlement';
 };
+
+const getPlayerNeighbors = node => {
+  let { board, player } = store.getState();
+  let { settlements, roads } = board;
+  node = settlements[node];
+  return node.roads
+    .filter(road => roads[road].player == player.playerNumber)
+    .reduce((a, v) => {
+      const [s1, s2] = v.split('-');
+      s1 != node.id ? a.push(s1) : a.push(s2);
+      return a;
+    }, []);
+};
+
+const getPlayerRoads = node => {
+  let { board, player } = store.getState();
+  let { settlements, roads } = board;
+  node = settlements[node];
+
+  return node.roads.filter(road => roads[road].player == player.playerNumber);
+};
+
+const getEndpoints = node => {
+  const { board, player } = store.getState();
+  let visited = new Set();
+  let queue = [node];
+  let endPoints = [];
+  let pointer = 0;
+
+  while (queue[pointer]) {
+    let cur = queue[pointer++];
+    if (!visited.has(cur)) {
+      visited.add(cur);
+      let neighbors = getPlayerNeighbors(cur);
+      neighbors.forEach(neighbor => {
+        if (!visited.has(neighbor)) queue.push(neighbor);
+      });
+
+      const curPlayer = board.settlements[cur].player;
+      const isPlayer = curPlayer && curPlayer !== player.playerNumber;
+
+      if (neighbors.length === 1 || neighbors.length === 3 || isPlayer) {
+        endPoints.push(cur);
+      }
+    }
+  }
+  return endPoints;
+};
+
+const getMaxRoad = start => {
+  let max = -Infinity;
+  const { player, board } = store.getState();
+  const { settlements } = board;
+
+  const helper = (node, visited = new Set(), arr = []) => {
+    const curPlayer = settlements[node].player;
+    if (arr.length && curPlayer && curPlayer !== player.playerNumber) return;
+    getPlayerRoads(node).forEach(r => {
+      if (!visited.has(r)) {
+        arr.push(r);
+        visited.add(r);
+        const nodes = r.split('-');
+        const n = nodes[0] === node ? nodes[1] : nodes[0];
+        helper(n, visited, arr);
+        max = Math.max(max, arr.length);
+        arr.pop();
+        visited.delete(r);
+      }
+    });
+  };
+
+  helper(start);
+  return max;
+};
+
+export const longestRoad = road => {
+  const { player, board } = store.getState();
+  const { roads } = board;
+  const start = road.split('-')[0];
+
+  roads[road] = { ...roads[road], player: player.playerNumber };
+
+  return getEndpoints(start)
+    .map(n => getMaxRoad(n))
+    .reduce((a, v) => Math.max(a, v));
+};

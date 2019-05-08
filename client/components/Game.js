@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { joinGameThunk } from '../store/actions';
 import { BoardController } from './Board';
+import { longestRoad } from '../validators';
 import Menu from './Menu';
 import Modal from './Modal';
 import Flash from './Flash';
@@ -101,6 +102,16 @@ class Game extends Component {
           </button>
           <button style={btnStyles} type="submit" data-value={12}>
             12
+          </button>
+          <button
+            style={btnStyles}
+            type="submit"
+            onClick={e => {
+              e.stopPropagation();
+              longestRoad('12-13');
+            }}
+          >
+            road
           </button>
         </div>
       </div>

@@ -196,6 +196,7 @@ class GameEngine {
   handleKnight(update) {
     this.gameState.responded = this.gameState.responded.map(() => true);
     this.players[update.player].devCards[update.card]--;
+    this.players[update.player].largestArmy++;
     this.updatePlayers(update.player);
     return this.handleRobber();
   }
@@ -304,11 +305,23 @@ class GameEngine {
   }
 
   assignRoad(update) {
-    this.board.roads[update.id].player = update.playerNumber;
+    this.board.roads[update.id].player = update.player;
+    const prevRoad = this.players[update.player].longestRoad;
+
+    if (prevRoad < update.longestRoad) {
+      this.players[update.player].longestRoad = update.longestRoad;
+    }
+
     if (this.gameState.roadBuilding) {
       return this.handleRoadBuilding(update);
     }
-    return { type: ['board'], payload: { board: this.board } };
+
+    this.updatePlayers(update.player);
+
+    return {
+      type: ['board', 'game'],
+      payload: { board: this.board, game: this.gameState },
+    };
   }
 
   assignSettlement({ id, playerNumber }) {
