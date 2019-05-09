@@ -9,6 +9,9 @@ function Player({ id, isTurn, player }) {
     devCards,
     victoryPoints,
   } = player;
+  console.log('============');
+  console.log(isTurn);
+  console.log('============');
   const active = isTurn ? `player-stats-active player-stats-active-${id}` : '';
   return (
     <div className={`player-stats player-stats-${id} ${active}`}>

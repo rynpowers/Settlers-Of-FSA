@@ -272,6 +272,12 @@ class GameEngine {
     }
   }
 
+  handleNextPlayer(update) {
+    this.gameState.playerTurn =
+      this.gameState.playerTurn < 4 ? update.player + 1 : 1;
+    return { payload: { game: this.gameState } };
+  }
+
   update(update) {
     switch (update.type) {
       case 'road':
@@ -300,6 +306,8 @@ class GameEngine {
         return this.handleDevCard(update);
       case 'play-card':
         return this.handlePlayCard(update);
+      case 'next-player':
+        return this.handleNextPlayer(update);
       default:
     }
   }
@@ -350,7 +358,11 @@ class GameEngine {
     const updatedPlayers = {};
     Object.keys(resources).forEach(id => {
       const resource = resources[id];
-      if (resource.diceValue == diceValue && !resource.hasRobber) {
+      if (
+        resource.diceValue == diceValue &&
+        !resource.hasRobber &&
+        resource.type !== 'desert'
+      ) {
         resource.settlements.forEach(settlementId => {
           const { build, player } = settlements[settlementId];
           if (build) {
