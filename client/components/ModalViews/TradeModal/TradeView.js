@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import Chat from './Chat';
 import Trade from './Trade';
 import TradeCreate from './TradeCreate';
+import { ResourcePanel } from '../../ResourceComponents';
 import TradeOffer from './TradeOffer';
 import socket from '../../../socket';
 import './TradeView.scss';

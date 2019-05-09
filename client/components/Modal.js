@@ -10,8 +10,13 @@ import {
   YearOfPlenty,
 } from './ModalViews';
 import './Modal.scss';
+import { ResourcePanel } from './ResourceComponents';
 
 class Modal extends Component {
+  constructor(props) {
+    super(props);
+    this.handleSubmitTrade = this.handleSubmitTrade.bind(this);
+  }
   renderModalView(view) {
     switch (view) {
       case 'build':
@@ -26,6 +31,14 @@ class Modal extends Component {
         return <Monopoly {...this.props} />;
       case 'yearOfPlenty':
         return <YearOfPlenty {...this.props} />;
+      case 'roll':
+        return (
+          <ResourcePanel
+            {...this.props}
+            style={{ height: '25rem' }}
+            handleSubmit={args => console.log(args)}
+          />
+        );
       default:
     }
   }
@@ -39,6 +52,7 @@ class Modal extends Component {
       'dev',
       'monopoly',
       'yearOfPlenty',
+      'roll',
     ];
     const modalActive = views.includes(game.mode);
     return (
@@ -60,6 +74,7 @@ const mapStateToProps = ({ menu, player, game }) => ({
     0
   ),
   player,
+  resources: player.resources,
   game,
   name: game.name,
 });
