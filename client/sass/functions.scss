@@ -1,0 +1,9 @@
+$height: 9.6;
+$width: 8.2;
+
+@function resource_height($percentage) {
+  @return #{$height * $percentage}rem;
+}
+@function resource_width($percentage) {
+  @return #{$width * $percentage}rem;
+}
