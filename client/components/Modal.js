@@ -10,19 +10,19 @@ import {
   YearOfPlenty,
 } from './ModalViews';
 import './Modal.scss';
-import { ResourcePanel } from './ResourceComponents';
+import TradeViewOpponent from './ModalViews/TradeViewOpponent';
 
 class Modal extends Component {
-  constructor(props) {
-    super(props);
-    this.handleSubmitTrade = this.handleSubmitTrade.bind(this);
-  }
   renderModalView(view) {
     switch (view) {
       case 'build':
         return <Build {...this.props} />;
       case 'trade':
-        return <TradeView {...this.props} />;
+        return this.props.playerNumber === this.props.game.playerTurn ? (
+          <TradeView {...this.props} />
+        ) : (
+          <TradeViewOpponent {...this.props} />
+        );
       case 'robber':
         return <Robber {...this.props} />;
       case 'dev':
@@ -31,14 +31,6 @@ class Modal extends Component {
         return <Monopoly {...this.props} />;
       case 'yearOfPlenty':
         return <YearOfPlenty {...this.props} />;
-      case 'roll':
-        return (
-          <ResourcePanel
-            {...this.props}
-            style={{ height: '25rem' }}
-            handleSubmit={args => console.log(args)}
-          />
-        );
       default:
     }
   }

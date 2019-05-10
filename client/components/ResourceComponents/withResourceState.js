@@ -18,7 +18,6 @@ const withResourceState = WrappedComponent => {
       this.handleClick = this.handleClick.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
     }
-
     handleClick(resource, num) {
       this.setState(prev => ({ [resource]: prev[resource] + num }));
     }
@@ -29,11 +28,14 @@ const withResourceState = WrappedComponent => {
     }
 
     render() {
+      const { handleClickInc, handleClickDec } = this.props;
       return (
         <div className="resource-component-panel-container">
           <WrappedComponent
             {...this.props}
-            stateResources={this.state}
+            updateResources={this.state}
+            handleClickInc={handleClickInc}
+            handleClickDec={handleClickDec}
             handleClick={this.handleClick}
           />
           <SubmitBtn
