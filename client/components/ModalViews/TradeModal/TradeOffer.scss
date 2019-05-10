@@ -9,4 +9,8 @@
 
 .trade-offer * {
   transform: scale(0.9);
+  &-btns {
+    display: flex;
+    flex-direction: column;
+  }
 }

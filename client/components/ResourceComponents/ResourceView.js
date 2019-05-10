@@ -19,6 +19,7 @@ export const ResourceView = ({
   style,
 }) => {
   updateResources = updateResources || defaultResources;
+  resources = resources || defaultResources;
   return (
     <div className="resource-component-panel">
       {Object.keys(resources).map(type => (

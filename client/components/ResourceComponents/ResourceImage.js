@@ -9,6 +9,8 @@ function ResourceImage({ type, quantity, original }) {
       ? 'add'
       : 'minus';
 
+  quantity = quantity < 0 ? quantity * -1 : quantity;
+
   return (
     <div className={`resource-component-image ${type}`}>
       {quantity !== undefined && <div className={classString}>{quantity}</div>}
