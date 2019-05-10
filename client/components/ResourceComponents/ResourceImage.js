@@ -1,7 +1,7 @@
 import React from 'react';
 import './ResourceComponents.scss';
 
-function ResourceImage({ type, quantity, original }) {
+function ResourceImage({ type, quantity, original, handleClick, hideNum }) {
   const classString =
     original === undefined || original === quantity
       ? ''
@@ -12,8 +12,12 @@ function ResourceImage({ type, quantity, original }) {
   quantity = quantity < 0 ? quantity * -1 : quantity;
 
   return (
-    <div className={`resource-component-image ${type}`}>
-      {quantity !== undefined && <div className={classString}>{quantity}</div>}
+    <div
+      onClick={handleClick}
+      className={`resource-component-image ${type} ${handleClick &&
+        'resource-btn'}`}
+    >
+      {!hideNum && <div className={classString}>{quantity}</div>}
     </div>
   );
 }

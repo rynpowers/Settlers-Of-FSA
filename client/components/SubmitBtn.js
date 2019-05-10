@@ -1,6 +1,6 @@
 import React from 'react';
 
-function ModalSubmit({ handleSubmit, text, style }) {
+function SubmitBtn({ handleSubmit, text, style }) {
   return (
     <button
       style={style}
@@ -13,4 +13,4 @@ function ModalSubmit({ handleSubmit, text, style }) {
   );
 }
 
-export default ModalSubmit;
+export default SubmitBtn;

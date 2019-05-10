@@ -31,6 +31,8 @@ class Modal extends Component {
         return <Monopoly {...this.props} />;
       case 'yearOfPlenty':
         return <YearOfPlenty {...this.props} />;
+      // case 'roll':
+      //   return <YearOfPlenty {...this.props} />;
       default:
     }
   }
@@ -44,7 +46,6 @@ class Modal extends Component {
       'dev',
       'monopoly',
       'yearOfPlenty',
-      'roll',
     ];
     const modalActive = views.includes(game.mode);
     return (

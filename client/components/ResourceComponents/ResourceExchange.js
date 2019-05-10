@@ -1,11 +1,13 @@
 import React, { Fragment } from 'react';
-import ResourceBtn from './ResourceBtn';
+import ResourceExchangeBtn from './ResourceExchangeBtn';
 import ResourceImage from './ResourceImage';
 
 const ResourceExchange = ({
+  hideNum,
   type,
   handleClickInc,
   handleClickDec,
+  handleClick,
   quantity,
   original,
   style,
@@ -21,13 +23,19 @@ const ResourceExchange = ({
           >
             {diff > 0 ? diff : 0}
           </div>
-          <ResourceBtn inc handleClick={handleClickInc} />
+          <ResourceExchangeBtn inc handleClick={handleClickInc} />
         </Fragment>
       )}
-      <ResourceImage type={type} quantity={quantity} original={original} />
+      <ResourceImage
+        hideNum={hideNum}
+        type={type}
+        quantity={quantity}
+        original={original}
+        handleClick={handleClick}
+      />
       {handleClickDec && (
         <Fragment>
-          <ResourceBtn handleClick={handleClickDec} />
+          <ResourceExchangeBtn handleClick={handleClickDec} />
           <div
             className="resource-component-exchange-num"
             style={{ color: 'var(--color-red)' }}

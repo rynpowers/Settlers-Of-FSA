@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import ModalSubmit from './ModalSubmit';
 import Card from './Card';
 import socket from '../../socket';
 import './Card.scss';
+import SubmitBtn from '../SubmitBtn';
 
 class DevModal extends Component {
   constructor(props) {
@@ -62,7 +62,7 @@ class DevModal extends Component {
             return a;
           }, [])}
         </div>
-        <ModalSubmit handleSubmit={this.handleSubmit} text="Buy Card" />
+        <SubmitBtn handleSubmit={this.handleSubmit} text="Buy Card" />
         <div className={`card-modal ${selectedCard && 'card-active'}`}>
           <div
             onClick={() => this.setState({ selectedCard: '' })}

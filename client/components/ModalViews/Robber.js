@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ResourceView } from '../ResourceComponents';
-import ModalSubmit from './ModalSubmit';
+import SubmitBtn from '../SubmitBtn';
 import socket from '../../socket';
 
 class Robber extends Component {
@@ -60,7 +60,7 @@ class Robber extends Component {
           handleClickDec={this.handleClick}
           resources={resources}
         />
-        <ModalSubmit
+        <SubmitBtn
           text="Submit"
           handleSubmit={this.handleSubmit}
           style={{ visibility: total === discard ? 'visible' : 'hidden' }}

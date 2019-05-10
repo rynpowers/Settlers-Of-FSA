@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Chat from './Chat';
+import Chat from '../Chat';
 
 class TradeComponentWindow extends Component {
   render() {

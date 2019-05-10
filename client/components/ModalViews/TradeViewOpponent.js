@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import TradeOffer from './TradeModal/TradeOffer';
+import TradeOffer from './TradeOffer';
 import { ResourceView } from '../ResourceComponents';
-import ModalSubmit from './ModalSubmit';
-import TradeComponentWindow from './TradeModal/TradeComponentWindow';
+import TradeComponentWindow from './TradeComponentWindow';
 import socket from '../../socket';
+import SubmitBtn from '../SubmitBtn';
 
 const defaultResources = {
   forest: 0,
@@ -96,7 +96,7 @@ export class TradeViewOpponent extends Component {
               resources={player.resources}
             />
             {!offer && (
-              <ModalSubmit text="Submit" handleSubmit={this.handleSendTrade} />
+              <SubmitBtn text="Submit" handleSubmit={this.handleSendTrade} />
             )}
           </div>
         )}

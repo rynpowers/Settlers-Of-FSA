@@ -1,7 +1,7 @@
 import React from 'react';
-import { ResourceImage } from '../../ResourceComponents';
+import { ResourceImage } from '../ResourceComponents';
 import './TradeOffer.scss';
-import Button from '../../Button';
+import Button from '../Button';
 
 function TradeOffer({
   resources,

@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react';
-import { ResourceView } from '../../ResourceComponents';
+import { ResourceView } from '../ResourceComponents';
 import TradeComponentWindow from './TradeComponentWindow';
 import TradeOffer from './TradeOffer';
-import socket from '../../../socket';
+import socket from '../../socket';
 import './TradeView.scss';
 
 export class TradeView extends Component {
@@ -43,11 +43,11 @@ export class TradeView extends Component {
     this.setState({ selectedTrade });
   }
 
-  filterTrades(playerNumber, prevState) {
-    return Object.keys(prevState.trades)
+  filterTrades(playerNumber, state) {
+    return Object.keys(state.trades)
       .filter(player => player != playerNumber)
       .reduce((a, v) => {
-        a[v] = prevState.trades[v];
+        a[v] = state.trades[v];
         return a;
       }, {});
   }

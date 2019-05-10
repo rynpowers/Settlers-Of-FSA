@@ -1,4 +1,4 @@
 export { default as ResourceImage } from './ResourceImage';
-export { default as ResourceBtn } from './ResourceBtn';
+export { default as ResourceExchangeBtn } from './ResourceExchangeBtn';
 export { default as ResourceExchange } from './ResourceExchange';
-export * from './ResourceView';
+export { default as ResourceView } from './ResourceView';

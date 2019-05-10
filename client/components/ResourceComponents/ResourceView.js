@@ -9,11 +9,13 @@ const defaultResources = {
   field: 0,
 };
 
-export const ResourceView = ({
+const ResourceView = ({
+  hideNum,
   resources,
   updateResources,
   handleClickInc,
   handleClickDec,
+  handleClick,
   style,
 }) => {
   updateResources = updateResources || defaultResources;
@@ -22,6 +24,7 @@ export const ResourceView = ({
     <div className="resource-component-panel">
       {Object.keys(resources).map(type => (
         <ResourceExchange
+          hideNum={hideNum}
           key={type}
           type={type}
           diff={updateResources[type]}
@@ -29,9 +32,12 @@ export const ResourceView = ({
           original={resources[type]}
           handleClickInc={handleClickInc && (() => handleClickInc(type, 1))}
           handleClickDec={handleClickDec && (() => handleClickDec(type, -1))}
+          handleClick={handleClick && (() => handleClick(type))}
           style={style}
         />
       ))}
     </div>
   );
 };
+
+export default ResourceView;

@@ -95,3 +95,18 @@
     display: flex;
   }
 }
+
+.resource-btn {
+  margin: 1rem;
+  cursor: pointer;
+  transform: translateY(0);
+  transition: all 0.2s;
+}
+
+.resource-btn:hover {
+  transform: translateY(-0.3rem);
+}
+
+.resource-btn:active {
+  transform: translateY(0);
+}
