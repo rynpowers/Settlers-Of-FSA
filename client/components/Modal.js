@@ -13,16 +13,19 @@ import './Modal.scss';
 import TradeViewOpponent from './ModalViews/TradeViewOpponent';
 
 class Modal extends Component {
+  renderTrade() {
+    return this.props.playerNumber === this.props.game.playerTurn ? (
+      <TradeView {...this.props} />
+    ) : (
+      <TradeViewOpponent {...this.props} />
+    );
+  }
   renderModalView(view) {
     switch (view) {
       case 'build':
         return <Build {...this.props} />;
       case 'trade':
-        return this.props.playerNumber === this.props.game.playerTurn ? (
-          <TradeView {...this.props} />
-        ) : (
-          <TradeViewOpponent {...this.props} />
-        );
+        return this.renderTrade();
       case 'robber':
         return <Robber {...this.props} />;
       case 'dev':
@@ -31,8 +34,6 @@ class Modal extends Component {
         return <Monopoly {...this.props} />;
       case 'yearOfPlenty':
         return <YearOfPlenty {...this.props} />;
-      // case 'roll':
-      //   return <YearOfPlenty {...this.props} />;
       default:
     }
   }
