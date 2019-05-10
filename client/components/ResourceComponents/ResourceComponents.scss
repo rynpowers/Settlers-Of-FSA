@@ -1,0 +1,112 @@
+@import '../../sass/mixins';
+@import '../../sass/functions';
+
+.resource-component {
+  &-image {
+    @include resource-styles(1);
+    @include flex-center();
+    div {
+      @include flex-center();
+      font-size: 2rem;
+      border-radius: 50%;
+      height: resource_height(0.3);
+      width: resource_height(0.3);
+      background-color: var(--color-black);
+      color: var(--color-white);
+    }
+
+    .add {
+      color: var(--color-green);
+    }
+
+    .minus {
+      color: var(--color-red);
+    }
+  }
+
+  &-btn {
+    width: 3.5rem;
+    height: 2.5rem;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.4rem;
+    cursor: pointer;
+    background-color: transparent;
+    transition: all 0.2s;
+    & div {
+      height: 2rem;
+      width: 3rem;
+      @include clip-arrow();
+      transition: all 0.2s;
+    }
+    &.inc {
+      transform: rotate(90deg);
+      &:hover {
+        background-color: var(--color-green);
+      }
+
+      & div {
+        background-color: var(--color-green);
+      }
+
+      &:hover div {
+        background-color: var(--color-black);
+      }
+    }
+
+    &.dec {
+      transform: rotate(-90deg);
+      &:hover {
+        background-color: var(--color-red);
+      }
+
+      & div {
+        background-color: var(--color-red);
+      }
+
+      &:hover div {
+        background-color: var(--color-black);
+      }
+    }
+  }
+
+  &-exchange {
+    @include flex-center();
+    justify-content: space-between;
+    &-num {
+      @include flex-center();
+      font-size: 1.6rem;
+      background-color: var(--color-black);
+      height: 2rem;
+      width: 2rem;
+      border-radius: 50%;
+    }
+  }
+
+  &-panel-container {
+    @include flex-center();
+    justify-content: space-between;
+    height: 35rem;
+  }
+
+  &-panel {
+    display: flex;
+  }
+}
+
+.resource-btn {
+  margin: 1rem;
+  cursor: pointer;
+  transform: translateY(0);
+  transition: all 0.2s;
+}
+
+.resource-btn:hover {
+  transform: translateY(-0.3rem);
+}
+
+.resource-btn:active {
+  transform: translateY(0);
+}

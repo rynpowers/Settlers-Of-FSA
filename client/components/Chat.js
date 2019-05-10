@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Message from './Message';
-import socket from '../../../socket';
+import socket from '../socket';
 
 export class Chat extends Component {
   constructor(props) {
