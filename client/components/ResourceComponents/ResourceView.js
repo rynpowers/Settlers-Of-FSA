@@ -1,6 +1,5 @@
 import React from 'react';
 import ResourceExchange from './ResourceExchange';
-import withResourceState from './withResourceState';
 
 const defaultResources = {
   forest: 0,
@@ -15,7 +14,6 @@ export const ResourceView = ({
   updateResources,
   handleClickInc,
   handleClickDec,
-  handleClick,
   style,
 }) => {
   updateResources = updateResources || defaultResources;
@@ -29,17 +27,11 @@ export const ResourceView = ({
           diff={updateResources[type]}
           quantity={updateResources[type] + resources[type]}
           original={resources[type]}
-          handleClickInc={
-            handleClickInc && (() => handleClickInc(handleClick, type))
-          }
-          handleClickDec={
-            handleClickDec && (() => handleClickDec(handleClick, type))
-          }
+          handleClickInc={handleClickInc && (() => handleClickInc(type, 1))}
+          handleClickDec={handleClickDec && (() => handleClickDec(type, -1))}
           style={style}
         />
       ))}
     </div>
   );
 };
-
-export const ResourceExchangeComponent = withResourceState(ResourceView);

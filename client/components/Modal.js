@@ -61,11 +61,12 @@ class Modal extends Component {
 const mapStateToProps = ({ menu, player, game }) => ({
   modal: menu.modal,
   playerNumber: player.playerNumber,
-  totalResources: Object.keys(player.resources).reduce(
-    (a, v) => a + player.resources[v],
-    0
+  discard: Math.floor(
+    Object.keys(player.resources).reduce((a, v) => a + player.resources[v], 0) /
+      2
   ),
   player,
+  isTurn: game.playerTurn === player.playerNumber,
   resources: player.resources,
   game,
   name: game.name,

@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
 import TradeOffer from './TradeModal/TradeOffer';
-import { ResourceExchangeComponent, ResourceView } from '../ResourceComponents';
+import { ResourceView } from '../ResourceComponents';
+import ModalSubmit from './ModalSubmit';
 import TradeComponentWindow from './TradeModal/TradeComponentWindow';
 import socket from '../../socket';
+
+const defaultResources = {
+  forest: 0,
+  hill: 0,
+  pasture: 0,
+  mountain: 0,
+  field: 0,
+};
 
 export class TradeViewOpponent extends Component {
   constructor(props) {
@@ -10,8 +19,10 @@ export class TradeViewOpponent extends Component {
     this.state = {
       trades: {},
       loaded: false,
+      resources: { ...defaultResources },
     };
     this.handleSendTrade = this.handleSendTrade.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -28,6 +39,16 @@ export class TradeViewOpponent extends Component {
     socket.removeAllListeners('trades');
   }
 
+  handleClick(type, val) {
+    const { resources } = this.props;
+    const canDec = val < 0 && resources[type] + this.state.resources[type];
+
+    if (canDec || val > 0)
+      this.setState(prev => ({
+        resources: { ...prev.resources, [type]: prev.resources[type] + val },
+      }));
+  }
+
   reversePerspective(resources) {
     return Object.keys(resources).reduce((a, v) => {
       a[v] = resources[v] ? resources[v] * -1 : 0;
@@ -35,23 +56,20 @@ export class TradeViewOpponent extends Component {
     }, {});
   }
 
-  handleSendTrade(resources) {
-    this.setState(prevState => ({
-      trades: {
-        ...prevState.trades,
-        [this.props.playerNumber]: resources,
-      },
-      offered: true,
+  handleSendTrade() {
+    let { resources } = this.state;
+    const { playerNumber } = this.props;
+    this.setState(prev => ({
+      trades: { ...prev.trades, [playerNumber]: { ...resources } },
+      resources: { ...defaultResources },
     }));
-
-    resources = this.reversePerspective(resources);
 
     socket.emit('incoming-trade', {
       type: 'trade',
       action: 'add',
       player: this.props.player.playerNumber,
       game: this.props.game.name,
-      resources,
+      resources: this.reversePerspective(resources),
     });
   }
 
@@ -62,27 +80,26 @@ export class TradeViewOpponent extends Component {
     if (!this.state.loaded) return <div>loading...</div>;
 
     const offer = trades[playerNumber];
-    console.log(offer);
 
     return (
       <TradeComponentWindow
         {...this.props}
-        renderComponentOne={() =>
-          offer ? (
+        renderComponentOne={() => (
+          <div>
             <ResourceView
-              updateResources={this.reversePerspective(offer)}
-              resources={player.resources}
-            />
-          ) : (
-            <ResourceExchangeComponent
               style={{ height: '25rem' }}
-              handleSubmit={this.handleSendTrade}
-              handleClickInc={(fn, type) => fn(type, 1)}
-              handleClickDec={(fn, type) => fn(type, -1)}
+              updateResources={
+                offer ? this.reversePerspective(offer) : this.state.resources
+              }
+              handleClickInc={!offer && this.handleClick}
+              handleClickDec={!offer && this.handleClick}
               resources={player.resources}
             />
-          )
-        }
+            {!offer && (
+              <ModalSubmit text="Submit" handleSubmit={this.handleSendTrade} />
+            )}
+          </div>
+        )}
         renderComponentTwo={() =>
           Object.keys(this.state.trades).map(trade => (
             <TradeOffer

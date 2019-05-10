@@ -80,7 +80,7 @@ export class TradeView extends Component {
 
   render() {
     const { trades, selectedTrade } = this.state;
-    const { player, game } = this.props;
+    const { player, isTurn } = this.props;
 
     if (!this.state.loaded) return <div>loading...</div>;
 
@@ -107,8 +107,7 @@ export class TradeView extends Component {
             <TradeOffer
               key={trade}
               trade={trade}
-              player={player}
-              game={game}
+              isTurn={isTurn}
               resources={this.state.trades[trade]}
               selectedTrade={selectedTrade}
               handleViewTrade={this.handleViewTrade}

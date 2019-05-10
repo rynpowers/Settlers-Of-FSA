@@ -5,10 +5,10 @@
   margin: 0.25rem;
   border-radius: 5px;
   align-items: center;
-}
 
-.trade-offer * {
-  transform: scale(0.9);
+  & * {
+    transform: scale(0.9);
+  }
   &-btns {
     display: flex;
     flex-direction: column;

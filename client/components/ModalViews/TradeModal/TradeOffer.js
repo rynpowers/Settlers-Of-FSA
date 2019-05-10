@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResourceView } from '../../ResourceComponents';
+import { ResourceImage } from '../../ResourceComponents';
 import './TradeOffer.scss';
 import Button from '../../Button';
 
@@ -9,14 +9,22 @@ function TradeOffer({
   handleViewTrade,
   handleAcceptTrade,
   handleRejectTrade,
-  player,
+  isTurn,
   trade,
-  game,
 }) {
   return (
     <div className={`trade-offer border-${trade}`}>
-      <ResourceView updateResources={resources} />
-      {game.playerTurn == player.playerNumber && (
+      {Object.keys(resources)
+        .filter(type => resources[type])
+        .map(type => (
+          <ResourceImage
+            key={type}
+            type={type}
+            original={0}
+            quantity={resources[type]}
+          />
+        ))}
+      {isTurn && (
         <div className="trade-offer-btns">
           <Button
             text="View"
