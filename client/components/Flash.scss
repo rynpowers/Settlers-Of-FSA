@@ -1,20 +1,35 @@
 @import '../sass/mixins.scss';
 
+.flash-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  @include flex-center();
+  height: 100%;
+  width: 100%;
+  z-index: -10;
+  &-active {
+    z-index: 100;
+  }
+}
+
 .flash {
   @include flex-center();
   justify-content: space-evenly;
   font-weight: 300;
   letter-spacing: 0.2rem;
   @include absolute-center();
-  transform: scale(0) translate(-50%, -50%);
   height: 20rem;
   width: 50rem;
+  transform: scale(0) translate(-50%, -50%);
+  transform-origin: top left;
   background-color: var(--color-black-transparent);
   border: 3px solid var(--color-white);
   border-radius: 5px;
   color: var(--color-white);
-}
-
-.flash-active {
-  transform: scale(1) translate(-50%, -50%);
+  transition: all 0.2s;
+  &-active {
+    transform: scale(1) translate(-50%, -50%);
+    transform-origin: top left;
+  }
 }

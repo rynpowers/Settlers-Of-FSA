@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import socket from '../socket';
 import './Flash.scss';
 import SubmitBtn from './SubmitBtn';
+import { updateFlash } from '../store/actions';
 
 const next = {
   acknowledgeMoveRobber: 'move-robber',
@@ -19,23 +20,34 @@ class Flash extends Component {
   }
   handleSubmit() {
     const { name, playerNumber, mode } = this.props;
-    socket.emit('flash', {
-      mode: next[mode],
-      type: 'flash',
-      game: name,
-      player: playerNumber,
-    });
+    const modes = ['build'];
+
+    if (!modes.includes(mode)) {
+      socket.emit('flash', {
+        mode: next[mode],
+        type: 'flash',
+        game: name,
+        player: playerNumber,
+      });
+    } else {
+      this.props.updateFlash('');
+    }
   }
 
   render() {
     return (
-      <div className={`flash ${this.props.flash && 'flash-active'}`}>
-        <h2>{this.props.flash}</h2>
-        <SubmitBtn
-          style={{ transform: 'scale(0.8)' }}
-          text="OK"
-          handleSubmit={this.handleSubmit}
-        />
+      <div
+        className={`flash-container ${this.props.flash &&
+          'flash-container-active'}`}
+      >
+        <div className={`flash ${this.props.flash && 'flash-active'}`}>
+          <h2>{this.props.flash}</h2>
+          <SubmitBtn
+            style={{ transform: 'scale(0.8)' }}
+            text="OK"
+            handleSubmit={this.handleSubmit}
+          />
+        </div>
       </div>
     );
   }
@@ -50,5 +62,5 @@ const mapStateToProps = ({ game, player }) => ({
 
 export default connect(
   mapStateToProps,
-  null
+  { updateFlash }
 )(Flash);

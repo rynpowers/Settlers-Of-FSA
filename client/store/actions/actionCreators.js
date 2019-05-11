@@ -10,6 +10,10 @@ export const setGame = game => ({
 });
 export const reset = () => ({ type: type.RESET });
 export const updateMode = mode => ({ type: type.UPDATE_MODE, mode });
+export const updateFlash = flash => {
+  console.log('calling update flash');
+  return { type: type.UPDATE_FLASH, flash };
+};
 
 // board
 export const setBoard = board => ({ type: type.SET_BOARD, board });

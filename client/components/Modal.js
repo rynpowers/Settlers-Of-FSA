@@ -80,5 +80,6 @@ export default connect(
     updateMode: actions.updateMode,
     reset: actions.reset,
     toggleExitMenu: actions.toggleExitMenu,
+    updateFlash: actions.updateFlash,
   }
 )(Modal);

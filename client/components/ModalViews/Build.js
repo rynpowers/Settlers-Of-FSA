@@ -1,67 +1,43 @@
 import React, { Component } from 'react';
+import BuildViewBtn from './BuildViewBtn';
 import './Build.scss';
 
+const resourceCost = {
+  road: { forest: 1, hill: 1 },
+  settlement: { hill: 1, forest: 1, field: 1, pasture: 1 },
+  city: { field: 2, mountain: 3 },
+};
+
 class Build extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      road: false,
-      settlement: false,
-      city: false,
-    };
-
-    this.handleMouseOut = this.handleMouseOut.bind(this);
-    this.handleMouseOver = this.handleMouseOver.bind(this);
-  }
-
-  handleMouseOver(e) {
-    if (e.target.dataset.button) {
-      this.setState({ [e.target.dataset.value]: true });
-    }
-  }
-
-  handleMouseOut(e) {
-    if (e.target.dataset.button) {
-      this.setState({ [e.target.dataset.value]: false });
-    }
+  canBuy(cost) {
+    const { resources } = this.props;
+    return Object.keys(cost).every(type => resources[type] >= cost[type]);
   }
 
   render() {
-    const { road, settlement, city } = this.state;
     const { playerNumber } = this.props;
     return (
       <div
-        onMouseOver={this.handleMouseOver}
-        onMouseOut={this.handleMouseOut}
+        className="modal-build"
         onClick={e => {
-          if (e.target.dataset.value) {
+          const cost = resourceCost[e.target.dataset.value];
+          const canBuy = this.canBuy(cost) && e.target.dataset.value;
+          if (canBuy) {
             this.props.updateMode(e.target.dataset.value);
             this.props.toggleExitMenu();
+          } else {
+            this.props.updateFlash("you don't have sufficient resources");
           }
         }}
-        className="modal-build-view"
       >
-        <div
-          className={`${road && `player-${playerNumber}`}`}
-          data-value="road"
-          data-button={true}
-        >
-          Road
-        </div>
-        <div
-          className={`${settlement && `player-${playerNumber}`}`}
-          data-value="settlement"
-          data-button={true}
-        >
-          Settlement
-        </div>
-        <div
-          className={`${city && `player-${playerNumber}`}`}
-          data-value="city"
-          data-button={true}
-        >
-          City
-        </div>
+        {['road', 'settlement', 'city'].map(type => (
+          <BuildViewBtn
+            key={type}
+            resources={resourceCost[type]}
+            type={type}
+            playerNumber={playerNumber}
+          />
+        ))}
       </div>
     );
   }

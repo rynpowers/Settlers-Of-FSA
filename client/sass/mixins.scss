@@ -90,3 +90,12 @@
   background-size: cover;
   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
+
+@mixin resource-styles-inner($percentage) {
+  font-size: 2rem;
+  border-radius: 50%;
+  height: resource_height($percentage);
+  width: resource_height($percentage);
+  background-color: var(--color-black);
+  color: var(--color-white);
+}
