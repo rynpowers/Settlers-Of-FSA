@@ -1,97 +1,64 @@
 @import '../../sass/mixins.scss';
+@import '../../sass/functions.scss';
 
 .resource-container {
+  @include flex-center();
   position: relative;
+}
 
-  .resource {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--color-sand);
-    height: var(--resource-height);
-    width: var(--resource-width);
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    z-index: 1;
+.resource {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  @include resource-styles(1);
+  z-index: 1;
 
-    .top {
-      height: 50%;
-      z-index: 3;
-    }
+  &-image {
+    @include flex-center();
+    @include absolute-center();
+    @include resource-styles(0.85);
+    z-index: 5;
 
-    .bottom {
-      height: 50%;
-      z-index: 3;
-    }
-
-    .middle {
-      height: 4.8rem;
-      width: 8.2rem;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      clip-path: polygon(50% 50%, 100% 0, 100% 100%, 50% 50%, 0 100%, 0 0);
-      z-index: 4;
-    }
-
-    .road-container {
-      display: flex;
-      & div {
-        background-color: var(--color-sand);
-        height: 100%;
-        width: 50%;
-      }
-    }
-
-    .desert {
-      background-image: var(--desert);
-    }
-
-    .forest {
-      background-image: var(--forest);
-    }
-
-    .hill {
-      background-image: var(--hill);
-    }
-
-    .pasture {
-      background-image: var(--pasture);
-    }
-
-    .field {
-      background-image: var(--field);
-    }
-
-    .mountain {
-      background-image: var(--mountain);
-    }
-
-    &-image {
-      position: absolute;
+    &-number {
+      height: 3rem;
+      width: 3rem;
       @include flex-center();
-      top: 50%;
-      left: 49.5%;
-      transform: translate(-50%, -50%) scale(0.85);
-      height: var(--resource-height);
-      width: var(--resource-width);
-      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-      z-index: 5;
-
-      &-number {
-        height: 3rem;
-        width: 3rem;
-        @include flex-center();
-        border-radius: 50%;
-        background-color: var(--color-white);
-      }
-
-      &-robber {
-        height: 4.6rem;
-        width: 2.2rem;
-        background-image: var(--robber);
-        background-size: cover;
-      }
+      border-radius: 50%;
+      background-color: var(--color-white);
     }
+
+    &-robber {
+      height: 4.6rem;
+      width: 2.2rem;
+      background-image: var(--robber);
+      background-size: cover;
+    }
+  }
+}
+
+.top {
+  height: 50%;
+  z-index: 3;
+}
+
+.bottom {
+  height: 50%;
+  z-index: 3;
+}
+
+.middle {
+  height: resource_height(0.5);
+  width: resource_width(1);
+  @include absolute-center();
+  @include clip-hexagon();
+  z-index: 4;
+}
+
+.road-container {
+  display: flex;
+  & div {
+    background-color: var(--color-sand);
+    height: 100%;
+    width: 50%;
   }
 }

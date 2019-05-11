@@ -10,14 +10,22 @@ import {
   YearOfPlenty,
 } from './ModalViews';
 import './Modal.scss';
+import TradeViewOpponent from './ModalViews/TradeViewOpponent';
 
 class Modal extends Component {
+  renderTrade() {
+    return this.props.playerNumber === this.props.game.playerTurn ? (
+      <TradeView {...this.props} />
+    ) : (
+      <TradeViewOpponent {...this.props} />
+    );
+  }
   renderModalView(view) {
     switch (view) {
       case 'build':
         return <Build {...this.props} />;
       case 'trade':
-        return <TradeView {...this.props} />;
+        return this.renderTrade();
       case 'robber':
         return <Robber {...this.props} />;
       case 'dev':
@@ -55,11 +63,13 @@ class Modal extends Component {
 const mapStateToProps = ({ menu, player, game }) => ({
   modal: menu.modal,
   playerNumber: player.playerNumber,
-  totalResources: Object.keys(player.resources).reduce(
-    (a, v) => a + player.resources[v],
-    0
+  discard: Math.floor(
+    Object.keys(player.resources).reduce((a, v) => a + player.resources[v], 0) /
+      2
   ),
   player,
+  isTurn: game.playerTurn === player.playerNumber,
+  resources: player.resources,
   game,
   name: game.name,
 });

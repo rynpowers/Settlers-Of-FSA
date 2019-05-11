@@ -1,87 +1,69 @@
 import React, { Component } from 'react';
-import Trade from './TradeModal/Trade';
-import ModalSubmit from './ModalSubmit';
+import { ResourceView } from '../ResourceComponents';
+import SubmitBtn from '../SubmitBtn';
 import socket from '../../socket';
 
 class Robber extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      resources: {
-        forest: 0,
-        hill: 0,
-        pasture: 0,
-        mountain: 0,
-        field: 0,
-      },
+      forest: 0,
+      hill: 0,
+      pasture: 0,
+      mountain: 0,
+      field: 0,
     };
 
     this.handleClick = this.handleClick.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+  getTotal() {
+    return Object.keys(this.state).reduce((a, v) => a + this.state[v] * -1, 0);
+  }
 
   handleClick(type, val) {
-    let discard = Math.floor(this.props.totalResources / 2);
-    const { resources } = this.state;
-    let total = Object.keys(this.state.resources).reduce(
-      (a, v) => a + resources[v] * -1,
-      0
-    );
+    const { resources, discard } = this.props;
+    const total = this.getTotal();
+    const canDec =
+      resources[type] + this.state[type] && total < discard && val < 0;
+    const canInc = this.state[type] && val > 0;
 
-    if ((val < 0 && total < discard) || (resources[type] && val > 0)) {
-      this.setState({
-        resources: { ...resources, [type]: resources[type] + val },
-      });
-    }
+    if (canDec || canInc)
+      this.setState(prev => ({ ...prev, [type]: prev[type] + val }));
   }
 
   handleSubmit() {
-    const { resources } = this.state;
-    const { player } = this.props;
-    let updatedResources = Object.keys(resources).reduce((a, v) => {
-      a[v] = player.resources[v] + resources[v];
+    const { name, playerNumber, resources } = this.props;
+    let updatedResources = Object.keys(this.state).reduce((a, v) => {
+      a[v] = resources[v] + this.state[v];
       return a;
     }, {});
 
-    const payload = {
+    socket.emit('robbing-player', {
       type: 'robber',
-      game: this.props.game.name,
-      playerNumber: player.playerNumber,
+      game: name,
+      playerNumber: playerNumber,
       resources: updatedResources,
-    };
-
-    socket.emit('robbing-player', payload);
+    });
   }
 
   render() {
-    const { resources } = this.state;
-    let discard = Math.floor(this.props.totalResources / 2);
-    let total = Object.keys(resources).reduce(
-      (a, v) => a + resources[v] * -1,
-      0
-    );
-
-    let visibility = total === discard ? 'visible' : 'hidden';
+    const { discard, resources } = this.props;
+    let total = this.getTotal();
 
     return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '50%',
-          height: '50rem',
-        }}
-      >
-        <ModalSubmit
-          handleSubmit={this.handleSubmit}
-          style={{ alignSelf: 'flex-end', visibility }}
-          text="Submit"
-        />
-        <Trade
-          player={this.props.player}
-          handleClick={this.handleClick}
+      <div>
+        <ResourceView
+          style={{ height: '25rem' }}
+          updateResources={this.state}
+          handleClickInc={this.handleClick}
+          handleClickDec={this.handleClick}
           resources={resources}
-          hidePlus={true}
+        />
+        <SubmitBtn
+          text="Submit"
+          handleSubmit={this.handleSubmit}
+          style={{ visibility: total === discard ? 'visible' : 'hidden' }}
         />
       </div>
     );

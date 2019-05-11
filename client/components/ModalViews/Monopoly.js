@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import './ResourceBtn.scss';
 import socket from '../../socket';
-import ResourceBtnList from './ResourceBtnList';
+import { ResourceView } from '../ResourceComponents';
 
 class Monopoly extends Component {
   constructor(props) {
@@ -22,12 +21,10 @@ class Monopoly extends Component {
   }
 
   render() {
-    const { player } = this.props;
-
     return (
       <div className="resource-btn-container">
         <h1>Select a resource</h1>
-        <ResourceBtnList resources={player.resources} />
+        <ResourceView hideNum handleClick={this.handleClick} />
       </div>
     );
   }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import ResourceBtnList from './ResourceBtnList';
-import ModalSubmit from './ModalSubmit';
+import { ResourceView } from '../ResourceComponents';
+import SubmitBtn from '../SubmitBtn';
 import socket from '../../socket';
 
 const btnStyle = {
@@ -53,26 +53,26 @@ class YearOfPlenty extends Component {
   }
 
   render() {
+    const { resources } = this.props;
     const total = Object.keys(this.state).reduce(
       (a, v) => a + this.state[v],
       0
     );
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <ResourceBtnList
+        <ResourceView
           handleClick={this.handleClick}
-          resources={this.state}
-          color
-          quantity
+          updateResources={this.state}
+          resources={resources}
         />
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <ModalSubmit
+          <SubmitBtn
             handleSubmit={this.handleClear}
             text="Clear"
             style={btnStyle}
           />
           {total === 2 && (
-            <ModalSubmit
+            <SubmitBtn
               handleSubmit={this.handleSubmit}
               text="Submit"
               style={btnStyle}

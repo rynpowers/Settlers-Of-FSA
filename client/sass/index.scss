@@ -32,13 +32,13 @@
 
   --box-shadow: 0px 2px 10px 2px rgba(0, 0, 0, 0.3);
 
-  --desert: url('../../public/images/resources/desert.png');
-  --forest: url('../../public/images/resources/forest.png');
-  --mountain: url('../../public/images/resources/mountain.png');
-  --hill: url('../../public/images/resources/hill.png');
-  --field: url('../../public/images/resources/field.png');
-  --pasture: url('../../public/images/resources/pasture.png');
-  --robber: url('../../public/images/robber.png');
+  --desert: url('/images/resources/desert.png');
+  --forest: url('/images/resources/forest.png');
+  --mountain: url('/images/resources/mountain.png');
+  --hill: url('/images/resources/hill.png');
+  --field: url('/images/resources/field.png');
+  --pasture: url('/images/resources/pasture.png');
+  --robber: url('/images/robber.png');
   --resource-height: 9.6rem;
   --resource-width: 8.2rem;
 }
@@ -100,4 +100,28 @@ h3 {
 }
 .border-4 {
   border: 3px solid var(--color-orange) !important;
+}
+
+.desert {
+  background-image: var(--desert);
+}
+
+.forest {
+  background-image: var(--forest);
+}
+
+.hill {
+  background-image: var(--hill);
+}
+
+.pasture {
+  background-image: var(--pasture);
+}
+
+.field {
+  background-image: var(--field);
+}
+
+.mountain {
+  background-image: var(--mountain);
 }

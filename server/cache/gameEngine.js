@@ -325,6 +325,7 @@ class GameEngine {
     }
 
     this.updatePlayers(update.player);
+    this.gameState.mode = '';
 
     return {
       type: ['board', 'game'],

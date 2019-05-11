@@ -30,36 +30,4 @@
     align-items: center;
     flex: 2 1 auto;
   }
-
-  &-btn {
-    border: none;
-    height: 4rem;
-    width: 6rem;
-    color: var(--color-white);
-    cursor: pointer;
-    border-radius: 5px;
-    outline: none;
-    font-size: 1.4rem;
-  }
-
-  &-submit {
-    background-color: var(--color-blue);
-  }
-
-  &-accept {
-    background-color: var(--color-green);
-  }
-  &-reject {
-    background-color: var(--color-red);
-  }
-
-  &-submit:hover {
-    background-color: var(--color-blue-dark);
-  }
-  &-accept:hover {
-    background-color: var(--color-green-dark);
-  }
-  &-reject:hover {
-    background-color: var(--color-red-dark);
-  }
 }

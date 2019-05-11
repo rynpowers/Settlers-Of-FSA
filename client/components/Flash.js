@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { ModalSubmit } from './ModalViews';
 import { connect } from 'react-redux';
 import socket from '../socket';
 import './Flash.scss';
+import SubmitBtn from './SubmitBtn';
 
 const next = {
   acknowledgeMoveRobber: 'move-robber',
@@ -31,7 +31,7 @@ class Flash extends Component {
     return (
       <div className={`flash ${this.props.flash && 'flash-active'}`}>
         <h2>{this.props.flash}</h2>
-        <ModalSubmit
+        <SubmitBtn
           style={{ transform: 'scale(0.8)' }}
           text="OK"
           handleSubmit={this.handleSubmit}
