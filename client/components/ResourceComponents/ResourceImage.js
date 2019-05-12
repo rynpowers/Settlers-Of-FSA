@@ -1,7 +1,14 @@
 import React from 'react';
 import './ResourceComponents.scss';
 
-function ResourceImage({ type, quantity, original, handleClick, hideNum }) {
+function ResourceImage({
+  type,
+  quantity,
+  original,
+  handleClick,
+  hideNum,
+  classes,
+}) {
   const classString =
     original === undefined || original === quantity
       ? ''
@@ -14,7 +21,7 @@ function ResourceImage({ type, quantity, original, handleClick, hideNum }) {
   return (
     <div
       onClick={handleClick}
-      className={`resource-component-image ${type} ${handleClick &&
+      className={`resource-component-image ${type} ${classes} ${handleClick &&
         'resource-btn'}`}
     >
       {!hideNum && <div className={classString}>{quantity}</div>}

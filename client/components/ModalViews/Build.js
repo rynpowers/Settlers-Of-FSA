@@ -1,68 +1,57 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import BuildViewBtn from './BuildViewBtn';
+import FlashAlert from '../FlashAlert';
 import './Build.scss';
+import options from '../Board/gameBoardOptions';
 
 class Build extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      road: false,
-      settlement: false,
-      city: false,
+      message: '',
     };
-
-    this.handleMouseOut = this.handleMouseOut.bind(this);
-    this.handleMouseOver = this.handleMouseOver.bind(this);
   }
-
-  handleMouseOver(e) {
-    if (e.target.dataset.button) {
-      this.setState({ [e.target.dataset.value]: true });
-    }
-  }
-
-  handleMouseOut(e) {
-    if (e.target.dataset.button) {
-      this.setState({ [e.target.dataset.value]: false });
-    }
+  canBuy(buildItem) {
+    const { resources } = this.props;
+    return Object.keys(buildItem).every(
+      type => resources[type] >= buildItem[type]
+    );
   }
 
   render() {
-    const { road, settlement, city } = this.state;
     const { playerNumber } = this.props;
+    const { cost } = options;
     return (
-      <div
-        onMouseOver={this.handleMouseOver}
-        onMouseOut={this.handleMouseOut}
-        onClick={e => {
-          if (e.target.dataset.value) {
-            this.props.updateMode(e.target.dataset.value);
-            this.props.toggleExitMenu();
-          }
-        }}
-        className="modal-build-view"
-      >
+      <Fragment>
         <div
-          className={`${road && `player-${playerNumber}`}`}
-          data-value="road"
-          data-button={true}
+          className="modal-build"
+          onClick={e => {
+            const canBuy =
+              this.canBuy(cost[e.target.dataset.value]) &&
+              e.target.dataset.value;
+
+            if (canBuy) {
+              this.props.updateMode(e.target.dataset.value);
+              this.props.toggleExitMenu();
+            } else {
+              this.setState({ message: "You don't have sufficient resources" });
+            }
+          }}
         >
-          Road
+          {['road', 'settlement', 'city'].map(type => (
+            <BuildViewBtn
+              key={type}
+              resources={cost[type]}
+              type={type}
+              playerNumber={playerNumber}
+            />
+          ))}
         </div>
-        <div
-          className={`${settlement && `player-${playerNumber}`}`}
-          data-value="settlement"
-          data-button={true}
-        >
-          Settlement
-        </div>
-        <div
-          className={`${city && `player-${playerNumber}`}`}
-          data-value="city"
-          data-button={true}
-        >
-          City
-        </div>
-      </div>
+        <FlashAlert
+          message={this.state.message}
+          handleSubmit={() => this.setState({ message: '' })}
+        />
+      </Fragment>
     );
   }
 }

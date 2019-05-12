@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import socket from '../socket';
 import './Flash.scss';
-import SubmitBtn from './SubmitBtn';
+import FlashAlert from './FlashAlert';
 
 const next = {
   acknowledgeMoveRobber: 'move-robber',
@@ -19,6 +19,7 @@ class Flash extends Component {
   }
   handleSubmit() {
     const { name, playerNumber, mode } = this.props;
+
     socket.emit('flash', {
       mode: next[mode],
       type: 'flash',
@@ -29,14 +30,7 @@ class Flash extends Component {
 
   render() {
     return (
-      <div className={`flash ${this.props.flash && 'flash-active'}`}>
-        <h2>{this.props.flash}</h2>
-        <SubmitBtn
-          style={{ transform: 'scale(0.8)' }}
-          text="OK"
-          handleSubmit={this.handleSubmit}
-        />
-      </div>
+      <FlashAlert message={this.props.flash} handleSubmit={this.handleSubmit} />
     );
   }
 }

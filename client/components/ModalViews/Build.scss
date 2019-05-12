@@ -1,24 +1,40 @@
 @import '../../sass/mixins.scss';
-.modal-build-view {
+.modal-build {
   display: flex;
 
-  & div {
-    @include flex-center();
-    width: 20rem;
-    height: 20rem;
-    border: 3px solid var(--color-white);
-    color: var(--color-white);
+  &-view {
     margin: 5rem;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 2rem;
-    letter-spacing: 0.3rem;
-    background-color: transparent;
-    transition: all 0.2s;
-  }
+    @include flex-center();
+    &-btn {
+      @include flex-center();
+      width: 20rem;
+      height: 20rem;
+      border: 3px solid var(--color-white);
+      color: var(--color-white);
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 2rem;
+      letter-spacing: 0.3rem;
+      background-color: transparent;
+      transition: all 0.2s;
 
-  & div:hover {
-    font-size: 2.5rem;
-    border: 3px solid transparent;
+      &:hover {
+        font-size: 2.5rem;
+        border: 3px solid transparent;
+      }
+
+      &-1:hover {
+        background-color: var(--color-blue);
+      }
+      &-2:hover {
+        background-color: var(--color-red);
+      }
+      &-3:hover {
+        background-color: var(--color-green);
+      }
+      &-4:hover {
+        background-color: var(--color-orange);
+      }
+    }
   }
 }

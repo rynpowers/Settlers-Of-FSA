@@ -70,6 +70,7 @@ const mapStateToProps = ({ menu, player, game }) => ({
   player,
   isTurn: game.playerTurn === player.playerNumber,
   resources: player.resources,
+  devCards: player.devCards,
   game,
   name: game.name,
 });

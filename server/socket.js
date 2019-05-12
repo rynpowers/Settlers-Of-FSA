@@ -78,6 +78,11 @@ module.exports = io => {
       });
     });
 
+    socket.on('next-player', payload => {
+      const { game } = cache.updateGame(payload);
+      io.to(game.name).emit('dispatch', { type: 'SET_GAME', game });
+    });
+
     socket.on('updateBoard', update => {
       const { board, game } = cache.updateGame(update);
       io.to(update.game).emit('dispatch', { type: 'SET_BOARD', board });

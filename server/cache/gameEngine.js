@@ -187,6 +187,10 @@ class GameEngine {
     const card = cards.splice(index, 1)[0];
 
     this.players[update.player].devCards[card]++;
+    this.players[update.player].resources.field--;
+    this.players[update.player].resources.mountain--;
+    this.players[update.player].resources.pasture--;
+
     this.updatePlayers(update.player);
     this.gameState.flash = `you have bought a ${card} card`;
 
@@ -272,6 +276,12 @@ class GameEngine {
     }
   }
 
+  handleNextPlayer(update) {
+    this.gameState.playerTurn =
+      this.gameState.playerTurn < 4 ? update.player + 1 : 1;
+    return { payload: { game: this.gameState } };
+  }
+
   update(update) {
     switch (update.type) {
       case 'road':
@@ -300,6 +310,8 @@ class GameEngine {
         return this.handleDevCard(update);
       case 'play-card':
         return this.handlePlayCard(update);
+      case 'next-player':
+        return this.handleNextPlayer(update);
       default:
     }
   }
@@ -316,6 +328,10 @@ class GameEngine {
       return this.handleRoadBuilding(update);
     }
 
+    if (this.gameState.mode !== 'roadBuilding') {
+      this.players[update.player].resources.hill--;
+      this.players[update.player].resources.forest--;
+    }
     this.updatePlayers(update.player);
     this.gameState.mode = '';
 
@@ -328,7 +344,23 @@ class GameEngine {
   assignSettlement({ id, playerNumber }) {
     this.board.settlements[id].player = playerNumber;
     this.board.settlements[id].build += 1;
-    return { type: ['board'], payload: { board: this.board } };
+
+    if (this.board.settlements[id].build === 1) {
+      this.players[playerNumber].resources.hill--;
+      this.players[playerNumber].resources.forest--;
+      this.players[playerNumber].resources.field--;
+      this.players[playerNumber].resources.pasture--;
+    } else if (this.board.settlements[id].build === 2) {
+      this.players[playerNumber].resources.field -= 2;
+      this.players[playerNumber].resources.mountain -= 3;
+    }
+
+    this.updatePlayers(playerNumber);
+
+    return {
+      type: ['board', 'game'],
+      payload: { board: this.board, game: this.gameState },
+    };
   }
 
   updateDice({ diceValue }) {
@@ -351,7 +383,11 @@ class GameEngine {
     const updatedPlayers = {};
     Object.keys(resources).forEach(id => {
       const resource = resources[id];
-      if (resource.diceValue == diceValue && !resource.hasRobber) {
+      if (
+        resource.diceValue == diceValue &&
+        !resource.hasRobber &&
+        resource.type !== 'desert'
+      ) {
         resource.settlements.forEach(settlementId => {
           const { build, player } = settlements[settlementId];
           if (build) {

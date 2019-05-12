@@ -30,4 +30,10 @@ export default {
     { style: { transform: 'translateX(0%)' }, id: 18 },
     { style: { transform: `translateX(-${x}%)`, zIndex: 1 }, id: 19 },
   ],
+  cost: {
+    road: { forest: 1, hill: 1 },
+    settlement: { hill: 1, forest: 1, field: 1, pasture: 1 },
+    city: { field: 2, mountain: 3 },
+    dev: { pasture: 1, field: 1, mountain: 1 },
+  },
 };

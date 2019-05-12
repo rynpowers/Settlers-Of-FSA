@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { joinGameThunk } from '../store/actions';
 import { BoardController } from './Board';
-import { longestRoad } from '../validators';
 import Menu from './Menu';
 import Modal from './Modal';
 import Flash from './Flash';
@@ -55,7 +54,7 @@ class Game extends Component {
             key={i}
             id={i}
             player={players[i]}
-            isTurn={player.playerTurn === i}
+            isTurn={game.playerTurn == i}
           />
         ))}
         <div
@@ -102,6 +101,19 @@ class Game extends Component {
           </button>
           <button style={btnStyles} type="submit" data-value={12}>
             12
+          </button>
+          <button
+            style={btnStyles}
+            type="submit"
+            onClick={() => {
+              socket.emit('next-player', {
+                game: this.props.game.name,
+                player: this.props.player.playerNumber,
+                type: 'next-player',
+              });
+            }}
+          >
+            nextTurn
           </button>
         </div>
       </div>
