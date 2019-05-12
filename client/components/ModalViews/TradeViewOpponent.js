@@ -58,9 +58,10 @@ export class TradeViewOpponent extends Component {
 
   handleSendTrade() {
     let { resources } = this.state;
+    resources = this.reversePerspective(resources);
     const { playerNumber } = this.props;
     this.setState(prev => ({
-      trades: { ...prev.trades, [playerNumber]: { ...resources } },
+      trades: { ...prev.trades, [playerNumber]: resources },
       resources: { ...defaultResources },
     }));
 
@@ -69,7 +70,7 @@ export class TradeViewOpponent extends Component {
       action: 'add',
       player: this.props.player.playerNumber,
       game: this.props.game.name,
-      resources: this.reversePerspective(resources),
+      resources,
     });
   }
 
