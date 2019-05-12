@@ -8,7 +8,6 @@ export const SET_DICE = 'SET_DICE';
 export const RESET = 'RESET';
 export const UPDATE_MODE = 'UPDATE_MODE';
 export const UPDATE_OFFER = 'UPDATE_OFFER';
-export const UPDATE_FLASH = 'UPDATE_FLASH';
 
 // board
 export const SET_BOARD = 'SET_BOARD';

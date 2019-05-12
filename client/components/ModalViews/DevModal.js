@@ -3,6 +3,8 @@ import Card from './Card';
 import socket from '../../socket';
 import './Card.scss';
 import SubmitBtn from '../SubmitBtn';
+import FlashAlert from '../FlashAlert';
+import options from '../Board/gameBoardOptions';
 
 class DevModal extends Component {
   constructor(props) {
@@ -10,10 +12,18 @@ class DevModal extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.state = {
       selectedCard: '',
+      message: '',
     };
     this.handleClick = this.handleClick.bind(this);
     this.handlePlayCard = this.handlePlayCard.bind(this);
   }
+  canBuy() {
+    const { resources } = this.props;
+    return Object.keys(options.cost.dev).every(
+      type => resources[type] >= options.cost.dev[type]
+    );
+  }
+
   handlePlayCard() {
     const card = this.state.selectedCard;
     const { playerNumber, name } = this.props;
@@ -30,12 +40,16 @@ class DevModal extends Component {
 
   handleSubmit() {
     const { playerNumber, name } = this.props;
-    this.props.reset();
-    socket.emit('get-card', {
-      player: playerNumber,
-      game: name,
-      type: 'get-card',
-    });
+    if (this.canBuy()) {
+      this.props.reset();
+      socket.emit('get-card', {
+        player: playerNumber,
+        game: name,
+        type: 'get-card',
+      });
+    } else {
+      this.setState({ message: "You don't have sufficient resources" });
+    }
   }
 
   handleClick(card) {
@@ -78,6 +92,10 @@ class DevModal extends Component {
             )}
           </div>
         </div>
+        <FlashAlert
+          message={this.state.message}
+          handleSubmit={() => this.setState({ message: '' })}
+        />
       </div>
     );
   }

@@ -1,44 +1,57 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import BuildViewBtn from './BuildViewBtn';
+import FlashAlert from '../FlashAlert';
 import './Build.scss';
-
-const resourceCost = {
-  road: { forest: 1, hill: 1 },
-  settlement: { hill: 1, forest: 1, field: 1, pasture: 1 },
-  city: { field: 2, mountain: 3 },
-};
+import options from '../Board/gameBoardOptions';
 
 class Build extends Component {
-  canBuy(cost) {
+  constructor(props) {
+    super(props);
+    this.state = {
+      message: '',
+    };
+  }
+  canBuy(buildItem) {
     const { resources } = this.props;
-    return Object.keys(cost).every(type => resources[type] >= cost[type]);
+    return Object.keys(buildItem).every(
+      type => resources[type] >= buildItem[type]
+    );
   }
 
   render() {
     const { playerNumber } = this.props;
+    const { cost } = options;
     return (
-      <div
-        className="modal-build"
-        onClick={e => {
-          const cost = resourceCost[e.target.dataset.value];
-          const canBuy = this.canBuy(cost) && e.target.dataset.value;
-          if (canBuy) {
-            this.props.updateMode(e.target.dataset.value);
-            this.props.toggleExitMenu();
-          } else {
-            this.props.updateFlash("you don't have sufficient resources");
-          }
-        }}
-      >
-        {['road', 'settlement', 'city'].map(type => (
-          <BuildViewBtn
-            key={type}
-            resources={resourceCost[type]}
-            type={type}
-            playerNumber={playerNumber}
-          />
-        ))}
-      </div>
+      <Fragment>
+        <div
+          className="modal-build"
+          onClick={e => {
+            const canBuy =
+              this.canBuy(cost[e.target.dataset.value]) &&
+              e.target.dataset.value;
+
+            if (canBuy) {
+              this.props.updateMode(e.target.dataset.value);
+              this.props.toggleExitMenu();
+            } else {
+              this.setState({ message: "You don't have sufficient resources" });
+            }
+          }}
+        >
+          {['road', 'settlement', 'city'].map(type => (
+            <BuildViewBtn
+              key={type}
+              resources={cost[type]}
+              type={type}
+              playerNumber={playerNumber}
+            />
+          ))}
+        </div>
+        <FlashAlert
+          message={this.state.message}
+          handleSubmit={() => this.setState({ message: '' })}
+        />
+      </Fragment>
     );
   }
 }
