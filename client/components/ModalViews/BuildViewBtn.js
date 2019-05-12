@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResourceImage } from '../ResourceComponents';
+import { ResourcePanel } from '../ResourceComponents';
 
 function BuildViewBtn({ resources, playerNumber, type }) {
   return (
@@ -10,17 +10,7 @@ function BuildViewBtn({ resources, playerNumber, type }) {
       >
         {type[0].toUpperCase() + type.slice(1)}
       </div>
-      <div className="modal-build-view-resources">
-        {Object.keys(resources).map(resource => (
-          <ResourceImage
-            key={resource}
-            classes="small"
-            type={resource}
-            quantity={resources[resource]}
-            original={resources[resource]}
-          />
-        ))}
-      </div>
+      <ResourcePanel resources={resources} />
     </div>
   );
 }
