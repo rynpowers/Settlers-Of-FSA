@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import Card from './Card';
+import CardQuantity from './CardQuantity';
+import { ResourcePanel } from '../ResourceComponents';
+import ModalClose from './ModalClose';
 import socket from '../../socket';
 import './Card.scss';
-import SubmitBtn from '../SubmitBtn';
 import FlashAlert from '../FlashAlert';
 import options from '../Board/gameBoardOptions';
 
@@ -14,7 +16,6 @@ class DevModal extends Component {
       selectedCard: '',
       message: '',
     };
-    this.handleClick = this.handleClick.bind(this);
     this.handlePlayCard = this.handlePlayCard.bind(this);
   }
   canBuy() {
@@ -52,38 +53,40 @@ class DevModal extends Component {
     }
   }
 
-  handleClick(card) {
-    this.setState({ selectedCard: card });
+  renderPurchaseDevCard() {
+    const cost = options.cost.dev;
+    return (
+      <Card key="button" handleClick={this.handleSubmit}>
+        <h2>Buy Card</h2>
+        <ResourcePanel resources={cost} />
+      </Card>
+    );
+  }
+
+  renderDevCards() {
+    return Object.keys(this.props.devCards)
+      .filter(card => this.props.devCards[card])
+      .map(card => (
+        <Card
+          key={card}
+          classes={`card-${card}`}
+          handleClick={() => this.setState({ selectedCard: card })}
+        >
+          <CardQuantity quantity={this.props.devCards[card]} />
+        </Card>
+      ));
   }
 
   render() {
-    const { player } = this.props;
     const { selectedCard } = this.state;
     return (
       <div>
         <div className="card-container">
-          {Object.keys(player.devCards).reduce((a, card, i) => {
-            const quantity = parseInt(player.devCards[card], 10);
-            if (quantity)
-              a.push(
-                <Card
-                  key={`${i + 1}`}
-                  type={card}
-                  quantity={quantity}
-                  handleClick={this.handleClick}
-                />
-              );
-            return a;
-          }, [])}
+          {this.renderPurchaseDevCard()}
+          {this.renderDevCards()}
         </div>
-        <SubmitBtn handleSubmit={this.handleSubmit} text="Buy Card" />
         <div className={`card-modal ${selectedCard && 'card-active'}`}>
-          <div
-            onClick={() => this.setState({ selectedCard: '' })}
-            className="modal-close"
-          >
-            <div />
-          </div>
+          <ModalClose handleClick={() => this.setState({ selectedCard: '' })} />
           <div className={`card-showcase card-${selectedCard}`}>
             {selectedCard !== 'victoryPoint' && (
               <div onClick={this.handlePlayCard}>
