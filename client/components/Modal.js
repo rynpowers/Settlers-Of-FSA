@@ -82,5 +82,6 @@ export default connect(
     updateMode: actions.updateMode,
     reset: actions.reset,
     toggleExitMenu: actions.toggleExitMenu,
+    updateTrades: actions.updateTrades,
   }
 )(Modal);

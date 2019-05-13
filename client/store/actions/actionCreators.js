@@ -16,6 +16,11 @@ export const updateGame = (game, board, player) => ({
   board,
   player,
 });
+export const updateTrades = (trade, player) => ({
+  type: type.UPDATE_TRADES,
+  trade,
+  player,
+});
 
 // board
 export const setBoard = board => ({ type: type.SET_BOARD, board });

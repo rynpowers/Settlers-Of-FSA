@@ -32,17 +32,17 @@ export class TradeView extends Component {
       action,
       game: name,
     });
+    this.setState({ selectedTrade: 0 });
   }
 
   render() {
     const { selectedTrade } = this.state;
-    const { isTurn, trades, resources } = this.props;
-
-    console.log(selectedTrade);
+    const { isTurn, trades, resources, game, player } = this.props;
 
     return (
       <TradeComponentWindow
-        {...this.props}
+        game={game}
+        player={player}
         renderComponentOne={() => (
           <Fragment>
             <ModalClose
