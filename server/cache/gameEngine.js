@@ -151,6 +151,7 @@ class GameEngine {
         return !i || (i && this.gameState.players[i].resources < 8);
       });
     } else {
+      this.gameState.mode = 'move-robber';
       this.gameState.responded = [true, true, true, true, true];
     }
 
@@ -210,13 +211,11 @@ class GameEngine {
 
     this.gameState.mode = '';
 
-    return this.updateGame(1, 2, 3, 4);
+    return this.updateGame(update.player, player.playerNumber);
   }
 
   handleRobber(update) {
     switch (update.action) {
-      case 'initiate':
-        return this.initiateRobber(true);
       case 'discard':
         return this.handleDiscard(update);
       case 'move-robber':
@@ -232,28 +231,11 @@ class GameEngine {
     return this.payload();
   }
 
-  handleDevCard(update) {
-    const cards = this.gameState.devCards;
-    const index = Math.floor(Math.random() * cards.length);
-    const card = cards.splice(index, 1)[0];
-
-    this.players[update.player].devCards[card]++;
-    this.players[update.player].resources.field--;
-    this.players[update.player].resources.mountain--;
-    this.players[update.player].resources.pasture--;
-
-    this.updatePlayers(update.player);
-    this.gameState.flash = `you have bought a ${card} card`;
-
-    return { type: ['game'], payload: { game: this.gameState } };
-  }
-
   handleKnight(update) {
     this.gameState.responded = this.gameState.responded.map(() => true);
     this.players[update.player].devCards[update.card]--;
     this.players[update.player].largestArmy++;
-    this.updatePlayers(update.player);
-    return this.handleRobber();
+    return this.initiateRobber();
   }
 
   handleRoadBuilding(update) {
@@ -267,16 +249,13 @@ class GameEngine {
     }
 
     if (this.gameState.roadBuilding) {
-      this.gameState.mode = 'roadBuilding';
+      this.gameState.mode = 'road';
       this.gameState.flash = 'Build a road';
+      return this.payload();
     } else {
       this.gameState.mode = '';
+      return this.updateGame(update.player);
     }
-
-    return {
-      type: ['game', 'board'],
-      payload: { game: this.gameState, board: this.board },
-    };
   }
 
   monopolizeResource(id, resource, card) {
@@ -289,17 +268,17 @@ class GameEngine {
     });
     this.players[id].resources[resource] += total;
     this.players[id].devCards[card]--;
-    this.updatePlayers(1, 2, 3, 4);
   }
 
   handleMonopoly(update) {
     if (this.gameState.mode === 'monopoly') {
       this.gameState.mode = '';
       this.monopolizeResource(update.player, update.resource, update.card);
+      return this.updateGame(1, 2, 3, 4);
     } else {
       this.gameState.mode = 'monopoly';
+      return this.payload();
     }
-    return { type: ['game'], payload: { game: this.gameState } };
   }
 
   handleYearOfPlenty(update) {
@@ -309,11 +288,10 @@ class GameEngine {
       });
       this.gameState.mode = '';
       this.players[update.player].devCards[update.card]--;
-      this.updatePlayers(update.player);
     } else {
       this.gameState.mode = 'yearOfPlenty';
     }
-    return { type: ['game'], payload: { game: this.gameState } };
+    return this.payload();
   }
 
   handlePlayCard(update) {
@@ -327,7 +305,7 @@ class GameEngine {
       case 'yearOfPlenty':
         return this.handleYearOfPlenty(update);
       default:
-        return { payload: { game: this.gameState, update } };
+        return this.payload();
     }
   }
 
@@ -335,6 +313,32 @@ class GameEngine {
     this.gameState.playerTurn =
       this.gameState.playerTurn < 4 ? update.player + 1 : 1;
     return this.payload();
+  }
+
+  handleDevCard(update) {
+    const cards = this.gameState.devCards;
+    const index = Math.floor(Math.random() * cards.length);
+    const card = cards.splice(index, 1)[0];
+
+    this.players[update.player].devCards[card]++;
+    this.players[update.player].resources.field--;
+    this.players[update.player].resources.mountain--;
+    this.players[update.player].resources.pasture--;
+
+    this.gameState.flash = `you have bought a ${card} card`;
+
+    return this.updateGame(update.player);
+  }
+
+  handleDevelopment(update) {
+    switch (update.action) {
+      case 'get-card':
+        return this.handleDevCard(update);
+      case 'play-card':
+        return this.handlePlayCard(update);
+      default:
+        return this.payload();
+    }
   }
 
   update(update) {
@@ -352,15 +356,13 @@ class GameEngine {
       case 'trade':
         return this.handleTrade(update); // done
       case 'flash':
-        return this.handleFlash(update);
+        return this.handleFlash(update); // done
       case 'game':
         return this.handleGameState(update);
       case 'robber':
-        return this.handleRobber(update); //
-      case 'get-card':
-        return this.handleDevCard(update);
-      case 'play-card':
-        return this.handlePlayCard(update);
+        return this.handleRobber(update); // done
+      case 'development':
+        return this.handleDevelopment(update);
       case 'next-player':
         return this.handleNextPlayer(update);
       default:
@@ -407,9 +409,8 @@ class GameEngine {
     this.gameState.diceValue = diceValue;
     this.gameState.mode = 'roll';
 
-    if (this.gameState.diceValue == 7) {
-      return this.handleRobber({ action: 'initiate' });
-    }
+    if (this.gameState.diceValue == 7) return this.initiateRobber(true);
+
     return this.updateGame(...this.distributeResources(diceValue));
   }
 

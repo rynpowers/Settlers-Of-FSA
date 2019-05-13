@@ -18,20 +18,6 @@ module.exports = io => {
       );
     });
 
-    // DEVELOPMENT
-
-    socket.on('get-card', payload => {
-      const { game } = cache.updateGame(payload);
-      io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
-    });
-
-    socket.on('play-card', payload => {
-      const { game, board } = cache.updateGame(payload);
-      io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
-      board &&
-        io.to(payload.game).emit('dispatch', { type: 'SET_BOARD', board });
-    });
-
     // BUILDING
 
     socket.on('update', payload => {

@@ -42,13 +42,15 @@ class BoardController extends Component {
     const { id } = elem.dataset;
     const { playerNumber, name } = this.props;
 
-    socket.emit('update', {
-      action: 'rob-settlement',
-      type: 'robber',
-      id,
-      player: playerNumber,
-      game: name,
-    });
+    if (elem.classList.contains('rob-settlement')) {
+      socket.emit('update', {
+        action: 'rob-settlement',
+        type: 'robber',
+        id,
+        player: playerNumber,
+        game: name,
+      });
+    }
   }
 
   handleClick(e) {
@@ -67,10 +69,7 @@ class BoardController extends Component {
         case 'move-robber':
           return type === 'robber' && this.handleMoveRobber(elem);
         case 'rob-settlement':
-          return (
-            elem.classList.contains('rob-settlement') &&
-            this.handleRobSettlement(elem)
-          );
+          return this.handleRobSettlement(elem);
         default:
       }
     }

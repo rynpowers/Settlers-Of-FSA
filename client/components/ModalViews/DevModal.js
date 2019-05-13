@@ -30,9 +30,10 @@ class DevModal extends Component {
     const { playerNumber, name } = this.props;
     this.setState({ selectedCard: '' }, () => {
       this.props.reset();
-      socket.emit('play-card', {
+      socket.emit('update', {
         player: playerNumber,
-        type: 'play-card',
+        action: 'play-card',
+        type: 'development',
         game: name,
         card,
       });
@@ -43,10 +44,11 @@ class DevModal extends Component {
     const { playerNumber, name } = this.props;
     if (this.canBuy()) {
       this.props.reset();
-      socket.emit('get-card', {
+      socket.emit('update', {
         player: playerNumber,
         game: name,
-        type: 'get-card',
+        action: 'get-card',
+        type: 'development',
       });
     } else {
       this.setState({ message: "You don't have sufficient resources" });
