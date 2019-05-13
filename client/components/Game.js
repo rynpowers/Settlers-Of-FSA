@@ -4,7 +4,7 @@ import { joinGameThunk } from '../store/actions';
 import { BoardController } from './Board';
 import Menu from './Menu';
 import Modal from './Modal';
-import Flash from './Flash';
+import FlashAlert from './FlashAlert';
 import Player from './Player';
 import socket from '../socket';
 import { store } from '../store';
@@ -37,13 +37,19 @@ class Game extends Component {
 
   render() {
     if (!this.props.board.resources) return <div>Loading...</div>;
-    const { players, player, game } = this.props;
+    const { players, isTurn, game, flash, name, playerNumber } = this.props;
     return (
       <div className="game-container">
         <BoardController />
         <Menu />
         <Modal />
-        {player.playerNumber === game.playerTurn && <Flash />}
+        <FlashAlert
+          message={isTurn && flash}
+          handleSubmit={() =>
+            socket.emit('update', { type: 'flash', game: name })
+          }
+        />
+        )}
         {Object.keys(players).map(i => (
           <Player
             key={i}
@@ -56,7 +62,6 @@ class Game extends Component {
           style={btnContainerStyles}
           onClick={e => {
             const diceValue = e.target.dataset.value;
-            const { name } = this.props.game;
             socket.emit('update', { type: 'diceValue', diceValue, game: name });
           }}
         >
@@ -98,8 +103,8 @@ class Game extends Component {
             type="submit"
             onClick={() => {
               socket.emit('update', {
-                game: this.props.game.name,
-                player: this.props.player.playerNumber,
+                game: name,
+                player: playerNumber,
                 type: 'next-player',
               });
             }}
@@ -117,6 +122,10 @@ const mapStateToProps = ({ game, board, player }) => ({
   players: game.players,
   board,
   player,
+  isTurn: game.playerTurn === player.playerNumber,
+  flash: game.flash,
+  name: game.name,
+  playerNumber: player.playerNumber,
 });
 
 export default connect(
