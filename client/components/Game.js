@@ -49,7 +49,6 @@ class Game extends Component {
             socket.emit('update', { type: 'flash', game: name })
           }
         />
-        )}
         {Object.keys(players).map(i => (
           <Player
             key={i}

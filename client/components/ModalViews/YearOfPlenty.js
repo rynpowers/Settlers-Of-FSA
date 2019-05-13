@@ -29,8 +29,9 @@ class YearOfPlenty extends Component {
 
   handleSubmit() {
     const { playerNumber, name } = this.props;
-    socket.emit('play-card', {
-      type: 'play-card',
+    socket.emit('update', {
+      type: 'development',
+      action: 'play-card',
       card: 'yearOfPlenty',
       game: name,
       player: playerNumber,

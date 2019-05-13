@@ -143,17 +143,12 @@ class GameEngine {
     return set.size !== 0;
   }
 
-  initiateRobber(respond) {
+  initiateRobber() {
     this.gameState.mode = 'robber';
 
-    if (respond) {
-      this.gameState.responded = this.gameState.responded.map((bool, i) => {
-        return !i || (i && this.gameState.players[i].resources < 8);
-      });
-    } else {
-      this.gameState.mode = 'move-robber';
-      this.gameState.responded = [true, true, true, true, true];
-    }
+    this.gameState.responded = this.gameState.responded.map((bool, i) => {
+      return !i || (i && this.gameState.players[i].resources < 8);
+    });
 
     return this.payload();
   }
@@ -235,18 +230,13 @@ class GameEngine {
     this.gameState.responded = this.gameState.responded.map(() => true);
     this.players[update.player].devCards[update.card]--;
     this.players[update.player].largestArmy++;
-    return this.initiateRobber();
+    return this.handleDiscard();
   }
 
   handleRoadBuilding(update) {
-    if (!this.gameState.roadBuilding) {
-      const cards = this.players[update.player].devCards[update.card];
-      this.players[update.player].devCards[update.card] = cards - 1;
-      this.updatePlayers(update.player);
-      this.gameState.roadBuilding = 2;
-    } else {
-      this.gameState.roadBuilding--;
-    }
+    !this.gameState.roadBuilding
+      ? (this.gameState.roadBuilding = 2)
+      : this.gameState.roadBuilding--;
 
     if (this.gameState.roadBuilding) {
       this.gameState.mode = 'road';
@@ -254,6 +244,7 @@ class GameEngine {
       return this.payload();
     } else {
       this.gameState.mode = '';
+      this.players[update.player].devCards.roadBuilding--;
       return this.updateGame(update.player);
     }
   }
@@ -288,10 +279,11 @@ class GameEngine {
       });
       this.gameState.mode = '';
       this.players[update.player].devCards[update.card]--;
+      return this.updateGame(update.player);
     } else {
       this.gameState.mode = 'yearOfPlenty';
+      return this.payload();
     }
-    return this.payload();
   }
 
   handlePlayCard(update) {
@@ -409,7 +401,7 @@ class GameEngine {
     this.gameState.diceValue = diceValue;
     this.gameState.mode = 'roll';
 
-    if (this.gameState.diceValue == 7) return this.initiateRobber(true);
+    if (this.gameState.diceValue == 7) return this.initiateRobber();
 
     return this.updateGame(...this.distributeResources(diceValue));
   }
