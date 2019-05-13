@@ -17,28 +17,11 @@ export class TradeViewOpponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      trades: {},
-      loaded: false,
       resources: { ...defaultResources },
     };
     this.handleSendTrade = this.handleSendTrade.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
-
-  componentDidMount() {
-    socket.emit('get', 'trades', this.props.game.name);
-    socket.on('trades', ({ trades }) => {
-      this.setState({
-        trades,
-        loaded: true,
-      });
-    });
-  }
-
-  componentWillUnmount() {
-    socket.removeAllListeners('trades');
-  }
-
   handleClick(type, val) {
     const { resources } = this.props;
     const canDec = val < 0 && resources[type] + this.state.resources[type];
@@ -59,13 +42,9 @@ export class TradeViewOpponent extends Component {
   handleSendTrade() {
     let { resources } = this.state;
     resources = this.reversePerspective(resources);
-    const { playerNumber } = this.props;
-    this.setState(prev => ({
-      trades: { ...prev.trades, [playerNumber]: resources },
-      resources: { ...defaultResources },
-    }));
+    this.setState({ resources: { ...defaultResources } });
 
-    socket.emit('incoming-trade', {
+    socket.emit('update', {
       type: 'trade',
       action: 'add',
       player: this.props.player.playerNumber,
@@ -75,12 +54,8 @@ export class TradeViewOpponent extends Component {
   }
 
   render() {
-    const { trades } = this.state;
     const { player, playerNumber, game } = this.props;
-
-    if (!this.state.loaded) return <div>loading...</div>;
-
-    const offer = trades[playerNumber];
+    const offer = this.props.trades[playerNumber];
 
     return (
       <TradeComponentWindow
@@ -102,13 +77,13 @@ export class TradeViewOpponent extends Component {
           </div>
         )}
         renderComponentTwo={() =>
-          Object.keys(this.state.trades).map(trade => (
+          Object.keys(this.props.trades).map(trade => (
             <TradeOffer
               key={trade}
               trade={trade}
               player={player}
               game={game}
-              resources={this.state.trades[trade]}
+              resources={this.props.trades[trade]}
             />
           ))
         }

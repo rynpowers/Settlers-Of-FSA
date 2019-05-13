@@ -2,117 +2,69 @@ import React, { Component, Fragment } from 'react';
 import { ResourceView } from '../ResourceComponents';
 import TradeComponentWindow from './TradeComponentWindow';
 import TradeOffer from './TradeOffer';
+import ModalClose from './ModalClose';
 import socket from '../../socket';
 import './TradeView.scss';
 
 export class TradeView extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      selectedTrade: 0,
-      trades: {},
-      loaded: false,
-    };
-    this.handleViewTrade = this.handleViewTrade.bind(this);
-    this.handleAcceptTrade = this.handleAcceptTrade.bind(this);
-    this.handleRejectTrade = this.handleRejectTrade.bind(this);
+    this.state = { selectedTrade: 0 };
+    this.handleTradeAction = this.handleTradeAction.bind(this);
   }
 
   componentDidMount() {
-    socket.emit('updateGame', {
-      type: 'game',
-      game: this.props.game.name,
-      payload: { mode: 'trade' },
-    });
-    socket.emit('get', 'trades', this.props.game.name);
-    socket.on('trades', ({ trades }) =>
-      this.setState({ trades, loaded: true })
-    );
+    const { name } = this.props;
+    socket.emit('update', { type: 'trade', action: 'initiate', game: name });
   }
 
   componentWillUnmount() {
+    const { name } = this.props;
     socket.removeAllListeners('trades');
-    socket.emit('updateGame', {
-      type: 'game',
-      game: this.props.game.name,
-      payload: { mode: '' },
-    });
+    socket.emit('update', { type: 'trade', game: name });
   }
 
-  handleViewTrade(selectedTrade) {
-    this.setState({ selectedTrade });
-  }
-
-  filterTrades(playerNumber, state) {
-    return Object.keys(state.trades)
-      .filter(player => player != playerNumber)
-      .reduce((a, v) => {
-        a[v] = state.trades[v];
-        return a;
-      }, {});
-  }
-
-  handleRejectTrade(playerNumber) {
-    this.setState(
-      prevState => ({
-        trades: this.filterTrades(playerNumber, prevState),
-        selectedTrade: 0,
-      }),
-      () => {
-        socket.emit('incoming-trade', {
-          player: playerNumber,
-          type: 'trade',
-          action: 'reject',
-          game: this.props.game.name,
-        });
-      }
-    );
-  }
-
-  handleAcceptTrade(playerNumber) {
-    socket.emit('incoming-trade', {
+  handleTradeAction(playerNumber, action) {
+    const { name } = this.props;
+    socket.emit('update', {
       player: playerNumber,
       type: 'trade',
-      action: 'accept',
-      game: this.props.game.name,
+      action,
+      game: name,
     });
   }
 
   render() {
-    const { trades, selectedTrade } = this.state;
-    const { player, isTurn } = this.props;
+    const { selectedTrade } = this.state;
+    const { isTurn, trades, resources } = this.props;
 
-    if (!this.state.loaded) return <div>loading...</div>;
+    console.log(selectedTrade);
 
     return (
       <TradeComponentWindow
         {...this.props}
         renderComponentOne={() => (
           <Fragment>
-            <div
-              style={{ display: !this.state.selectedTrade && 'none' }}
-              onClick={() => this.setState({ selectedTrade: 0 })}
-              className="modal-close"
-            >
-              <div />
-            </div>
+            <ModalClose
+              hidden={!selectedTrade}
+              handleClick={() => this.setState({ selectedTrade: 0 })}
+            />
             <ResourceView
               updateResources={trades[selectedTrade]}
-              resources={player.resources}
+              resources={resources}
             />
           </Fragment>
         )}
         renderComponentTwo={() =>
-          Object.keys(this.state.trades).map(trade => (
+          Object.keys(trades).map(trade => (
             <TradeOffer
               key={trade}
               trade={trade}
               isTurn={isTurn}
-              resources={this.state.trades[trade]}
+              resources={trades[trade]}
               selectedTrade={selectedTrade}
-              handleViewTrade={this.handleViewTrade}
-              handleRejectTrade={this.handleRejectTrade}
-              handleAcceptTrade={this.handleAcceptTrade}
+              handleViewTrade={() => this.setState({ selectedTrade: trade })}
+              handleTradeAction={this.handleTradeAction}
             />
           ))
         }

@@ -32,12 +32,7 @@ class Game extends Component {
     if (!board.resources) this.props.joinGameThunk(game, null, push);
 
     socket.on('connect', () => this.props.joinGameThunk(game, null, push));
-    socket.on('dispatch', action => {
-      store.dispatch(action);
-      if (action.type !== 'SET_PLAYER') {
-        socket.emit('updatePlayer', game, this.props.player.playerNumber);
-      }
-    });
+    socket.on('dispatch', action => store.dispatch(action));
   }
 
   render() {
@@ -62,11 +57,7 @@ class Game extends Component {
           onClick={e => {
             const diceValue = e.target.dataset.value;
             const { name } = this.props.game;
-            socket.emit('updateGame', {
-              type: 'diceValue',
-              diceValue,
-              game: name,
-            });
+            socket.emit('update', { type: 'diceValue', diceValue, game: name });
           }}
         >
           <button style={btnStyles} type="submit" data-value={2}>
@@ -106,7 +97,7 @@ class Game extends Component {
             style={btnStyles}
             type="submit"
             onClick={() => {
-              socket.emit('next-player', {
+              socket.emit('update', {
                 game: this.props.game.name,
                 player: this.props.player.playerNumber,
                 type: 'next-player',

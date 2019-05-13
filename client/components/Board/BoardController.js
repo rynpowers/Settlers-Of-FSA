@@ -16,15 +16,13 @@ class BoardController extends Component {
   }
 
   handleUpdateRoad(type, id) {
-    this.props.updateRoadThunk(
-      {
-        id,
-        player: this.props.playerNumber,
-        type,
-        game: this.props.name,
-      },
-      this.props.reset
-    );
+    this.props.updateRoadThunk({
+      id,
+      player: this.props.playerNumber,
+      type,
+      game: this.props.name,
+    });
+    this.props.reset();
   }
 
   handleMoveRobber(elem) {

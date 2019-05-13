@@ -73,6 +73,7 @@ const mapStateToProps = ({ menu, player, game }) => ({
   devCards: player.devCards,
   game,
   name: game.name,
+  trades: game.trades,
 });
 
 export default connect(

@@ -1,4 +1,4 @@
-import { SET_PLAYER } from '../actions';
+import { SET_PLAYER, UPDATE_GAME } from '../actions';
 
 const initialState = {
   resources: {
@@ -13,6 +13,8 @@ const initialState = {
 const player = (state = initialState, action) => {
   switch (action.type) {
     case SET_PLAYER:
+      return action.player;
+    case UPDATE_GAME:
       return action.player;
     default:
       return state;

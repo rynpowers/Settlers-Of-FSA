@@ -7,8 +7,7 @@ function TradeOffer({
   resources,
   selectedTrade,
   handleViewTrade,
-  handleAcceptTrade,
-  handleRejectTrade,
+  handleTradeAction,
   isTurn,
   trade,
 }) {
@@ -28,7 +27,7 @@ function TradeOffer({
         <div className="trade-offer-btns">
           <Button
             text="View"
-            handleClick={() => handleViewTrade(trade)}
+            handleClick={handleViewTrade}
             style={{ display: trade == selectedTrade && 'none' }}
             type="submit"
           />
@@ -36,13 +35,13 @@ function TradeOffer({
             text="Accept"
             style={{ display: trade != selectedTrade && 'none' }}
             type="accept"
-            handleClick={() => handleAcceptTrade(trade)}
+            handleClick={() => handleTradeAction(trade, 'accept')}
           />
           <Button
             text="Reject"
             style={{ display: trade != selectedTrade && 'none' }}
             type="reject"
-            handleClick={() => handleRejectTrade(trade)}
+            handleClick={() => handleTradeAction(trade, 'reject')}
           />
         </div>
       )}
