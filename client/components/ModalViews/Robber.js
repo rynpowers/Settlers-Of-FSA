@@ -39,8 +39,9 @@ class Robber extends Component {
       return a;
     }, {});
 
-    socket.emit('robbing-player', {
+    socket.emit('update', {
       type: 'robber',
+      action: 'discard',
       game: name,
       playerNumber: playerNumber,
       resources: updatedResources,

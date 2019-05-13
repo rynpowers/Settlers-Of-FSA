@@ -26,12 +26,13 @@ class BoardController extends Component {
   }
 
   handleMoveRobber(elem) {
-    const { mode, name, playerNumber } = this.props;
+    const { name, playerNumber } = this.props;
     const { id } = elem.dataset;
 
-    socket.emit('move-robber', {
+    socket.emit('update', {
       id,
-      type: mode,
+      type: 'robber',
+      action: 'move-robber',
       game: name,
       player: playerNumber,
     });
@@ -40,8 +41,10 @@ class BoardController extends Component {
   handleRobSettlement(elem) {
     const { id } = elem.dataset;
     const { playerNumber, name } = this.props;
-    socket.emit('rob-settlement', {
-      type: 'rob-settlement',
+
+    socket.emit('update', {
+      action: 'rob-settlement',
+      type: 'robber',
       id,
       player: playerNumber,
       game: name,

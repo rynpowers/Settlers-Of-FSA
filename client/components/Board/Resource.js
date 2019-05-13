@@ -26,10 +26,8 @@ class Resource extends Component {
   }
 
   handleMouseOver() {
-    const { mode, isTurn } = this.props;
-    if (mode === 'move-robber' && isTurn) {
-      this.setState({ hover: true });
-    }
+    const { isTurn, mode } = this.props;
+    if (mode === 'move-robber' && isTurn) this.setState({ hover: true });
   }
 
   handleMouseOut() {

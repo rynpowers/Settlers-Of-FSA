@@ -18,24 +18,6 @@ module.exports = io => {
       );
     });
 
-    // ROBBER
-
-    socket.on('robbing-player', payload => {
-      const { game } = cache.updateGame(payload);
-      io.to(game.name).emit('dispatch', { type: 'SET_GAME', game });
-    });
-
-    socket.on('move-robber', payload => {
-      const { board, game } = cache.updateGame(payload);
-      io.to(payload.game).emit('dispatch', { type: 'SET_BOARD', board });
-      io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
-    });
-
-    socket.on('rob-settlement', payload => {
-      const { game } = cache.updateGame(payload);
-      io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
-    });
-
     // DEVELOPMENT
 
     socket.on('get-card', payload => {
@@ -64,13 +46,6 @@ module.exports = io => {
           player: players[player],
         })
       );
-    });
-
-    // FLASH
-
-    socket.on('flash', payload => {
-      const { game } = cache.updateGame(payload);
-      io.to(game.name).emit('dispatch', { type: 'SET_GAME', game });
     });
 
     // CHAT

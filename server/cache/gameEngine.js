@@ -132,32 +132,6 @@ class GameEngine {
     return this.payload();
   }
 
-  handleRobber(update) {
-    if (update) {
-      this.gameState.responded[update.playerNumber] = true;
-      this.players[update.playerNumber].resources = update.resources;
-      this.updatePlayers(update.playerNumber);
-    }
-
-    const complete = this.gameState.responded.every(player => player);
-
-    if (complete) {
-      this.gameState.mode = 'acknowledgeMoveRobber';
-      this.gameState.flash = `Player-${
-        this.gameState.playerTurn
-      } please move the robber`;
-      this.gameState.responded = [true, false, false, false, false];
-    }
-
-    return { type: ['game'], payload: { game: this.gameState } };
-  }
-
-  handleFlash(update) {
-    this.gameState.flash = '';
-    this.gameState.mode = update.mode || '';
-    return { payload: { game: this.gameState } };
-  }
-
   canRob(update) {
     const { resources, settlements } = this.board;
     const set = resources[update.id].settlements.reduce((a, v) => {
@@ -169,45 +143,93 @@ class GameEngine {
     return set.size !== 0;
   }
 
+  initiateRobber(respond) {
+    this.gameState.mode = 'robber';
+
+    if (respond) {
+      this.gameState.responded = this.gameState.responded.map((bool, i) => {
+        return !i || (i && this.gameState.players[i].resources < 8);
+      });
+    } else {
+      this.gameState.responded = [true, true, true, true, true];
+    }
+
+    return this.payload();
+  }
+
+  handleDiscard(update) {
+    const { playerTurn, responded } = this.gameState;
+
+    if (update) {
+      this.gameState.responded[update.playerNumber] = true;
+      this.players[update.playerNumber].resources = update.resources;
+      this.gameState.players[update.playerNumber].resources = Object.keys(
+        update.resources
+      ).reduce((a, v) => a + update.resources[v], 0);
+    }
+
+    if (responded.every(p => p)) {
+      this.gameState.flash = `Player-${playerTurn} please move the robber`;
+      this.gameState.responded = [true, false, false, false, false];
+      this.gameState.mode = 'move-robber';
+    }
+
+    return this.payload();
+  }
+
   handleMoveRobber(update) {
     const { robber, resources } = this.board;
+    const { playerTurn } = this.gameState;
 
     resources[robber].hasRobber = false;
     resources[update.id].hasRobber = true;
     this.board.robber = update.id;
+    this.gameState.mode = 'rob-settlement';
 
-    if (this.canRob(update)) {
-      this.gameState.mode = 'acknowledgeRobSettlement';
-      this.gameState.flash = `player-${
-        this.gameState.playerTurn
-      } choose a settlement to rob`;
-    } else this.gameState.mode = '';
+    this.canRob(update)
+      ? (this.gameState.flash = `player-${playerTurn} choose a settlement to rob`)
+      : (this.gameState.mode = '');
 
-    return {
-      type: ['board', 'game'],
-      payload: { board: this.board, game: this.gameState },
-    };
+    return this.payload();
   }
 
   handleRobSettlement(update) {
     const { settlements } = this.board;
     const player = this.players[settlements[update.id].player];
 
-    const resources = Object.keys(player.resources).filter(type => {
-      return player.resources[type] != 0;
-    });
+    const resources = Object.keys(player.resources).filter(
+      type => player.resources[type] != 0
+    );
 
     const resource = resources[Math.floor(Math.random() * resources.length)];
 
     if (resource) {
       this.players[update.player].resources[resource]++;
       player.resources[resource]--;
-      this.updatePlayers(update.player, player.playerNumber);
     }
 
     this.gameState.mode = '';
 
-    return { type: ['game'], payload: { game: this.gameState } };
+    return this.updateGame(1, 2, 3, 4);
+  }
+
+  handleRobber(update) {
+    switch (update.action) {
+      case 'initiate':
+        return this.initiateRobber(true);
+      case 'discard':
+        return this.handleDiscard(update);
+      case 'move-robber':
+        return this.handleMoveRobber(update);
+      case 'rob-settlement':
+        return this.handleRobSettlement(update);
+      default:
+    }
+  }
+
+  handleFlash() {
+    this.gameState.flash = '';
+    return this.payload();
   }
 
   handleDevCard(update) {
@@ -329,16 +351,12 @@ class GameEngine {
         return this.handleMessages(update); // done
       case 'trade':
         return this.handleTrade(update); // done
+      case 'flash':
+        return this.handleFlash(update);
       case 'game':
         return this.handleGameState(update);
       case 'robber':
-        return this.handleRobber(update);
-      case 'flash':
-        return this.handleFlash(update);
-      case 'move-robber':
-        return this.handleMoveRobber(update);
-      case 'rob-settlement':
-        return this.handleRobSettlement(update);
+        return this.handleRobber(update); //
       case 'get-card':
         return this.handleDevCard(update);
       case 'play-card':
@@ -390,11 +408,7 @@ class GameEngine {
     this.gameState.mode = 'roll';
 
     if (this.gameState.diceValue == 7) {
-      this.gameState.mode = 'robber';
-      this.gameState.responded = this.gameState.responded.map((bool, i) => {
-        return !i || (i && this.gameState.players[i].resources < 8);
-      });
-      return this.handleRobber();
+      return this.handleRobber({ action: 'initiate' });
     }
     return this.updateGame(...this.distributeResources(diceValue));
   }

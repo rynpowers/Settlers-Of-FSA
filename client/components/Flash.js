@@ -5,7 +5,6 @@ import './Flash.scss';
 import FlashAlert from './FlashAlert';
 
 const next = {
-  acknowledgeMoveRobber: 'move-robber',
   acknowledgeRobSettlement: 'rob-settlement',
   dev: 'dev',
   roadBuilding: 'road',
@@ -18,14 +17,8 @@ class Flash extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
   handleSubmit() {
-    const { name, playerNumber, mode } = this.props;
-
-    socket.emit('flash', {
-      mode: next[mode],
-      type: 'flash',
-      game: name,
-      player: playerNumber,
-    });
+    const { name } = this.props;
+    socket.emit('update', { type: 'flash', game: name });
   }
 
   render() {
