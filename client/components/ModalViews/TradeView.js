@@ -51,11 +51,12 @@ export default class TradeView extends Component {
 
   render() {
     return (
-      <>
+      <Fragment>
+        <ModalClose handleClick={this.props.updateMode} />
         {this.state.selectedComponent
           ? this.renderTrade()
           : this.renderSelection()}
-      </>
+      </Fragment>
     );
   }
 }

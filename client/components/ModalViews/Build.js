@@ -3,6 +3,7 @@ import BuildViewBtn from './BuildViewBtn';
 import FlashAlert from '../FlashAlert';
 import './Build.scss';
 import options from '../Board/gameBoardOptions';
+import ModalClose from './ModalClose';
 
 class Build extends Component {
   constructor(props) {
@@ -23,6 +24,7 @@ class Build extends Component {
     const { cost } = options;
     return (
       <Fragment>
+        <ModalClose handleClick={this.props.updateMode} />
         <div
           className="modal-build"
           onClick={e => {
