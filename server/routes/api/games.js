@@ -14,8 +14,13 @@ router.post('/', async (req, res, next) => {
     const { player, game } = await Game.joinGame(name, req.user);
     cache.addGame(game);
     cache.joinGame(player, game);
-    const cachedGame = cache.getGame(name, player.playerNumber);
-    res.json(cachedGame);
+    const curGame = cache.getGame(name);
+    const payload = curGame.payload();
+    res.json({
+      player: payload.players[player.playerNumber],
+      gameState: payload.game,
+      board: payload.board,
+    });
   } catch (err) {
     console.log(err);
     res.sendStatus(401);
