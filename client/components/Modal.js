@@ -14,7 +14,7 @@ import TradeViewOpponent from './ModalViews/TradeViewOpponent';
 
 class Modal extends Component {
   renderTrade() {
-    return this.props.playerNumber === this.props.playerTurn ? (
+    return this.props.isTurn ? (
       <TradeView {...this.props} />
     ) : (
       <TradeViewOpponent {...this.props} />
@@ -25,6 +25,8 @@ class Modal extends Component {
       case 'build':
         return <Build {...this.props} />;
       case 'trade':
+        return this.renderTrade();
+      case 'trading':
         return this.renderTrade();
       case 'robber':
         return <Robber {...this.props} />;
@@ -39,19 +41,17 @@ class Modal extends Component {
   }
 
   render() {
-    const { updateMode, respond, mode, isTurn } = this.props;
-    const views = ['trade', 'build', respond && 'robber', 'dev'];
+    const { respond, mode, isTurn } = this.props;
+    const views = ['trading', 'build', respond && 'robber', 'dev'];
 
-    const playerView = ['monopoly', 'yearOfPlenty'].includes(mode) && isTurn;
+    const playerView =
+      ['monopoly', 'yearOfPlenty', 'trade'].includes(mode) && isTurn;
 
     const modalActive = views.includes(mode) || playerView;
 
     return (
       <div className={`modal ${modalActive && 'modal-active'}`}>
         {this.renderModalView(mode)}
-        <div onClick={() => updateMode('')} className="modal-close">
-          <div />
-        </div>
       </div>
     );
   }
@@ -64,6 +64,7 @@ const mapStateToProps = ({ menu, player, game }) => ({
     Object.keys(player.resources).reduce((a, v) => a + player.resources[v], 0) /
       2
   ),
+  game,
   player,
   isTurn: game.playerTurn === player.playerNumber,
   resources: player.resources,

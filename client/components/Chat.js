@@ -52,13 +52,13 @@ export class Chat extends Component {
   }
 
   constructMessage() {
-    const { playerNumber, name } = this.props;
+    const { player, game } = this.props;
     return {
       type: 'message',
       message: this.state.message,
-      player: playerNumber,
-      game: name,
-      date: `${Date.now()}-${playerNumber}`,
+      player: player.playerNumber,
+      game: game.name,
+      date: `${Date.now()}-${player.playerNumber}`,
     };
   }
 
@@ -66,6 +66,7 @@ export class Chat extends Component {
     e.preventDefault();
     const { messages } = this.state;
     const message = this.constructMessage();
+    console.log(message);
     this.setState(
       {
         message: '',
@@ -86,7 +87,7 @@ export class Chat extends Component {
 
   render() {
     const { messages, height, message } = this.state;
-    const { playerNumber } = this.props;
+    const { player } = this.props;
     return (
       <Fragment>
         <div className="chat-container">
@@ -96,7 +97,7 @@ export class Chat extends Component {
               key={m.date}
               message={m.message}
               player={m.player}
-              playerNumber={playerNumber}
+              playerNumber={player.playerNumber}
             />
           ))}
         </div>

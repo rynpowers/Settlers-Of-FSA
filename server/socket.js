@@ -38,6 +38,7 @@ module.exports = io => {
     // CHAT
 
     socket.on('message', payload => {
+      console.log(payload);
       const curGame = cache.getGame(payload.game);
       const { messages } = curGame.update(payload);
       socket.broadcast.to(payload.game).emit('messages', { messages });

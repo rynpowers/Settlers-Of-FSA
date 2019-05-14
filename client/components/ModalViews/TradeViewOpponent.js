@@ -50,13 +50,12 @@ export class TradeViewOpponent extends Component {
   }
 
   render() {
-    const { resources, playerNumber, game, trades, player } = this.props;
+    const { resources, playerNumber, game, trades } = this.props;
     const offer = trades[playerNumber];
 
     return (
       <TradeComponentWindow
-        game={game}
-        player={player}
+        {...this.props}
         renderComponentOne={() => (
           <Fragment>
             <ResourceView

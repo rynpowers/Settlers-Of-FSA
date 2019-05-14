@@ -1,76 +1,61 @@
 import React, { Component, Fragment } from 'react';
-import { ResourceView } from '../ResourceComponents';
-import TradeComponentWindow from './TradeComponentWindow';
-import TradeOffer from './TradeOffer';
+import TradeViewPlayer from './TradeViewPlayer';
 import ModalClose from './ModalClose';
-import socket from '../../socket';
-import './TradeView.scss';
 
-export class TradeView extends Component {
+export default class TradeView extends Component {
   constructor(props) {
     super(props);
-    this.state = { selectedTrade: 0 };
-    this.handleTradeAction = this.handleTradeAction.bind(this);
+    this.state = { selectedComponent: 0 };
   }
 
-  componentDidMount() {
-    const { name } = this.props;
-    socket.emit('update', { type: 'trade', action: 'initiate', game: name });
+  renderSelection() {
+    return (
+      <div style={{ display: 'flex' }}>
+        <div
+          onClick={() => this.setState({ selectedComponent: 1 })}
+          className={`modal-build-view modal-build-view-btn modal-build-view-btn-${
+            this.props.playerNumber
+          }`}
+        >
+          Players
+        </div>
+        <div
+          onClick={() => this.setState({ selectedComponent: 2 })}
+          className={`modal-build-view modal-build-view-btn modal-build-view-btn-${
+            this.props.playerNumber
+          }`}
+        >
+          Bank
+        </div>
+      </div>
+    );
   }
 
-  componentWillUnmount() {
-    const { name } = this.props;
-    socket.removeAllListeners('trades');
-    socket.emit('update', { type: 'trade', game: name });
-  }
-
-  handleTradeAction(playerNumber, action) {
-    const { name } = this.props;
-    socket.emit('update', {
-      player: playerNumber,
-      type: 'trade',
-      action,
-      game: name,
-    });
-    this.setState({ selectedTrade: 0 });
+  renderTrade() {
+    return this.state.selectedComponent === 1 ? (
+      <Fragment>
+        <ModalClose
+          handleClick={() => this.setState({ selectedComponent: 0 })}
+        />
+        <TradeViewPlayer {...this.props} />
+      </Fragment>
+    ) : (
+      <Fragment>
+        <ModalClose
+          handleClick={() => this.setState({ selectedComponent: 0 })}
+        />
+        <h1>Bank</h1>
+      </Fragment>
+    );
   }
 
   render() {
-    const { selectedTrade } = this.state;
-    const { isTurn, trades, resources, game, player } = this.props;
-
     return (
-      <TradeComponentWindow
-        game={game}
-        player={player}
-        renderComponentOne={() => (
-          <Fragment>
-            <ModalClose
-              hidden={!selectedTrade}
-              handleClick={() => this.setState({ selectedTrade: 0 })}
-            />
-            <ResourceView
-              updateResources={trades[selectedTrade]}
-              resources={resources}
-            />
-          </Fragment>
-        )}
-        renderComponentTwo={() =>
-          Object.keys(trades).map(trade => (
-            <TradeOffer
-              key={trade}
-              trade={trade}
-              isTurn={isTurn}
-              resources={trades[trade]}
-              selectedTrade={selectedTrade}
-              handleViewTrade={() => this.setState({ selectedTrade: trade })}
-              handleTradeAction={this.handleTradeAction}
-            />
-          ))
-        }
-      />
+      <>
+        {this.state.selectedComponent
+          ? this.renderTrade()
+          : this.renderSelection()}
+      </>
     );
   }
 }
-
-export default TradeView;

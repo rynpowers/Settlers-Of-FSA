@@ -102,7 +102,7 @@ class GameEngine {
     const { trades } = this.gameState;
     switch (action) {
       case 'initiate':
-        this.gameState.mode = 'trade';
+        this.gameState.mode = 'trading';
         return this.payload();
       case 'add':
         trades[player] = resources;
@@ -113,7 +113,7 @@ class GameEngine {
       case 'accept':
         return this.exchangeResources(player);
       default:
-        this.gameState.mode = '';
+        this.gameState.mode = 'trade';
         this.gameState.trades = {};
         this.messages = [];
         return this.payload();
