@@ -28,6 +28,7 @@ class YearOfPlenty extends Component {
   }
 
   handleSubmit() {
+    console.log('test');
     const { playerNumber, name } = this.props;
     socket.emit('update', {
       type: 'development',
