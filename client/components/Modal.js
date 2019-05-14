@@ -39,19 +39,16 @@ class Modal extends Component {
   }
 
   render() {
-    const { game, playerNumber, updateMode } = this.props;
-    const views = [
-      'trade',
-      'build',
-      !game.responded[playerNumber] && 'robber',
-      'dev',
-      'monopoly',
-      'yearOfPlenty',
-    ];
-    const modalActive = views.includes(game.mode);
+    const { updateMode, respond, mode, isTurn } = this.props;
+    const views = ['trade', 'build', respond && 'robber', 'dev'];
+
+    const playerView = ['monopoly', 'yearOfPlenty'].includes(mode) && isTurn;
+
+    const modalActive = views.includes(mode) || playerView;
+
     return (
       <div className={`modal ${modalActive && 'modal-active'}`}>
-        {this.renderModalView(game.mode)}
+        {this.renderModalView(mode)}
         <div onClick={() => updateMode('')} className="modal-close">
           <div />
         </div>
@@ -71,8 +68,10 @@ const mapStateToProps = ({ menu, player, game }) => ({
   isTurn: game.playerTurn === player.playerNumber,
   resources: player.resources,
   devCards: player.devCards,
-  game,
+  mode: game.mode,
   name: game.name,
+  trades: game.trades,
+  respond: !game.responded[player.playerNumber],
 });
 
 export default connect(
@@ -81,5 +80,6 @@ export default connect(
     updateMode: actions.updateMode,
     reset: actions.reset,
     toggleExitMenu: actions.toggleExitMenu,
+    updateTrades: actions.updateTrades,
   }
 )(Modal);

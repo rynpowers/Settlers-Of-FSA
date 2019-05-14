@@ -8,6 +8,8 @@ export const SET_DICE = 'SET_DICE';
 export const RESET = 'RESET';
 export const UPDATE_MODE = 'UPDATE_MODE';
 export const UPDATE_OFFER = 'UPDATE_OFFER';
+export const UPDATE_GAME = 'UPDATE_GAME';
+export const UPDATE_TRADES = 'UPDATE_TRADES';
 
 // board
 export const SET_BOARD = 'SET_BOARD';

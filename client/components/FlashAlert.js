@@ -1,5 +1,6 @@
 import React from 'react';
 import SubmitBtn from './SubmitBtn';
+import './FlashAlert.scss';
 
 const FlashAlert = ({ message, handleSubmit }) => {
   return (

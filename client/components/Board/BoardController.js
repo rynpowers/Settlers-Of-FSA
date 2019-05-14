@@ -16,24 +16,23 @@ class BoardController extends Component {
   }
 
   handleUpdateRoad(type, id) {
-    this.props.updateRoadThunk(
-      {
-        id,
-        player: this.props.playerNumber,
-        type,
-        game: this.props.name,
-      },
-      this.props.reset
-    );
+    this.props.updateRoadThunk({
+      id,
+      player: this.props.playerNumber,
+      type,
+      game: this.props.name,
+    });
+    this.props.reset();
   }
 
   handleMoveRobber(elem) {
-    const { mode, name, playerNumber } = this.props;
+    const { name, playerNumber } = this.props;
     const { id } = elem.dataset;
 
-    socket.emit('move-robber', {
+    socket.emit('update', {
       id,
-      type: mode,
+      type: 'robber',
+      action: 'move-robber',
       game: name,
       player: playerNumber,
     });
@@ -42,12 +41,16 @@ class BoardController extends Component {
   handleRobSettlement(elem) {
     const { id } = elem.dataset;
     const { playerNumber, name } = this.props;
-    socket.emit('rob-settlement', {
-      type: 'rob-settlement',
-      id,
-      player: playerNumber,
-      game: name,
-    });
+
+    if (elem.classList.contains('rob-settlement')) {
+      socket.emit('update', {
+        action: 'rob-settlement',
+        type: 'robber',
+        id,
+        player: playerNumber,
+        game: name,
+      });
+    }
   }
 
   handleClick(e) {
@@ -66,10 +69,7 @@ class BoardController extends Component {
         case 'move-robber':
           return type === 'robber' && this.handleMoveRobber(elem);
         case 'rob-settlement':
-          return (
-            elem.classList.contains('rob-settlement') &&
-            this.handleRobSettlement(elem)
-          );
+          return this.handleRobSettlement(elem);
         default:
       }
     }

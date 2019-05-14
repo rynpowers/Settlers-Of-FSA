@@ -18,85 +18,28 @@ module.exports = io => {
       );
     });
 
-    socket.on('incoming-trade', trade => {
-      const { game, accepted, trades } = cache.updateGame(trade);
-      if (accepted) {
-        io.to(trade.game).emit('dispatch', { type: 'SET_GAME', game });
-      } else {
-        socket.broadcast.to(trade.game).emit('trades', { trades });
-      }
+    // BUILDING
+
+    socket.on('update', payload => {
+      const curGame = cache.getCurGame(payload.game);
+      const { sockets, game, board, players } = curGame.update(payload);
+
+      Object.keys(sockets).forEach(player =>
+        io.to(sockets[player]).emit('dispatch', {
+          type: 'UPDATE_GAME',
+          game,
+          board,
+          player: players[player],
+        })
+      );
     });
 
-    socket.on('robbing-player', payload => {
-      const { game } = cache.updateGame(payload);
-      io.to(game.name).emit('dispatch', { type: 'SET_GAME', game });
-    });
+    // CHAT
 
-    socket.on('move-robber', payload => {
-      const { board, game } = cache.updateGame(payload);
-      io.to(payload.game).emit('dispatch', { type: 'SET_BOARD', board });
-      io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
-    });
-
-    socket.on('rob-settlement', payload => {
-      const { game } = cache.updateGame(payload);
-      io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
-    });
-
-    socket.on('get-card', payload => {
-      const { game } = cache.updateGame(payload);
-      io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
-    });
-
-    socket.on('road', payload => {
-      const { board, game } = cache.updateGame(payload);
-      io.to(payload.game).emit('dispatch', { type: 'SET_BOARD', board });
-      io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
-    });
-
-    socket.on('play-card', payload => {
-      const { game, board } = cache.updateGame(payload);
-      io.to(payload.game).emit('dispatch', { type: 'SET_GAME', game });
-      board &&
-        io.to(payload.game).emit('dispatch', { type: 'SET_BOARD', board });
-    });
-
-    socket.on('flash', payload => {
-      const { game } = cache.updateGame(payload);
-      io.to(game.name).emit('dispatch', { type: 'SET_GAME', game });
-    });
-
-    socket.on('message', message => {
-      const { messages } = cache.updateGame(message);
-      socket.broadcast.to(message.game).emit('messages', { messages });
-    });
-
-    socket.on('get', (key, room) => {
-      const game = cache.games[room];
-      game.send(key, payload => {
-        io.to(socket.id).emit(key, payload);
-      });
-    });
-
-    socket.on('next-player', payload => {
-      const { game } = cache.updateGame(payload);
-      io.to(game.name).emit('dispatch', { type: 'SET_GAME', game });
-    });
-
-    socket.on('updateBoard', update => {
-      const { board, game } = cache.updateGame(update);
-      io.to(update.game).emit('dispatch', { type: 'SET_BOARD', board });
-      game && io.to(update.game).emit('dispatch', { type: 'SET_GAME', game });
-    });
-
-    socket.on('updateGame', update => {
-      const { game } = cache.updateGame(update);
-      io.to(update.game).emit('dispatch', { type: 'SET_GAME', game });
-    });
-
-    socket.on('updatePlayer', (game, playerNumber) => {
-      const player = cache.updatePlayer(game, playerNumber);
-      io.to(socket.id).emit('dispatch', { type: 'SET_PLAYER', player });
+    socket.on('message', payload => {
+      const curGame = cache.getCurGame(payload.game);
+      const { messages } = curGame.update(payload);
+      socket.broadcast.to(payload.game).emit('messages', { messages });
     });
 
     socket.on('disconnect', () => {

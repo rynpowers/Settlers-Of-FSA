@@ -1,4 +1,4 @@
-const { Player } = require('../db');
+const { Player, Game } = require('../db');
 
 class GameEngine {
   constructor(board, gameState) {
@@ -7,7 +7,6 @@ class GameEngine {
     this.gameState = JSON.parse(gameState);
     this.sockets = {};
     this.messages = [];
-    this.trades = {};
   }
   addSocket(socket, player) {
     this.sockets = { ...this.sockets, [player]: socket };
@@ -54,6 +53,29 @@ class GameEngine {
     });
   }
 
+  payload() {
+    return {
+      sockets: this.sockets,
+      players: this.players,
+      game: { ...this.gameState, devCards: this.gameState.devCards.length },
+      board: this.board,
+    };
+  }
+
+  updateGame(...args) {
+    this.updatePlayers(...args);
+
+    Game.update(
+      {
+        game: JSON.stringify(this.gameState),
+        board: JSON.stringify(this.board),
+      },
+      { where: { name: this.gameState.name } }
+    );
+
+    return this.payload();
+  }
+
   getGameState(playerNumber) {
     const { players, board, gameState } = this;
     return {
@@ -65,68 +87,49 @@ class GameEngine {
 
   exchangeResources(player) {
     const { playerTurn } = this.gameState;
-    const resources = this.trades[player];
+    const resources = this.gameState.trades[player];
     Object.keys(resources).forEach(type => {
       this.players[playerTurn].resources[type] += resources[type];
       this.players[player].resources[type] -= resources[type];
     });
     this.gameState.mode = '';
-    this.updatePlayers(playerTurn, player);
-    this.trades = {};
-    return { payload: { game: this.gameState, accepted: true } };
+    this.gameState.trades = {};
+
+    return this.updateGame(player, playerTurn);
   }
 
   handleTrade({ resources, player, action }) {
+    const { trades } = this.gameState;
     switch (action) {
+      case 'initiate':
+        this.gameState.mode = 'trade';
+        return this.payload();
       case 'add':
-        this.trades[player] = resources;
-        return { payload: { trades: this.trades } };
+        trades[player] = resources;
+        return this.payload();
       case 'reject':
-        delete this.trades[player];
-        return { payload: { trades: this.trades } };
+        delete trades[player];
+        return this.payload();
       case 'accept':
         return this.exchangeResources(player);
       default:
-        return this.trades;
+        this.gameState.mode = '';
+        this.gameState.trades = {};
+        this.messages = [];
+        return this.payload();
     }
   }
 
   handleMessages(message) {
     this.messages.push(message);
-    return { payload: { messages: this.messages } };
+    return { messages: this.messages };
   }
 
   handleGameState({ payload }) {
     Object.keys(payload).forEach(key => {
       this.gameState[key] = payload[key];
     });
-    return { payload: { game: this.gameState } };
-  }
-
-  handleRobber(update) {
-    if (update) {
-      this.gameState.responded[update.playerNumber] = true;
-      this.players[update.playerNumber].resources = update.resources;
-      this.updatePlayers(update.playerNumber);
-    }
-
-    const complete = this.gameState.responded.every(player => player);
-
-    if (complete) {
-      this.gameState.mode = 'acknowledgeMoveRobber';
-      this.gameState.flash = `Player-${
-        this.gameState.playerTurn
-      } please move the robber`;
-      this.gameState.responded = [true, false, false, false, false];
-    }
-
-    return { type: ['game'], payload: { game: this.gameState } };
-  }
-
-  handleFlash(update) {
-    this.gameState.flash = '';
-    this.gameState.mode = update.mode || '';
-    return { payload: { game: this.gameState } };
+    return this.payload();
   }
 
   canRob(update) {
@@ -140,88 +143,110 @@ class GameEngine {
     return set.size !== 0;
   }
 
+  initiateRobber() {
+    this.gameState.mode = 'robber';
+
+    this.gameState.responded = this.gameState.responded.map((bool, i) => {
+      return !i || (i && this.gameState.players[i].resources < 8);
+    });
+
+    return this.payload();
+  }
+
+  handleDiscard(update) {
+    const { playerTurn, responded } = this.gameState;
+
+    if (update) {
+      this.gameState.responded[update.playerNumber] = true;
+      this.players[update.playerNumber].resources = update.resources;
+      this.gameState.players[update.playerNumber].resources = Object.keys(
+        update.resources
+      ).reduce((a, v) => a + update.resources[v], 0);
+    }
+
+    if (responded.every(p => p)) {
+      this.gameState.flash = `Player-${playerTurn} please move the robber`;
+      this.gameState.responded = [true, false, false, false, false];
+      this.gameState.mode = 'move-robber';
+    }
+
+    return this.payload();
+  }
+
   handleMoveRobber(update) {
     const { robber, resources } = this.board;
+    const { playerTurn } = this.gameState;
 
     resources[robber].hasRobber = false;
     resources[update.id].hasRobber = true;
     this.board.robber = update.id;
+    this.gameState.mode = 'rob-settlement';
 
-    if (this.canRob(update)) {
-      this.gameState.mode = 'acknowledgeRobSettlement';
-      this.gameState.flash = `player-${
-        this.gameState.playerTurn
-      } choose a settlement to rob`;
-    } else this.gameState.mode = '';
+    this.canRob(update)
+      ? (this.gameState.flash = `player-${playerTurn} choose a settlement to rob`)
+      : (this.gameState.mode = '');
 
-    return {
-      type: ['board', 'game'],
-      payload: { board: this.board, game: this.gameState },
-    };
+    return this.payload();
   }
 
   handleRobSettlement(update) {
     const { settlements } = this.board;
     const player = this.players[settlements[update.id].player];
 
-    const resources = Object.keys(player.resources).filter(type => {
-      return player.resources[type] != 0;
-    });
+    const resources = Object.keys(player.resources).filter(
+      type => player.resources[type] != 0
+    );
 
     const resource = resources[Math.floor(Math.random() * resources.length)];
 
     if (resource) {
       this.players[update.player].resources[resource]++;
       player.resources[resource]--;
-      this.updatePlayers(update.player, player.playerNumber);
     }
 
     this.gameState.mode = '';
 
-    return { type: ['game'], payload: { game: this.gameState } };
+    return this.updateGame(update.player, player.playerNumber);
   }
 
-  handleDevCard(update) {
-    const cards = this.gameState.devCards;
-    const index = Math.floor(Math.random() * cards.length);
-    const card = cards.splice(index, 1)[0];
+  handleRobber(update) {
+    switch (update.action) {
+      case 'discard':
+        return this.handleDiscard(update);
+      case 'move-robber':
+        return this.handleMoveRobber(update);
+      case 'rob-settlement':
+        return this.handleRobSettlement(update);
+      default:
+    }
+  }
 
-    this.players[update.player].devCards[card]++;
-    this.players[update.player].resources.field--;
-    this.players[update.player].resources.mountain--;
-    this.players[update.player].resources.pasture--;
-
-    this.updatePlayers(update.player);
-    this.gameState.flash = `you have bought a ${card} card`;
-
-    return { type: ['game'], payload: { game: this.gameState } };
+  handleFlash() {
+    this.gameState.flash = '';
+    return this.payload();
   }
 
   handleKnight(update) {
     this.gameState.responded = this.gameState.responded.map(() => true);
     this.players[update.player].devCards[update.card]--;
     this.players[update.player].largestArmy++;
-    this.updatePlayers(update.player);
-    return this.handleRobber();
+    return this.handleDiscard();
   }
 
   handleRoadBuilding(update) {
-    if (!this.gameState.roadBuilding) {
-      const cards = this.players[update.player].devCards[update.card];
-      this.players[update.player].devCards[update.card] = cards - 1;
-      this.updatePlayers(update.player);
-      this.gameState.roadBuilding = 1;
+    !this.gameState.roadBuilding
+      ? (this.gameState.roadBuilding = 2)
+      : this.gameState.roadBuilding--;
+
+    if (this.gameState.roadBuilding) {
+      this.gameState.mode = 'road';
+      this.gameState.flash = 'Build a road';
+      return this.payload();
     } else {
-      this.gameState.roadBuilding--;
+      this.gameState.mode = '';
+      this.players[update.player].devCards.roadBuilding--;
+      return this.updateGame(update.player);
     }
-
-    this.gameState.mode = 'roadBuilding';
-    this.gameState.flash = 'Build a road';
-
-    return {
-      type: ['game', 'board'],
-      payload: { game: this.gameState, board: this.board },
-    };
   }
 
   monopolizeResource(id, resource, card) {
@@ -234,17 +259,17 @@ class GameEngine {
     });
     this.players[id].resources[resource] += total;
     this.players[id].devCards[card]--;
-    this.updatePlayers(1, 2, 3, 4);
   }
 
   handleMonopoly(update) {
     if (this.gameState.mode === 'monopoly') {
       this.gameState.mode = '';
       this.monopolizeResource(update.player, update.resource, update.card);
+      return this.updateGame(1, 2, 3, 4);
     } else {
       this.gameState.mode = 'monopoly';
+      return this.payload();
     }
-    return { type: ['game'], payload: { game: this.gameState } };
   }
 
   handleYearOfPlenty(update) {
@@ -254,11 +279,11 @@ class GameEngine {
       });
       this.gameState.mode = '';
       this.players[update.player].devCards[update.card]--;
-      this.updatePlayers(update.player);
+      return this.updateGame(update.player);
     } else {
       this.gameState.mode = 'yearOfPlenty';
+      return this.payload();
     }
-    return { type: ['game'], payload: { game: this.gameState } };
   }
 
   handlePlayCard(update) {
@@ -272,44 +297,64 @@ class GameEngine {
       case 'yearOfPlenty':
         return this.handleYearOfPlenty(update);
       default:
-        return { payload: { game: this.gameState, update } };
+        return this.payload();
     }
   }
 
   handleNextPlayer(update) {
     this.gameState.playerTurn =
       this.gameState.playerTurn < 4 ? update.player + 1 : 1;
-    return { payload: { game: this.gameState } };
+    return this.payload();
+  }
+
+  handleDevCard(update) {
+    const cards = this.gameState.devCards;
+    const index = Math.floor(Math.random() * cards.length);
+    const card = cards.splice(index, 1)[0];
+
+    this.players[update.player].devCards[card]++;
+    this.players[update.player].resources.field--;
+    this.players[update.player].resources.mountain--;
+    this.players[update.player].resources.pasture--;
+
+    this.gameState.flash = `you have bought a ${card} card`;
+
+    return this.updateGame(update.player);
+  }
+
+  handleDevelopment(update) {
+    switch (update.action) {
+      case 'get-card':
+        return this.handleDevCard(update);
+      case 'play-card':
+        return this.handlePlayCard(update);
+      default:
+        return this.payload();
+    }
   }
 
   update(update) {
     switch (update.type) {
       case 'road':
-        return this.assignRoad(update);
+        return this.assignRoad(update); // done
       case 'settlement':
-        return this.assignSettlement(update);
+        return this.assignSettlement(update); // done
       case 'diceValue':
-        return this.updateDice(update);
+        return this.updateDice(update); // done
       case 'player':
         return this.players[update.playerNumber];
       case 'message':
-        return this.handleMessages(update);
+        return this.handleMessages(update); // done
       case 'trade':
-        return this.handleTrade(update);
+        return this.handleTrade(update); // done
+      case 'flash':
+        return this.handleFlash(update); // done
       case 'game':
         return this.handleGameState(update);
       case 'robber':
-        return this.handleRobber(update);
-      case 'flash':
-        return this.handleFlash(update);
-      case 'move-robber':
-        return this.handleMoveRobber(update);
-      case 'rob-settlement':
-        return this.handleRobSettlement(update);
-      case 'get-card':
-        return this.handleDevCard(update);
-      case 'play-card':
-        return this.handlePlayCard(update);
+        return this.handleRobber(update); // done
+      case 'development':
+        return this.handleDevelopment(update);
       case 'next-player':
         return this.handleNextPlayer(update);
       default:
@@ -322,23 +367,17 @@ class GameEngine {
 
     if (prevRoad < update.longestRoad) {
       this.players[update.player].longestRoad = update.longestRoad;
+      this.updatePlayers(update.player);
     }
 
-    if (this.gameState.roadBuilding) {
-      return this.handleRoadBuilding(update);
-    }
+    if (this.gameState.roadBuilding) return this.handleRoadBuilding(update);
 
-    if (this.gameState.mode !== 'roadBuilding') {
-      this.players[update.player].resources.hill--;
-      this.players[update.player].resources.forest--;
-    }
-    this.updatePlayers(update.player);
+    this.players[update.player].resources.hill--;
+    this.players[update.player].resources.forest--;
+
     this.gameState.mode = '';
 
-    return {
-      type: ['board', 'game'],
-      payload: { board: this.board, game: this.gameState },
-    };
+    return this.updateGame(update.player);
   }
 
   assignSettlement({ id, playerNumber }) {
@@ -355,27 +394,16 @@ class GameEngine {
       this.players[playerNumber].resources.mountain -= 3;
     }
 
-    this.updatePlayers(playerNumber);
-
-    return {
-      type: ['board', 'game'],
-      payload: { board: this.board, game: this.gameState },
-    };
+    return this.updateGame(playerNumber);
   }
 
   updateDice({ diceValue }) {
     this.gameState.diceValue = diceValue;
     this.gameState.mode = 'roll';
 
-    if (this.gameState.diceValue == 7) {
-      this.gameState.mode = 'robber';
-      this.gameState.responded = this.gameState.responded.map((bool, i) => {
-        return !i || (i && this.gameState.players[i].resources < 8);
-      });
-      return this.handleRobber();
-    }
-    this.updatePlayers(...this.distributeResources(diceValue));
-    return { type: ['game'], payload: { game: this.gameState } };
+    if (this.gameState.diceValue == 7) return this.initiateRobber();
+
+    return this.updateGame(...this.distributeResources(diceValue));
   }
 
   distributeResources(diceValue) {

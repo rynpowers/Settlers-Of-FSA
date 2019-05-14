@@ -10,6 +10,17 @@ export const setGame = game => ({
 });
 export const reset = () => ({ type: type.RESET });
 export const updateMode = mode => ({ type: type.UPDATE_MODE, mode });
+export const updateGame = (game, board, player) => ({
+  type: type.UPDATE_GAME,
+  game,
+  board,
+  player,
+});
+export const updateTrades = (trade, player) => ({
+  type: type.UPDATE_TRADES,
+  trade,
+  player,
+});
 
 // board
 export const setBoard = board => ({ type: type.SET_BOARD, board });

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import TradeOffer from './TradeOffer';
 import { ResourceView } from '../ResourceComponents';
 import TradeComponentWindow from './TradeComponentWindow';
@@ -16,37 +16,16 @@ const defaultResources = {
 export class TradeViewOpponent extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      trades: {},
-      loaded: false,
-      resources: { ...defaultResources },
-    };
+    this.state = { ...defaultResources };
     this.handleSendTrade = this.handleSendTrade.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
-
-  componentDidMount() {
-    socket.emit('get', 'trades', this.props.game.name);
-    socket.on('trades', ({ trades }) => {
-      this.setState({
-        trades,
-        loaded: true,
-      });
-    });
-  }
-
-  componentWillUnmount() {
-    socket.removeAllListeners('trades');
-  }
-
   handleClick(type, val) {
     const { resources } = this.props;
-    const canDec = val < 0 && resources[type] + this.state.resources[type];
+    const canDec = val < 0 && resources[type] + this.state[type];
 
     if (canDec || val > 0)
-      this.setState(prev => ({
-        resources: { ...prev.resources, [type]: prev.resources[type] + val },
-      }));
+      this.setState(prev => ({ [type]: prev[type] + val }));
   }
 
   reversePerspective(resources) {
@@ -57,57 +36,50 @@ export class TradeViewOpponent extends Component {
   }
 
   handleSendTrade() {
-    let { resources } = this.state;
-    const { playerNumber } = this.props;
-    this.setState(prev => ({
-      trades: { ...prev.trades, [playerNumber]: { ...resources } },
-      resources: { ...defaultResources },
-    }));
-
-    socket.emit('incoming-trade', {
+    const { name, playerNumber } = this.props;
+    let resources = this.reversePerspective({ ...this.state });
+    this.props.updateTrades(resources, playerNumber);
+    socket.emit('update', {
       type: 'trade',
       action: 'add',
-      player: this.props.player.playerNumber,
-      game: this.props.game.name,
-      resources: this.reversePerspective(resources),
+      player: playerNumber,
+      game: name,
+      resources,
     });
+    this.setState({ ...defaultResources });
   }
 
   render() {
-    const { trades } = this.state;
-    const { player, playerNumber, game } = this.props;
-
-    if (!this.state.loaded) return <div>loading...</div>;
-
+    const { resources, playerNumber, game, trades, player } = this.props;
     const offer = trades[playerNumber];
 
     return (
       <TradeComponentWindow
-        {...this.props}
+        game={game}
+        player={player}
         renderComponentOne={() => (
-          <div>
+          <Fragment>
             <ResourceView
               style={{ height: '25rem' }}
               updateResources={
-                offer ? this.reversePerspective(offer) : this.state.resources
+                offer ? this.reversePerspective(offer) : this.state
               }
               handleClickInc={!offer && this.handleClick}
               handleClickDec={!offer && this.handleClick}
-              resources={player.resources}
+              resources={resources}
             />
             {!offer && (
               <SubmitBtn text="Submit" handleSubmit={this.handleSendTrade} />
             )}
-          </div>
+          </Fragment>
         )}
         renderComponentTwo={() =>
-          Object.keys(this.state.trades).map(trade => (
+          Object.keys(trades).map(trade => (
             <TradeOffer
               key={trade}
               trade={trade}
-              player={player}
               game={game}
-              resources={this.state.trades[trade]}
+              resources={trades[trade]}
             />
           ))
         }

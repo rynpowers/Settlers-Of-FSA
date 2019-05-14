@@ -11,11 +11,12 @@ class Monopoly extends Component {
   handleClick(resource) {
     const { playerNumber, name } = this.props;
     this.props.reset();
-    socket.emit('play-card', {
+    socket.emit('update', {
       resource,
       player: playerNumber,
       game: name,
-      type: 'play-card',
+      type: 'development',
+      action: 'play-card',
       card: 'monopoly',
     });
   }

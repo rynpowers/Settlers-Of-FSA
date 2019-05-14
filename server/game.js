@@ -12,4 +12,5 @@ module.exports = name => ({
     ...Array(2).fill('yearOfPlenty'),
   ],
   players: {},
+  trades: {},
 });

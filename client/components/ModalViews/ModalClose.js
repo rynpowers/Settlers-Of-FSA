@@ -1,8 +1,12 @@
 import React from 'react';
 
-function ModalClose({ handleClick }) {
+function ModalClose({ handleClick, hidden }) {
   return (
-    <div onClick={handleClick} className="modal-close">
+    <div
+      style={{ visibility: `${hidden ? 'hidden' : 'visible'}` }}
+      onClick={handleClick}
+      className="modal-close"
+    >
       <div />
     </div>
   );

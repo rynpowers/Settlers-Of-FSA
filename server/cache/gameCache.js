@@ -25,6 +25,10 @@ class GameCache {
     }
   }
 
+  getCurGame(name) {
+    return this.games[name];
+  }
+
   updateGame(update) {
     const curGame = this.games[update.game];
     const newUpdate = curGame.update(update);
