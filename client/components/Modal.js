@@ -14,7 +14,7 @@ import TradeViewOpponent from './ModalViews/TradeViewOpponent';
 
 class Modal extends Component {
   renderTrade() {
-    return this.props.playerNumber === this.props.game.playerTurn ? (
+    return this.props.playerNumber === this.props.playerTurn ? (
       <TradeView {...this.props} />
     ) : (
       <TradeViewOpponent {...this.props} />

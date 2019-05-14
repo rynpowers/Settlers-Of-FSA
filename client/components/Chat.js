@@ -18,7 +18,7 @@ export class Chat extends Component {
   }
 
   componentDidMount() {
-    socket.emit('get', 'messages', this.props.game.name);
+    socket.emit('get', 'messages', this.props.name);
 
     socket.on('messages', ({ messages }) => {
       this.setMessages(messages);
@@ -52,12 +52,13 @@ export class Chat extends Component {
   }
 
   constructMessage() {
+    const { playerNumber, name } = this.props;
     return {
       type: 'message',
       message: this.state.message,
-      player: this.props.player.playerNumber,
-      game: this.props.game.name,
-      date: `${Date.now()}-${this.props.player.playerNumber}`,
+      player: playerNumber,
+      game: name,
+      date: `${Date.now()}-${playerNumber}`,
     };
   }
 
@@ -85,7 +86,7 @@ export class Chat extends Component {
 
   render() {
     const { messages, height, message } = this.state;
-    const { player } = this.props;
+    const { playerNumber } = this.props;
     return (
       <Fragment>
         <div className="chat-container">
@@ -95,7 +96,7 @@ export class Chat extends Component {
               key={m.date}
               message={m.message}
               player={m.player}
-              playerNumber={player.playerNumber}
+              playerNumber={playerNumber}
             />
           ))}
         </div>
