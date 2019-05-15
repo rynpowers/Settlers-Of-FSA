@@ -20,6 +20,7 @@ export class TradeViewOpponent extends Component {
     this.handleSendTrade = this.handleSendTrade.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
+
   handleClick(type, val) {
     const { resources } = this.props;
     const canDec = val < 0 && resources[type] + this.state[type];

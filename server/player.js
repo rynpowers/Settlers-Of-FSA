@@ -6,11 +6,11 @@ module.exports = playerNumber => ({
   largestArmy: 0,
   trades: [],
   resources: {
-    forest: 5,
-    pasture: 5,
-    hill: 5,
-    field: 5,
-    mountain: 5,
+    forest: 50,
+    pasture: 50,
+    hill: 50,
+    field: 50,
+    mountain: 50,
   },
   devCards: {
     knight: 5,

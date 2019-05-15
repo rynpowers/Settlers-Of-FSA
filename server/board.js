@@ -3,6 +3,14 @@ module.exports = () => {
     resources: {},
     settlements: {},
     roads: {},
+    ports: {
+      mountain: [3, 4],
+      hill: [51, 50],
+      forest: [40, 39],
+      field: [8, 9],
+      pasture: [16, 26],
+      wildcard: [37, 47, 54, 53, 28, 17, 6, 7],
+    },
   };
 
   const diceValue = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12];

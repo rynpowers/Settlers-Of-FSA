@@ -66,7 +66,6 @@ export class Chat extends Component {
     e.preventDefault();
     const { messages } = this.state;
     const message = this.constructMessage();
-    console.log(message);
     this.setState(
       {
         message: '',

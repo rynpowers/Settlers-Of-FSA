@@ -40,34 +40,38 @@ class TradeViewPlayer extends Component {
     const { isTurn, trades, resources } = this.props;
 
     return (
-      <TradeComponentWindow
-        {...this.props}
-        renderComponentOne={() => (
-          <Fragment>
-            <ModalClose
-              hidden={!selectedTrade}
-              handleClick={() => this.setState({ selectedTrade: 0 })}
-            />
-            <ResourceView
-              updateResources={trades[selectedTrade]}
-              resources={resources}
-            />
-          </Fragment>
-        )}
-        renderComponentTwo={() =>
-          Object.keys(trades).map(trade => (
-            <TradeOffer
-              key={trade}
-              trade={trade}
-              isTurn={isTurn}
-              resources={trades[trade]}
-              selectedTrade={selectedTrade}
-              handleViewTrade={() => this.setState({ selectedTrade: trade })}
-              handleTradeAction={this.handleTradeAction}
-            />
-          ))
-        }
-      />
+      <Fragment>
+        <ModalClose handleClick={() => this.props.updateMode('trade')} />
+        <TradeComponentWindow
+          {...this.props}
+          close
+          renderComponentOne={() => (
+            <Fragment>
+              <ModalClose
+                hidden={!selectedTrade}
+                handleClick={() => this.setState({ selectedTrade: 0 })}
+              />
+              <ResourceView
+                updateResources={trades[selectedTrade]}
+                resources={resources}
+              />
+            </Fragment>
+          )}
+          renderComponentTwo={() =>
+            Object.keys(trades).map(trade => (
+              <TradeOffer
+                key={trade}
+                trade={trade}
+                isTurn={isTurn}
+                resources={trades[trade]}
+                selectedTrade={selectedTrade}
+                handleViewTrade={() => this.setState({ selectedTrade: trade })}
+                handleTradeAction={this.handleTradeAction}
+              />
+            ))
+          }
+        />
+      </Fragment>
     );
   }
 }

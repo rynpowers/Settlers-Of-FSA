@@ -1,0 +1,22 @@
+@import '../../sass/functions.scss';
+@import '../../sass/mixins.scss';
+
+.bank-label-container {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+
+  div {
+    @include flex-center();
+    width: resource_width(1);
+    margin-bottom: 2rem;
+    div {
+      width: resource_width(0.6);
+      height: resource_width(0.6);
+      background-color: var(--color-white);
+      color: var(--color-black);
+      @include flex-center();
+      border-radius: 50%;
+    }
+  }
+}

@@ -158,3 +158,37 @@ export const longestRoad = (start, settlements, roads, player) =>
   getEndpoints(start, settlements, roads, player)
     .map(n => getMaxRoad(n, settlements, roads, player))
     .reduce((a, v) => Math.max(a, v));
+
+export const playerPorts = () => {
+  const { board, player } = store.getState();
+  const { ports, settlements } = board;
+  return Object.keys(ports).reduce((a, v) => {
+    a[v] = ports[v].some(
+      port => settlements[port].player === player.playerNumber
+    );
+    return a;
+  }, {});
+};
+
+export const validatePortTrade = (plus, minus) => {
+  const ports = playerPorts();
+  let queue = [minus];
+
+  if (!Object.values(plus).some(v => v)) return false;
+
+  Object.keys(plus).forEach(resource => {
+    const diff = ports[resource] ? 2 : ports.wildcard ? 3 : 4;
+    while (plus[resource]--) {
+      let next = [];
+      queue.forEach(a => {
+        for (let i = 0; i < a.length; i++) {
+          let arr = [...a];
+          arr[i] += diff;
+          next.push(arr);
+        }
+      });
+      queue = next;
+    }
+  });
+  return queue.some(arr => arr.every(item => item === 0));
+};
