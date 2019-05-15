@@ -7,7 +7,7 @@ export const joinGameThunk = (game, success, fail) => async dispatch => {
     const { data } = await axios.post('/api/games', { name: game });
     const { player, gameState, board } = data;
     dispatch(action.updateGame(gameState, board, player));
-    window.sessionStorage.setItem('game', data.gameState.name);
+    window.sessionStorage.setItem('game', gameState.name);
     socket.emit('join-game', gameState.name, player.playerNumber);
     if (success) success();
   } catch (err) {

@@ -83,6 +83,7 @@ class DevModal extends Component {
     const { selectedCard } = this.state;
     return (
       <div>
+        <ModalClose handleClick={this.props.updateMode} />
         <div className="card-container">
           {this.renderPurchaseDevCard()}
           {this.renderDevCards()}

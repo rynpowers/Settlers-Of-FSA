@@ -98,11 +98,19 @@ class GameEngine {
     return this.updateGame(player, playerTurn);
   }
 
+  handleBank(player, resources) {
+    Object.keys(resources).forEach(resource => {
+      this.players[player].resources[resource] += resources[resource];
+    });
+
+    return this.updateGame(player);
+  }
+
   handleTrade({ resources, player, action }) {
     const { trades } = this.gameState;
     switch (action) {
       case 'initiate':
-        this.gameState.mode = 'trade';
+        this.gameState.mode = 'trading';
         return this.payload();
       case 'add':
         trades[player] = resources;
@@ -112,8 +120,10 @@ class GameEngine {
         return this.payload();
       case 'accept':
         return this.exchangeResources(player);
+      case 'bank':
+        return this.handleBank(player, resources);
       default:
-        this.gameState.mode = '';
+        this.gameState.mode = 'trade';
         this.gameState.trades = {};
         this.messages = [];
         return this.payload();

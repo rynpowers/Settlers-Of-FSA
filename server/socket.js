@@ -7,7 +7,8 @@ module.exports = io => {
 
     socket.on('join-game', (room, player) => {
       socket.join(room);
-      cache.games[room].addSocket(socket.id, player);
+      const curGame = cache.getGame(room);
+      curGame.addSocket(socket.id, player);
       console.log(
         chalk.yellow(
           `${socket.id} is joining room:`,
@@ -21,7 +22,7 @@ module.exports = io => {
     // BUILDING
 
     socket.on('update', payload => {
-      const curGame = cache.getCurGame(payload.game);
+      const curGame = cache.getGame(payload.game);
       const { sockets, game, board, players } = curGame.update(payload);
 
       Object.keys(sockets).forEach(player =>
@@ -37,7 +38,8 @@ module.exports = io => {
     // CHAT
 
     socket.on('message', payload => {
-      const curGame = cache.getCurGame(payload.game);
+      console.log(payload);
+      const curGame = cache.getGame(payload.game);
       const { messages } = curGame.update(payload);
       socket.broadcast.to(payload.game).emit('messages', { messages });
     });

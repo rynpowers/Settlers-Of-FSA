@@ -3,29 +3,42 @@ import { connect } from 'react-redux';
 import * as actions from '../store/actions';
 import {
   Build,
+  TradeViewPlayer,
+  TradeViewOpponent,
   TradeView,
   Robber,
   DevModal,
   Monopoly,
   YearOfPlenty,
+  Bank,
 } from './ModalViews';
 import './Modal.scss';
-import TradeViewOpponent from './ModalViews/TradeViewOpponent';
+import { playerPorts } from '../validators';
 
 class Modal extends Component {
-  renderTrade() {
-    return this.props.playerNumber === this.props.game.playerTurn ? (
-      <TradeView {...this.props} />
+  renderTrading() {
+    return this.props.isTurn ? (
+      <TradeViewPlayer {...this.props} />
     ) : (
       <TradeViewOpponent {...this.props} />
     );
   }
+
   renderModalView(view) {
     switch (view) {
       case 'build':
         return <Build {...this.props} />;
       case 'trade':
-        return this.renderTrade();
+        return (
+          <TradeView
+            playerNumber={this.props.playerNumber}
+            handleClick={this.props.updateMode}
+          />
+        );
+      case 'trading':
+        return this.renderTrading();
+      case 'bank':
+        return <Bank {...this.props} />;
       case 'robber':
         return <Robber {...this.props} />;
       case 'dev':
@@ -39,19 +52,17 @@ class Modal extends Component {
   }
 
   render() {
-    const { updateMode, respond, mode, isTurn } = this.props;
-    const views = ['trade', 'build', respond && 'robber', 'dev'];
+    const { respond, mode, isTurn } = this.props;
+    const views = ['trading', 'build', respond && 'robber', 'dev'];
 
-    const playerView = ['monopoly', 'yearOfPlenty'].includes(mode) && isTurn;
+    const playerView =
+      ['monopoly', 'yearOfPlenty', 'trade', 'bank'].includes(mode) && isTurn;
 
     const modalActive = views.includes(mode) || playerView;
 
     return (
       <div className={`modal ${modalActive && 'modal-active'}`}>
-        {this.renderModalView(mode)}
-        <div onClick={() => updateMode('')} className="modal-close">
-          <div />
-        </div>
+        {modalActive && this.renderModalView(mode)}
       </div>
     );
   }
@@ -64,6 +75,7 @@ const mapStateToProps = ({ menu, player, game }) => ({
     Object.keys(player.resources).reduce((a, v) => a + player.resources[v], 0) /
       2
   ),
+  game,
   player,
   isTurn: game.playerTurn === player.playerNumber,
   resources: player.resources,
@@ -72,6 +84,7 @@ const mapStateToProps = ({ menu, player, game }) => ({
   name: game.name,
   trades: game.trades,
   respond: !game.responded[player.playerNumber],
+  ports: playerPorts(),
 });
 
 export default connect(

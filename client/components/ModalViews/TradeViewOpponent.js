@@ -20,6 +20,7 @@ export class TradeViewOpponent extends Component {
     this.handleSendTrade = this.handleSendTrade.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
+
   handleClick(type, val) {
     const { resources } = this.props;
     const canDec = val < 0 && resources[type] + this.state[type];
@@ -50,13 +51,12 @@ export class TradeViewOpponent extends Component {
   }
 
   render() {
-    const { resources, playerNumber, game, trades, player } = this.props;
+    const { resources, playerNumber, game, trades } = this.props;
     const offer = trades[playerNumber];
 
     return (
       <TradeComponentWindow
-        game={game}
-        player={player}
+        {...this.props}
         renderComponentOne={() => (
           <Fragment>
             <ResourceView
