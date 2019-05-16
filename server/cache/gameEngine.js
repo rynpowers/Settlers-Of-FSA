@@ -8,8 +8,24 @@ class GameEngine {
     this.sockets = {};
     this.messages = [];
   }
+  playing() {
+    return this.gameState.playing;
+  }
+
+  start() {
+    this.gameState.playing = true;
+    return this.gameState;
+  }
+
   addSocket(socket, player) {
     this.sockets = { ...this.sockets, [player]: socket };
+    return { players: this.gameState.players };
+  }
+
+  removeSocket(socketId) {
+    Object.keys(this.sockets).forEach(id => {
+      if (this.sockets[id] === socketId) delete this.sockets[id];
+    });
   }
 
   addPlayer(player) {
@@ -74,15 +90,6 @@ class GameEngine {
     );
 
     return this.payload();
-  }
-
-  getGameState(playerNumber) {
-    const { players, board, gameState } = this;
-    return {
-      player: players[playerNumber],
-      board,
-      gameState: { ...gameState, devCards: gameState.devCards.length },
-    };
   }
 
   exchangeResources(player) {
@@ -343,8 +350,36 @@ class GameEngine {
     }
   }
 
+  incSettlementPhase() {
+    const { settlement } = this.gameState;
+    settlement.phaseIndex++;
+    const phase = settlement.phase[settlement.phaseIndex];
+    if (phase === 'next') {
+      settlement.phaseIndex = 0;
+      settlement.roundIndex++;
+      this.gameState.playerTurn = settlement.round[settlement.roundIndex];
+    }
+
+    if (!this.gameState.playerTurn) {
+      settlement.complete = true;
+      this.gameState.playerTurn = 1;
+    }
+
+    this.gameState.mode = '';
+
+    return settlement.complete ? this.updateGame(1, 2, 3, 4) : this.payload();
+  }
+
+  handleSettlementPhase() {
+    const { phase, phaseIndex } = this.gameState.settlement;
+    this.gameState.mode = phase[phaseIndex];
+    return this.payload();
+  }
+
   update(update) {
     switch (update.type) {
+      case 'settlement-phase':
+        return this.handleSettlementPhase();
       case 'road':
         return this.assignRoad(update); // done
       case 'settlement':
@@ -368,6 +403,7 @@ class GameEngine {
       case 'next-player':
         return this.handleNextPlayer(update);
       default:
+        return this.payload();
     }
   }
 
@@ -377,10 +413,11 @@ class GameEngine {
 
     if (prevRoad < update.longestRoad) {
       this.players[update.player].longestRoad = update.longestRoad;
-      this.updatePlayers(update.player);
     }
 
-    if (this.gameState.roadBuilding) return this.handleRoadBuilding(update);
+    if (!this.gameState.settlement.complete) return this.incSettlementPhase();
+    else if (this.gameState.roadBuilding)
+      return this.handleRoadBuilding(update);
 
     this.players[update.player].resources.hill--;
     this.players[update.player].resources.forest--;
@@ -393,6 +430,8 @@ class GameEngine {
   assignSettlement({ id, playerNumber }) {
     this.board.settlements[id].player = playerNumber;
     this.board.settlements[id].build += 1;
+
+    if (!this.gameState.settlement.complete) return this.incSettlementPhase();
 
     if (this.board.settlements[id].build === 1) {
       this.players[playerNumber].resources.hill--;

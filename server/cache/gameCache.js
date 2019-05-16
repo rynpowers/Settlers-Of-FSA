@@ -3,6 +3,7 @@ const GameEngine = require('./gameEngine');
 class GameCache {
   constructor() {
     this.games = {};
+    this.sockets = {};
   }
 
   addGame(game) {
@@ -15,6 +16,16 @@ class GameCache {
   joinGame(player, { name }) {
     const game = this.getGame(name);
     if (game) game.addPlayer(player);
+  }
+
+  cacheSocket(socketId, game) {
+    this.sockets[socketId] = game;
+  }
+
+  removeSocket(socketId) {
+    const game = this.getGame(this.sockets[socketId]);
+    delete this.sockets[socketId];
+    return game;
   }
 
   getGame(name) {

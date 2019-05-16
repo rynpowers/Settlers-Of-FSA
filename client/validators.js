@@ -15,8 +15,18 @@ const isConnectedRoad = (s1, s2, id) => {
   return roads.some(road => board.roads[road].player === player.playerNumber);
 };
 
-export const validateRoad = id => {
-  const { player, board } = store.getState();
+const validateSettlementPhaseRoad = (board, player, roadId) => {
+  const settlementId = Object.keys(board.settlements).filter(id => {
+    const settlement = board.settlements[id];
+    return (
+      settlement.player === player.playerNumber &&
+      settlement.roads.every(r => board.roads[r].player === null)
+    );
+  })[0];
+  return board.settlements[settlementId].roads.includes(roadId);
+};
+
+const isValidRoad = (board, player, id) => {
   const { playerNumber } = player;
   const { roads, settlements } = board;
   const road = roads[id];
@@ -29,6 +39,13 @@ export const validateRoad = id => {
       s1.player === playerNumber ||
       s2.player === playerNumber)
   );
+};
+
+export const validateRoad = id => {
+  const { game, player, board } = store.getState();
+  return game.settlement.complete
+    ? isValidRoad(board, player, id)
+    : validateSettlementPhaseRoad(board, player, id);
 };
 
 const getSettlementNeighbors = (id, board) => {
@@ -61,11 +78,14 @@ export const validateSettlement = id => {
   const settlement = board.settlements[id];
   const roads = settlement.roads.map(r => board.roads[r]);
   const neighbors = getSettlementNeighbors(id, board);
+  const connected =
+    roads.some(r => r.player === player.playerNumber) ||
+    !game.settlement.complete;
 
   return (
     game.mode === 'settlement' &&
     neighbors.every(neighbor => neighbor.player === null) &&
-    roads.some(r => r.player === player.playerNumber) &&
+    connected &&
     settlement.build === 0
   );
 };
