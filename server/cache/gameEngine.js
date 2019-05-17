@@ -83,7 +83,7 @@ class GameEngine {
 
     Game.update(
       {
-        game: JSON.stringify(this.gameState),
+        gameState: JSON.stringify(this.gameState),
         board: JSON.stringify(this.board),
       },
       { where: { name: this.gameState.name } }
@@ -352,12 +352,11 @@ class GameEngine {
 
   incSettlementPhase() {
     const { settlement } = this.gameState;
-    settlement.phaseIndex++;
-    const phase = settlement.phase[settlement.phaseIndex];
+    const phase = settlement.phase[++settlement.phaseIndex];
+
     if (phase === 'next') {
       settlement.phaseIndex = 0;
-      settlement.roundIndex++;
-      this.gameState.playerTurn = settlement.round[settlement.roundIndex];
+      this.gameState.playerTurn = settlement.round[++settlement.roundIndex];
     }
 
     if (!this.gameState.playerTurn) {
@@ -367,7 +366,7 @@ class GameEngine {
 
     this.gameState.mode = '';
 
-    return settlement.complete ? this.updateGame(1, 2, 3, 4) : this.payload();
+    return this.updateGame(1, 2, 3, 4);
   }
 
   handleSettlementPhase() {
@@ -415,7 +414,8 @@ class GameEngine {
       this.players[update.player].longestRoad = update.longestRoad;
     }
 
-    if (!this.gameState.settlement.complete) return this.incSettlementPhase();
+    if (!this.gameState.settlement.complete)
+      return this.incSettlementPhase(update.player);
     else if (this.gameState.roadBuilding)
       return this.handleRoadBuilding(update);
 
@@ -428,10 +428,23 @@ class GameEngine {
   }
 
   assignSettlement({ id, playerNumber }) {
+    const { settlement } = this.gameState;
     this.board.settlements[id].player = playerNumber;
     this.board.settlements[id].build += 1;
 
-    if (!this.gameState.settlement.complete) return this.incSettlementPhase();
+    if (!settlement.complete) {
+      if (settlement.roundIndex > 3) {
+        const { settlements, resources } = this.board;
+        Object.values(resources).forEach(resource => {
+          resource.settlements.forEach(s => {
+            if (settlements[s].player === playerNumber) {
+              this.players[playerNumber].resources[resource.type]++;
+            }
+          });
+        });
+      }
+      return this.incSettlementPhase(playerNumber);
+    }
 
     if (this.board.settlements[id].build === 1) {
       this.players[playerNumber].resources.hill--;
