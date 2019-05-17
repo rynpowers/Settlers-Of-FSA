@@ -49,8 +49,8 @@ class GameEngine {
         (a, v) => a + player.resources[v],
         0
       ),
-      devCards: Object.keys(player.devCards).reduce(
-        (a, v) => a + +player.devCards[v],
+      devCards: Object.values(player.devCards).reduce(
+        (a, v) => (Array.isArray(v) ? a : a + v),
         0
       ),
       largestArmy: player.largestArmy,
@@ -318,10 +318,25 @@ class GameEngine {
     }
   }
 
+  purchaseCard(player, card) {
+    card === 'victoryPoint'
+      ? this.players[player].devCards[card]++
+      : this.players[player].devCards.purchased.push(card);
+    this.players[player].resources.field--;
+    this.players[player].resources.mountain--;
+    this.players[player].resources.pasture--;
+  }
+
   handleNextPlayer(update) {
     this.gameState.playerTurn =
       this.gameState.playerTurn < 4 ? update.player + 1 : 1;
-    return this.payload();
+
+    this.players[update.player].devCards.purchased.forEach(card => {
+      this.players[update.player].devCards[card]++;
+    });
+
+    this.players[update.player].devCards.purchased = [];
+    return this.updateGame(update.player);
   }
 
   handleDevCard(update) {
@@ -329,11 +344,7 @@ class GameEngine {
     const index = Math.floor(Math.random() * cards.length);
     const card = cards.splice(index, 1)[0];
 
-    this.players[update.player].devCards[card]++;
-    this.players[update.player].resources.field--;
-    this.players[update.player].resources.mountain--;
-    this.players[update.player].resources.pasture--;
-
+    this.purchaseCard(update.player, card);
     this.gameState.flash = `you have bought a ${card} card`;
 
     return this.updateGame(update.player);

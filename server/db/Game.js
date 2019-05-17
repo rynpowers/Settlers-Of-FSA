@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const db = require('./database');
-const board = require('../board');
-// const testBoard = require('../testBoard');
+// const board = require('../board');
+const testBoard = require('../testBoard');
 const game = require('../game');
 
 const Game = db.define('games', {
@@ -22,7 +22,7 @@ const Game = db.define('games', {
   },
   board: {
     type: Sequelize.TEXT,
-    defaultValue: JSON.stringify(board()),
+    defaultValue: JSON.stringify(testBoard),
   },
 });
 

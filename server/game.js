@@ -5,7 +5,7 @@ module.exports = name => ({
   phase: '',
   playerTurn: 1,
   settlement: {
-    complete: false,
+    complete: true,
     phase: ['settlement', 'road', 'next'],
     phaseIndex: 0,
     round: [1, 2, 3, 4, 4, 3, 2, 1],

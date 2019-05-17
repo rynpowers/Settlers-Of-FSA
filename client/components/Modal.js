@@ -79,7 +79,11 @@ const mapStateToProps = ({ menu, player, game }) => ({
   player,
   isTurn: game.playerTurn === player.playerNumber,
   resources: player.resources,
-  devCards: player.devCards,
+  devCards: Object.keys(player.devCards).reduce((a, v) => {
+    if (v !== 'purchased') a[v] = player.devCards[v];
+    return a;
+  }, {}),
+  purchased: player.devCards.purchased,
   mode: game.mode,
   name: game.name,
   trades: game.trades,

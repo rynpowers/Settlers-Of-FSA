@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Card from './Card';
 import CardQuantity from './CardQuantity';
 import { ResourcePanel } from '../ResourceComponents';
@@ -55,10 +55,10 @@ class DevModal extends Component {
     }
   }
 
-  renderPurchaseDevCard() {
+  renderDevCardBtn() {
     const cost = options.cost.dev;
     return (
-      <Card key="button" handleClick={this.handleSubmit}>
+      <Card classes="card-active" key="button" handleClick={this.handleSubmit}>
         <h2>Buy Card</h2>
         <ResourcePanel resources={cost} />
       </Card>
@@ -71,7 +71,7 @@ class DevModal extends Component {
       .map(card => (
         <Card
           key={card}
-          classes={`card-${card}`}
+          classes={`card-${card} card-active`}
           handleClick={() => this.setState({ selectedCard: card })}
         >
           <CardQuantity quantity={this.props.devCards[card]} />
@@ -79,16 +79,33 @@ class DevModal extends Component {
       ));
   }
 
+  renderPurchasedCards() {
+    const cards = this.props.purchased.reduce((a, v) => {
+      a[v] ? a[v]++ : (a[v] = 1);
+      return a;
+    }, {});
+
+    return Object.keys(cards).map(card => (
+      <Card key={card} classes={`card-${card}`}>
+        <div className="card-cover">
+          <h2>Play Next Turn</h2>
+        </div>
+        <CardQuantity quantity={cards[card]} />
+      </Card>
+    ));
+  }
+
   render() {
     const { selectedCard } = this.state;
     return (
-      <div>
+      <Fragment>
         <ModalClose handleClick={this.props.updateMode} />
         <div className="card-container">
-          {this.renderPurchaseDevCard()}
+          {this.renderDevCardBtn()}
           {this.renderDevCards()}
+          {this.renderPurchasedCards()}
         </div>
-        <div className={`card-modal ${selectedCard && 'card-active'}`}>
+        <div className={`card-modal ${selectedCard && 'card-modal-active'}`}>
           <ModalClose handleClick={() => this.setState({ selectedCard: '' })} />
           <div className={`card-showcase card-${selectedCard}`}>
             {selectedCard !== 'victoryPoint' && (
@@ -102,7 +119,7 @@ class DevModal extends Component {
           message={this.state.message}
           handleSubmit={() => this.setState({ message: '' })}
         />
-      </div>
+      </Fragment>
     );
   }
 }
