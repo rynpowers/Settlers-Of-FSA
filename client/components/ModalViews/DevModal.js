@@ -1,8 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import Card from './Card';
-import CardQuantity from './CardQuantity';
-import { ResourcePanel } from '../ResourceComponents';
 import ModalClose from './ModalClose';
+import DevCards from './DevCards';
 import socket from '../../socket';
 import './Card.scss';
 import FlashAlert from '../FlashAlert';
@@ -56,33 +54,8 @@ class DevModal extends Component {
     }
   }
 
-  renderDevCardBtn() {
-    const cost = options.cost.dev;
-    return (
-      <Card classes="card-active" key="button" handleClick={this.handleSubmit}>
-        <h2>Buy Card</h2>
-        <ResourcePanel resources={cost} />
-      </Card>
-    );
-  }
-
-  renderDevCards(cards) {
-    return Object.keys(cards)
-      .filter(card => cards[card])
-      .map(card => (
-        <Card
-          key={card}
-          classes={`card-${card} card-active`}
-          handleClick={() => this.setState({ selectedCard: card })}
-        >
-          <CardQuantity quantity={cards[card]} />
-        </Card>
-      ));
-  }
-
   combineCards() {
     const { devCards, purchased } = this.props;
-
     const cards = Object.keys(devCards).filter(card => devCards[card]);
 
     return cards.reduce((a, v) => {
@@ -91,31 +64,19 @@ class DevModal extends Component {
     }, {});
   }
 
-  renderPurchasedCards(cards) {
-    return Object.keys(cards).map(card => (
-      <Card key={card} classes={`card-${card}`}>
-        <div className="card-cover">
-          <h2>Play Next Turn</h2>
-        </div>
-        <CardQuantity quantity={cards[card]} />
-      </Card>
-    ));
-  }
-
   render() {
     const { selectedCard } = this.state;
     const { devCardPlayed, devCards, purchased } = this.props;
 
-    const cantPlay = devCardPlayed ? this.combineCards() : purchased;
-
     return (
       <Fragment>
         <ModalClose handleClick={this.props.updateMode} />
-        <div className="card-container">
-          {this.renderDevCardBtn()}
-          {!devCardPlayed && this.renderDevCards(devCards)}
-          {this.renderPurchasedCards(cantPlay)}
-        </div>
+        <DevCards
+          devCards={devCards}
+          cantPlay={devCardPlayed ? this.combineCards() : purchased}
+          devCardPlayed={devCardPlayed}
+          handleSubmit={this.handleSubmit}
+        />
         <div className={`card-modal ${selectedCard && 'card-modal-active'}`}>
           <ModalClose handleClick={() => this.setState({ selectedCard: '' })} />
           <div className={`card-showcase card-${selectedCard}`}>
