@@ -240,7 +240,7 @@ class GameEngine {
 
   handleFlash() {
     this.gameState.flash = '';
-    return this.payload();
+    return this.updateGame();
   }
 
   handleKnight(update) {
@@ -328,14 +328,18 @@ class GameEngine {
   }
 
   handleNextPlayer(update) {
+    console.log(this.gameState.playerTurn, update);
     this.gameState.playerTurn =
-      this.gameState.playerTurn < 4 ? update.player + 1 : 1;
+      this.gameState.playerTurn < 4 ? this.gameState.playerTurn + 1 : 1;
 
     this.players[update.player].devCards.purchased.forEach(card => {
       this.players[update.player].devCards[card]++;
     });
 
     this.players[update.player].devCards.purchased = [];
+
+    this.gameState.rolled = false;
+    console.log(this.gameState);
     return this.updateGame(update.player);
   }
 
@@ -473,6 +477,7 @@ class GameEngine {
   updateDice({ diceValue }) {
     this.gameState.diceValue = diceValue;
     this.gameState.mode = 'roll';
+    this.gameState.rolled = true;
 
     if (this.gameState.diceValue == 7) return this.initiateRobber();
 

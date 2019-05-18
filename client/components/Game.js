@@ -64,7 +64,12 @@ class Game extends Component {
           style={btnContainerStyles}
           onClick={e => {
             const diceValue = e.target.dataset.value;
-            socket.emit('update', { type: 'diceValue', diceValue, game: name });
+            diceValue &&
+              socket.emit('update', {
+                type: 'diceValue',
+                diceValue,
+                game: name,
+              });
           }}
         >
           <button style={btnStyles} type="submit" data-value={2}>

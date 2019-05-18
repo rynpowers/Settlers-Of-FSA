@@ -1,8 +1,8 @@
 module.exports = name => ({
   name,
   playing: false,
+  rolled: false,
   mode: '',
-  phase: '',
   playerTurn: 1,
   settlement: {
     complete: true,

@@ -15,11 +15,19 @@ class Menu extends Component {
     let isParent = e.target.dataset.value !== undefined;
     let elem = isParent ? e.target : e.target.parentNode;
     let mode = elem.dataset.value;
-    this.props.updateMode(mode);
+    mode && this.props.updateMode(mode);
   }
 
   render() {
-    const { exit, toggleMenu, toggleExitMenu, main, updateMode } = this.props;
+    const {
+      exit,
+      toggleMenu,
+      toggleExitMenu,
+      main,
+      updateMode,
+      rolled,
+      isTurn,
+    } = this.props;
     const menuClassList = `${main && 'active'} ${exit && 'exit-active'}`;
     const btns = ['build', 'trade', 'dev', 'roll', 'exit'];
 
@@ -38,7 +46,13 @@ class Menu extends Component {
           className={`options ${main && 'expand'}`}
         >
           {btns.map((value, i) => (
-            <MenuBtn key={value} value={value} index={i} />
+            <MenuBtn
+              key={value}
+              value={value}
+              index={i}
+              isTurn={isTurn}
+              rolled={rolled}
+            />
           ))}
         </div>
       </Fragment>
@@ -46,11 +60,13 @@ class Menu extends Component {
   }
 }
 
-const mapStateToProps = ({ menu, game }) => ({
+const mapStateToProps = ({ menu, game, player }) => ({
   main: menu.main,
   modal: menu.modal,
   exit: menu.exit,
   game,
+  rolled: game.rolled,
+  isTurn: game.playerTurn === player.playerNumber,
 });
 
 export default connect(
