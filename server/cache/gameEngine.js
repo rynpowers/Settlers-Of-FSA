@@ -43,16 +43,17 @@ class GameEngine {
     fn({ [key]: this[key] });
   }
 
+  totalDevCards(cards) {
+    return Object.values(cards).reduce((a, v) => {
+      a += typeof v === 'object' ? this.totalDevCards(v) : +v;
+      return a;
+    }, 0);
+  }
+
   parsePlayer(player) {
     return {
-      resources: Object.keys(player.resources).reduce(
-        (a, v) => a + player.resources[v],
-        0
-      ),
-      devCards: Object.values(player.devCards).reduce(
-        (a, v) => (Array.isArray(v) ? a : a + v),
-        0
-      ),
+      resources: Object.values(player.resources).reduce((a, v) => a + v, 0),
+      devCards: this.totalDevCards(player.devCards),
       largestArmy: player.largestArmy,
       longestRoad: player.longestRoad,
       victoryPoints: player.victoryPoints,
@@ -304,6 +305,8 @@ class GameEngine {
   }
 
   handlePlayCard(update) {
+    this.gameState.devCardPlayed = true;
+
     switch (update.card) {
       case 'knight':
         return this.handleKnight(update);
@@ -319,27 +322,32 @@ class GameEngine {
   }
 
   purchaseCard(player, card) {
+    const { devCards } = this.players[player];
+
     card === 'victoryPoint'
-      ? this.players[player].devCards[card]++
-      : this.players[player].devCards.purchased.push(card);
+      ? devCards[card]++
+      : (devCards.purchased[card] = (devCards.purchased[card] || 0) + 1);
+
     this.players[player].resources.field--;
     this.players[player].resources.mountain--;
     this.players[player].resources.pasture--;
   }
 
   handleNextPlayer(update) {
-    console.log(this.gameState.playerTurn, update);
+    const { devCards } = this.players[update.player];
+
     this.gameState.playerTurn =
       this.gameState.playerTurn < 4 ? this.gameState.playerTurn + 1 : 1;
 
-    this.players[update.player].devCards.purchased.forEach(card => {
-      this.players[update.player].devCards[card]++;
+    Object.keys(devCards.purchased).forEach(card => {
+      devCards[card] += devCards.purchased[card];
     });
 
-    this.players[update.player].devCards.purchased = [];
+    devCards.purchased = {};
 
     this.gameState.rolled = false;
-    console.log(this.gameState);
+    this.gameState.devCardPlayed = false;
+
     return this.updateGame(update.player);
   }
 

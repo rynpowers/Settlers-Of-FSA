@@ -2,6 +2,7 @@ module.exports = name => ({
   name,
   playing: false,
   rolled: false,
+  devCardPlayed: false,
   mode: '',
   playerTurn: 1,
   settlement: {

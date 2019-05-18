@@ -18,6 +18,7 @@ class DevModal extends Component {
     };
     this.handlePlayCard = this.handlePlayCard.bind(this);
   }
+
   canBuy() {
     const { resources } = this.props;
     return Object.keys(options.cost.dev).every(
@@ -65,26 +66,32 @@ class DevModal extends Component {
     );
   }
 
-  renderDevCards() {
-    return Object.keys(this.props.devCards)
-      .filter(card => this.props.devCards[card])
+  renderDevCards(cards) {
+    return Object.keys(cards)
+      .filter(card => cards[card])
       .map(card => (
         <Card
           key={card}
           classes={`card-${card} card-active`}
           handleClick={() => this.setState({ selectedCard: card })}
         >
-          <CardQuantity quantity={this.props.devCards[card]} />
+          <CardQuantity quantity={cards[card]} />
         </Card>
       ));
   }
 
-  renderPurchasedCards() {
-    const cards = this.props.purchased.reduce((a, v) => {
-      a[v] ? a[v]++ : (a[v] = 1);
+  combineCards() {
+    const { devCards, purchased } = this.props;
+
+    const cards = Object.keys(devCards).filter(card => devCards[card]);
+
+    return cards.reduce((a, v) => {
+      a[v] = devCards[v] + (purchased[v] || 0);
       return a;
     }, {});
+  }
 
+  renderPurchasedCards(cards) {
     return Object.keys(cards).map(card => (
       <Card key={card} classes={`card-${card}`}>
         <div className="card-cover">
@@ -97,13 +104,17 @@ class DevModal extends Component {
 
   render() {
     const { selectedCard } = this.state;
+    const { devCardPlayed, devCards, purchased } = this.props;
+
+    const cantPlay = devCardPlayed ? this.combineCards() : purchased;
+
     return (
       <Fragment>
         <ModalClose handleClick={this.props.updateMode} />
         <div className="card-container">
           {this.renderDevCardBtn()}
-          {this.renderDevCards()}
-          {this.renderPurchasedCards()}
+          {!devCardPlayed && this.renderDevCards(devCards)}
+          {this.renderPurchasedCards(cantPlay)}
         </div>
         <div className={`card-modal ${selectedCard && 'card-modal-active'}`}>
           <ModalClose handleClick={() => this.setState({ selectedCard: '' })} />

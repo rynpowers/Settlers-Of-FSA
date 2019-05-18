@@ -18,6 +18,6 @@ module.exports = playerNumber => ({
     yearOfPlenty: 5,
     victoryPoint: 5,
     monopoly: 5,
-    purchased: [],
+    purchased: {},
   },
 });

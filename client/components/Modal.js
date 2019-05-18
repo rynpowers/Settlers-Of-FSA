@@ -90,6 +90,7 @@ const mapStateToProps = ({ menu, player, game }) => ({
   respond: !game.responded[player.playerNumber],
   ports: playerPorts(),
   rolled: game.rolled,
+  devCardPlayed: game.devCardPlayed,
 });
 
 export default connect(
