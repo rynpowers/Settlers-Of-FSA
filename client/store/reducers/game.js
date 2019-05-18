@@ -4,6 +4,7 @@ import {
   RESET,
   UPDATE_GAME,
   UPDATE_TRADES,
+  JOIN_GAME,
 } from '../actions';
 
 const initailState = {
@@ -13,6 +14,8 @@ const initailState = {
 
 const game = (state = initailState, action) => {
   switch (action.type) {
+    case JOIN_GAME:
+      return { ...state, players: action.players };
     case UPDATE_MODE:
       return { ...state, mode: action.mode || '' };
     case UPDATE_GAME:

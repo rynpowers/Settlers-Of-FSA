@@ -9,6 +9,7 @@ import Player from './Player';
 import socket from '../socket';
 import { store } from '../store';
 import './Game.scss';
+import SettlementPhase from './SettlementPhase';
 
 const btnContainerStyles = {
   display: 'flex',
@@ -43,6 +44,8 @@ class Game extends Component {
         <BoardController />
         <Menu />
         <Modal />
+        <FlashAlert message={!game.playing && 'Wating for Players'} />
+        {game.playing && !game.settlement.complete && <SettlementPhase />}
         <FlashAlert
           message={isTurn && flash}
           handleSubmit={() =>
@@ -61,7 +64,12 @@ class Game extends Component {
           style={btnContainerStyles}
           onClick={e => {
             const diceValue = e.target.dataset.value;
-            socket.emit('update', { type: 'diceValue', diceValue, game: name });
+            diceValue &&
+              socket.emit('update', {
+                type: 'diceValue',
+                diceValue,
+                game: name,
+              });
           }}
         >
           <button style={btnStyles} type="submit" data-value={2}>

@@ -7,8 +7,19 @@ module.exports = io => {
 
     socket.on('join-game', (room, player) => {
       socket.join(room);
+      cache.cacheSocket(socket.id, room);
       const curGame = cache.getGame(room);
-      curGame.addSocket(socket.id, player);
+      const { players } = curGame.addSocket(socket.id, player);
+
+      if (Object.keys(players).length < 4) {
+        socket.broadcast
+          .to(room)
+          .emit('dispatch', { type: 'JOIN_GAME', players });
+      } else if (!curGame.playing()) {
+        const game = curGame.start();
+        io.to(room).emit('dispatch', { type: 'SET_GAME', game });
+      }
+
       console.log(
         chalk.yellow(
           `${socket.id} is joining room:`,
@@ -46,6 +57,13 @@ module.exports = io => {
 
     socket.on('disconnect', () => {
       console.log(chalk.red(`${socket.id} is disconnected`));
+      console.log(cache.sockets);
+      const game = cache.removeSocket(socket.id);
+      if (game) {
+        console.log(game.sockets);
+        game.removeSocket(socket.id);
+        console.log(game.sockets);
+      }
     });
   });
 };

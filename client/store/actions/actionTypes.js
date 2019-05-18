@@ -10,6 +10,7 @@ export const UPDATE_MODE = 'UPDATE_MODE';
 export const UPDATE_OFFER = 'UPDATE_OFFER';
 export const UPDATE_GAME = 'UPDATE_GAME';
 export const UPDATE_TRADES = 'UPDATE_TRADES';
+export const JOIN_GAME = 'JOIN_GAME';
 
 // board
 export const SET_BOARD = 'SET_BOARD';

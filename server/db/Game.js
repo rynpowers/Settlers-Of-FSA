@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const db = require('./database');
-const board = require('../board');
+// const board = require('../board');
 const testBoard = require('../testBoard');
 const game = require('../game');
 

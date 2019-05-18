@@ -11,18 +11,21 @@ class BoardController extends Component {
   }
 
   handleUpdate(type, id) {
+    const { settlement } = this.props.game;
     this.props.updateBoardThunk(id, type);
-    this.props.reset();
+    settlement.complete && this.props.reset();
   }
 
   handleUpdateRoad(type, id) {
+    const { settlement } = this.props.game;
+
     this.props.updateRoadThunk({
       id,
       player: this.props.playerNumber,
       type,
       game: this.props.name,
     });
-    this.props.reset();
+    settlement.complete && this.props.reset();
   }
 
   handleMoveRobber(elem) {
@@ -89,6 +92,7 @@ const mapStateToProps = ({ game, player }) => ({
   name: game.name,
   isTurn: player.playerNumber === game.playerTurn,
   playerNumber: player.playerNumber,
+  game,
 });
 
 export default connect(

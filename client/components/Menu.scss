@@ -75,14 +75,43 @@
       left: 23%;
       top: 69%;
     }
+
+    &:hover {
+      transform: scale(1.1) translateX(-50%);
+      transform-origin: left;
+      background-color: var(--color-sand);
+      color: var(--color-black);
+      border: 3px solid var(--color-black);
+    }
   }
 
-  &-option:hover {
-    transform: scale(1.1) translateX(-50%);
-    transform-origin: left;
-    background-color: var(--color-sand);
-    color: var(--color-black);
-    border: 3px solid var(--color-black);
+  &-cover {
+    position: absolute;
+    background-color: var(--color-black-transparent);
+    border-radius: 50%;
+    transform: translateX(-50%);
+
+    &-1 {
+      top: 0;
+      left: 50%;
+    }
+
+    &-2 {
+      left: 87%;
+      top: 25%;
+    }
+    &-3 {
+      left: 13%;
+      top: 25%;
+    }
+    &-4 {
+      left: 77%;
+      top: 69%;
+    }
+    &-5 {
+      left: 23%;
+      top: 69%;
+    }
   }
 }
 
