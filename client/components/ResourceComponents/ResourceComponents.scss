@@ -11,10 +11,11 @@
     }
 
     &.small {
-      @include resource-styles(1 * 0.6);
+      @include resource-styles(0.7);
 
       div {
-        @include resource-styles-inner(0.3 * 0.6);
+        @include resource-styles-inner(0.25);
+        font-size: 1.5rem;
       }
     }
 

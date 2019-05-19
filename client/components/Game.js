@@ -10,19 +10,7 @@ import socket from '../socket';
 import { store } from '../store';
 import './Game.scss';
 import SettlementPhase from './SettlementPhase';
-
-const btnContainerStyles = {
-  display: 'flex',
-  width: '50%',
-  justifyContent: 'space-evenly',
-  zIndex: 10,
-};
-
-const btnStyles = {
-  width: '4rem',
-  height: '2rem',
-  cursor: 'pointer',
-};
+import { ResourcePanel } from './ResourceComponents';
 
 class Game extends Component {
   componentDidMount() {
@@ -60,64 +48,8 @@ class Game extends Component {
             isTurn={game.playerTurn == i}
           />
         ))}
-        <div
-          style={btnContainerStyles}
-          onClick={e => {
-            const diceValue = e.target.dataset.value;
-            diceValue &&
-              socket.emit('update', {
-                type: 'diceValue',
-                diceValue,
-                game: name,
-              });
-          }}
-        >
-          <button style={btnStyles} type="submit" data-value={2}>
-            2
-          </button>
-          <button style={btnStyles} type="submit" data-value={3}>
-            3
-          </button>
-          <button style={btnStyles} type="submit" data-value={4}>
-            4
-          </button>
-          <button style={btnStyles} type="submit" data-value={5}>
-            5
-          </button>
-          <button style={btnStyles} type="submit" data-value={6}>
-            6
-          </button>
-          <button style={btnStyles} type="submit" data-value={7}>
-            7
-          </button>
-          <button style={btnStyles} type="submit" data-value={8}>
-            8
-          </button>
-          <button style={btnStyles} type="submit" data-value={9}>
-            9
-          </button>
-          <button style={btnStyles} type="submit" data-value={10}>
-            10
-          </button>
-          <button style={btnStyles} type="submit" data-value={11}>
-            11
-          </button>
-          <button style={btnStyles} type="submit" data-value={12}>
-            12
-          </button>
-          <button
-            style={btnStyles}
-            type="submit"
-            onClick={() => {
-              socket.emit('update', {
-                game: name,
-                player: playerNumber,
-                type: 'next-player',
-              });
-            }}
-          >
-            nextTurn
-          </button>
+        <div className={`game-resources border-${playerNumber}`}>
+          <ResourcePanel resources={this.props.resources} />
         </div>
       </div>
     );
@@ -133,6 +65,7 @@ const mapStateToProps = ({ game, board, player }) => ({
   flash: game.flash,
   name: game.name,
   playerNumber: player.playerNumber,
+  resources: player.resources,
 });
 
 export default connect(

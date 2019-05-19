@@ -1,6 +1,6 @@
 module.exports = name => ({
   name,
-  playing: false,
+  playing: true,
   rolled: false,
   devCardPlayed: false,
   mode: '',
